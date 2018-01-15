@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>mission 2</title>
+    <style type="text/css">
+    /*1.清楚浮动？*/
+        .main{
+          margin: 0px;
+          background: #6C6C6C;
+          border: 0px;
+        }
+        .clearfix:after{
+          content: "";
+          display: block;
+          clear: both;
+        } 
+        .top {
+          width: 100%;
+          background: #921AFF;
+        } 
+        .toph1{
+          float: left;
+        }
+        .nav{
+          float: right;
+        }
+        .ul li{
+          float: left;
+          list-style-type: none;
+          margin-left: 8px;
+        }
+        .ul li a{
+          color: #FFFF33;
+          text-decoration: none;
+        }
+        .note{
+          background: #D2E9FF;
+          margin: 20px 10px;
+          padding: 20px 10px;
+        }
+        /*4.设置边框*/
+        .dd{
+          border:5px solid #CC0033;
+          margin-bottom: 5px;
+          padding: 10px;
+          width: 300px;
+          text-align: center;
+        }
+        /*3.无法覆盖全网页*/
+        body{
+          padding: 0px;
+          margin: 0px;
+        }
+        /*2设置图片宽高？*/
+        /*5.block和inline-block的奇怪差别？*/
+        img{
+          display: block;
+          height: 200px;
+          width: 300px;
+          /*margin-left: auto auto auto 0px;*/
+        }
+        table{
+          width: 100%;
+        }
+        thead tr th, tbody tr td{
+          border-bottom: 2px solid #CC0033;
+        }
+        thead tr th{
+          border-top: 2px solid #CC0033;
+        }
+    </style>
+</head>
+<body>
+
+  <div class="main">
+    <div class="top clearfix">
+      <h1 class="toph1">网站的一级标题</h1>
+        <nav class="nav">
+          <ul class="ul clearfix">
+          	<li><a href="#content" target="_blank" rel="noopener norefferrer">导航连接1</a></li>
+          	<li><a href="javascript:" target="_parnet">导航连接2</a></li>
+          	<li><a href="#" download="文件名">导航连接3</a></li>
+          </ul>
+        </nav>
+    </div>
+
+  <div class="note">
+  <h2>文章一级标题</h2>
+  <h2>文章二级标题</h2>
+  <div><p>文章作者&nbsp;文章发表时间</p></div>
+  <p>长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落<br>换行了<br>
+  长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落,换行了<br>
+  长段落长段落长段落长段落<a href="www.google.cn">链接到google</a>长段落长段落长段落长段落<b>粗字体在这里</b>
+  <img class="img1" src="./img/1105.jpg" " />
+  长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落<br>换行了<br>
+  长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落,换行了<br>
+  长段落长段落长段落长段落<a href="www.google.cn">链接到google</a>长段落长段落长段落长段落<b>粗字体在这里</b>
+  </p>
+  </div>
+
+  <div class="note">
+    <h2>另一篇文章一级标题</h2>
+  <h2>文章二级标题</h2>
+  <div><p>文章作者&nbsp;文章发表时间</p></div>
+  <p>长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落<br>换行了<br>
+  长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落长段落,换行了<br>
+  长段落长段落长段落长段落<a href="www.google.cn">链接到google</a>长段落长段落长段落长段落<b>粗字体在这里</b>
+  <img src="./img/1105.jpg" " />
+  <ul>
+    <li>列表项目1</li>
+    <li>列表项目2</li>
+    <li>列表项目3</li>
+  </ul>
+  </p>
+  </div>
+
+  <div class="note">
+    <dl>
+    <dt><h2>图片</h2></dt>
+    <div class="dd">
+      <span>好看的图片</span>
+      <img src="./img/1105.jpg" " />
+    </div>
+    <div class="dd">
+      <span>好看的图片</span>
+      <img src="./img/1105.jpg" " />
+    </div>
+    <div class="dd">
+      <span>好看的图片</span>
+      <img src="./img/1105.jpg" " />
+    </div>
+  </dl>
+  </div>
+
+  <div class="note">
+    <h2>最后一篇文章一级标题</h2>
+  <h2>文章二级标题</h2>
+  <div>
+    <p>文章作者&nbsp;文章发表时间</p>
+    <ol>
+      <li>排名1</li>
+      <li>排名2</li>
+      <li>排名3</li>
+    </ol>
+  </div>
+  <div>
+    <p>下面是一个表格</p>
+    <table class="classtest1">
+    <caption>下面是一个表格</caption>
+    <thead>
+      <tr>
+        <th>表头</th><th>表头</th><th>表头</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>表内容单元格</td><td>表内容单元格</td><td><a href="#classtest">操作</a></td>
+      </tr>
+      <tr>
+        <td rowspan="2">表内容单元格</td><td>表内容单元格</td><td><a href="#img1">操作</a></td>
+      </tr>
+      <tr>
+        <td>表内容单元格</td><td><a href="#img1">操作</a></td>
+      </tr>
+      <tr>
+        <td >总计</td><td colspan="2">1000</td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+  </div>
+
+  <div class="note">
+    <div>
+    <h2>侧栏标题</h2>
+    <h2>侧栏注册标题</h2>
+    <form>
+      <div>
+        <label>请输入邮箱地址:</label>
+        <input type="email" name="email" value="这是一个文本输入框">
+        <div>邮箱地址请按照要求格式输入
+        </div>
+      </div>
+      <div>
+        <label>请输入密码:</label><input type="password" name="p1" value="这是一个文本输入框">
+        <label>请重复输入密码:</label><input type="password" name="p2" value="这是一个文本输入框">
+        <div>密码请为6-16位英文</div>
+      </div>
+      <br>
+      <div>
+        <label>性别:</label><input type="radio" name="r1" value="man" checked="true">男<input type="radio" name="r1" value="female">女
+        <label>城市:</label>
+        <select name="select">
+        <option selected="true">南田坊</option>
+        <option>广中医路路口</option>
+        <option>广中医路</option> 
+        </select>
+        <label>爱好:</label><input type="checkbox" name="c" value="c1" checked="true">学习1h
+        <input type="checkbox" name="c" value="c2">学习2h
+        <input type="checkbox" name="c" value="c3" checked="true">学习3h
+        <label>个人描述:</label><textarea name="textarea">这是一个多行输入框，输入你的个人描述</textarea>
+        <input type="submit" name="submit" value="确认提交">
+      </div>
+    </form>
+  </div>
+  </div>
+  
+
+  
+
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+      <!-- 草稿纸 -->
+      <div style="height: 200px"></div>
+      <div>Standard Generalized Markup Language</div>
+
+      <div>
+      	<dl>
+      		<dt>dt1</dt>
+      		<dt>dt2</dt>
+      		<dd>dd1</dd>
+      	</dl>
+      </div>
+      <div class="parent clearfloat">
+        <div class="content">
+          <dl>
+            <dt>帮助中心</dt>
+            <dd><a href="javascript:">购物指南</a></dd>
+            <dd><a href="javascript:">支付方式</a></dd>
+            <dd><a href="javascript:">配送方式</a></dd>
+          </dl>
+        </div>
+        <div class="content">
+          <dl>
+            <dt>关于我们</dt>
+            <dd><a href="javascript:">了解我们</a></dd>
+            <dd><a href="javascript:">加入我们</a></dd>
+            <dd><a href="javascript:">联系我们</a></dd>
+          </dl>
+        </div>
+        <div class="content">
+          <dl>
+          <dt>服务支持</dt>
+          <dd><a href="javascript:">售后服务</a></dd>
+          <dd><a href="javascript:">自助服务</a></dd>
+            <dd><a href="javascript:">相关下载</a></dd>
+          </dl>
+        </div>
+        <div class="content">
+          <dl>
+            <dt>关注我们</dt>
+            <dd><a href="javascript:">新浪微博</a></dd>
+            <dd><a href="javascript:">官方微信</a></dd>
+            <dd><a href="javascript:">官方论坛</a></dd>
+          </dl>
+        </div>
+      </div>
+
+  </div>
+</body>
+</html>
