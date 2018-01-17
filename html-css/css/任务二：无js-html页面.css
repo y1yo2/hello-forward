@@ -1,0 +1,67 @@
+<style type="text/css">
+/*1.清楚浮动？*/
+.main{
+  margin: 0px;
+  background: #6C6C6C;
+  border: 0px;
+}
+.clearfix:after{
+  content: "";
+  display: block;
+  clear: both;
+} 
+.top {
+  width: 100%;
+  background: #921AFF;
+} 
+.toph1{
+  float: left;
+}
+.nav{
+  float: right;
+}
+.ul li{
+  float: left;
+  list-style-type: none;
+  margin-left: 8px;
+}
+.ul li a{
+  color: #FFFF33;
+  text-decoration: none;
+}
+.note{
+  background: #D2E9FF;
+  margin: 20px 10px;
+  padding: 20px 10px;
+}
+/*4.设置边框*/
+.dd{
+  border:5px solid #CC0033;
+  margin-bottom: 5px;
+  padding: 10px;
+  width: 300px;
+  text-align: center;
+}
+/*3.无法覆盖全网页*/
+body{
+  padding: 0px;
+  margin: 0px;
+}
+/*2设置图片宽高？*/
+/*5.block和inline-block的奇怪差别？*/
+img{
+  display: block;
+  height: 200px;
+  width: 300px;
+  /*margin-left: auto auto auto 0px;*/
+}
+table{
+  width: 100%;
+}
+thead tr th, tbody tr td{
+  border-bottom: 2px solid #CC0033;
+}
+thead tr th{
+  border-top: 2px solid #CC0033;
+}
+</style>

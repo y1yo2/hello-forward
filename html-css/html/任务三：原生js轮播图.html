@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>原生js轮播图</title>
+    <link rel="stylesheet" type="text/css" href="../css/任务三：原生js轮播图.css">
+    <style type="text/css">
+    /*1.img行内元素怎么设置高度宽度*/
+      body{
+        margin: 0px;
+
+      }
+    </style>
+</head>
+<body>
+  <div class="wrap" id="wrapId">
+    <div class="imags">
+      <img src="../img/-1615216386.jpg" alt="" >
+      <img src="../img/-1506466895.jpg" alt="" style="display: none;">
+      <img src="../img/-1420549683.jpg" alt="" style="display: none;">
+      <img src="../img/-1093225698.jpg" alt="" style="display: none;">
+    </div>
+    <div class="buttons">
+      <span class="selected">1</span>
+      <span>2</span>
+      <span>3</span>
+      <span>4</span>
+    </div>
+    <div class="arrow" id="leftArrow"><</div>
+    <div class="arrow" id="rightArrow">></div>
+  </div>
+<!-- 2.src是中文时，会产生乱码 -->
+  <script type="text/javascript" src="../js/mission3_js_slide_show.js" charset="gb2312"></script>
+</body>
+</html>

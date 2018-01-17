@@ -1,0 +1,22 @@
+<style type="text/css">
+/*1.img行内元素怎么设置高度宽度*/
+body{
+  margin: 0px;
+
+}
+.wrap{
+  height: 500px;
+  width: 800px;
+  background-color: pink;
+}
+.imags{
+  height: 100%;
+  width: 100%;
+}
+.imags img{
+  height: 100%;
+  width: 100%;
+
+}
+
+</style>
