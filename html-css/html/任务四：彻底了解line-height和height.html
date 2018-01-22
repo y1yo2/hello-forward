@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>line-height和height</title>
+	<style type="text/css">
+	/*#div150{
+		line-height: 150%;
+	}
+	#div15{
+		line-height: 1.5;
+	}
+	#p15030{
+		font-size: 30px;
+	}
+	#p15050{
+		font-size: 50px;
+	}
+	#p1530{
+		font-size: 30px;
+	}
+	#p1550{
+		font-size: 50px;
+	}*/
+	#div150{
+		margin-bottom: 30px;
+	}
+	#div15{
+		margin-top: 30px;
+	}
+	p{
+		margin: 0px;
+		padding: 0px;
+		/*background: pink;*/
+	}
+</style>
+</head>
+<body>
+	<div id="div150">
+		<p id="p15030">30px150%</p>
+		<p id="p15050">50px150%</p>
+	</div>
+	<div id="div15">
+		<p id="p1530">30px1.5</p>
+		<p id="p1550">50px1.5</p>
+	</div>
+
+	<script type="text/javascript">
+		var div150 = document.getElementById("div150");
+		var div15 = document.getElementById("div15");
+		var p15030 = document.getElementById("p15030");
+		var p15050 = document.getElementById("p15050");
+		var p1530 = document.getElementById("p1530");
+		var p1550 = document.getElementById("p1550");
+
+
+		// alert(p15030.style);
+		div150.style.lineHeight = "150%";
+		div15.style.lineHeight = 1.5;
+
+		p15030.style.height="10px";
+
+		p15030.style.fontSize = "30px";
+		p15050.style.fontSize = "50px";
+
+		p1530.style.fontSize = "30px";
+		p1550.style.fontSize = "50px";
+
+		p15030.style.background = "#46A3FF";
+		p15050.style.background = "#ff7575";
+		p1530.style.background = "#FFFF6F";
+		p1550.style.background = "#B15BFF";
+
+		console.log("div150%:" + div150.style.lineHeight);
+		console.log("div1.5:" + div15.style.lineHeight);
+		console.log("p150%30:" + p15030.style.fontSize);
+		console.log("p150%50:" + p15050.style.height);
+		console.log("p1.5 30:" + p1530.style.lineHeight);
+		console.log("p1.5 50:" + p1550.style.lineHeight);
+	</script>
+</body>
+</html>

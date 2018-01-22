@@ -29,9 +29,25 @@ body{
   content: "";
   clear: both;
 }
+/*不懂span字体居中*/
 .buttons{
+  width: 100%;
   position: absolute;
   bottom: 10px;
+  text-align: center;
+}
+.buttons span{
+  padding: 5px 10px;
+  border-radius: 50%;
+  font-size: 18px;
+  letter-spacing: 8px;
+  background: #F2F2F2;
+  color: black;
+  text-align: center;
+}
+.buttons .selected{
+  color: #F2F2F2;
+  background: pink;
 }
 .arrow{
   position: absolute;
