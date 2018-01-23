@@ -40,10 +40,11 @@ body{
   padding: 5px 10px;
   border-radius: 50%;
   font-size: 18px;
-  letter-spacing: 8px;
+  /*letter-spacing: 8px;*/
   background: #F2F2F2;
   color: black;
-  text-align: center;
+  margin-right: 10px;
+  /*text-align: center;*/
 }
 .buttons .selected{
   color: #F2F2F2;

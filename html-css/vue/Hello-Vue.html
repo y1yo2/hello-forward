@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Hello-Vue</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+	<div id="app1">
+		<p>{{message}}</p>
+	</div>
+	<div id="app2">
+		<p v-bind:title="message">
+			v-bind 特性被称为指令！将这个元素节点的 title 特性和 Vue 实例的 message 属性保持一致”。
+		</p>
+	</div>
+	<div id="app3">
+		<!-- <img v-if="seen1" src="../img/006mnpAhgy1fkd0big430g30ff0jgnpt.gif">
+		<img v-if="seen2" src="../img/20170221125211.gif"> -->
+	</div>
+
+
+
+	<script type="text/javascript">
+		var app1 = new Vue({
+			el:"#app1",
+			data:{
+				message:"Hello Vue.js! 此处使用声明式渲染"
+			}
+		});
+		var app2 = new Vue({
+			el:"#app2",
+			data:{
+				message:"现在时间是：" + new Date().toLocaleString()
+			}
+		});
+
+		var app3 = new Vue({
+			el:"#app3",
+			data:{
+				seen1:true,
+				seen2:false
+			}
+		});
+		var time = setInterval(function(){
+			if (app3.seen1) {
+				app3.seen1 = false;
+				app3.seen2 = true;
+			}else{
+				app3.seen1 = true;
+				app3.seen2 = false;
+			}
+		}, 3000);
+	</script>
+	<script type="text/javascript">
+		
+	</script>
+</body>
+
+
