@@ -15,8 +15,15 @@
 		</p>
 	</div>
 	<div id="app3">
-		<!-- <img v-if="seen1" src="../img/006mnpAhgy1fkd0big430g30ff0jgnpt.gif">
-		<img v-if="seen2" src="../img/20170221125211.gif"> -->
+		<img v-if="seen1" src="../img/006mnpAhgy1fkd0big430g30ff0jgnpt.gif">
+		<img v-if="seen2" src="../img/20170221125211.gif">
+	</div>
+	<div id="app4">
+		<ol>
+			<li v-for="liText in texts">
+				{{liText.text}}
+			</li>
+		</ol>
 	</div>
 
 
@@ -42,18 +49,31 @@
 				seen2:false
 			}
 		});
-		var time = setInterval(function(){
+		var timeSeen1 = setInterval(function(){
 			if (app3.seen1) {
 				app3.seen1 = false;
 				app3.seen2 = true;
-			}else{
+			}
+		}, 8000);
+		var timeSeen2 = setInterval(function(){
+			if (app3.seen2) {
 				app3.seen1 = true;
 				app3.seen2 = false;
 			}
-		}, 3000);
+		}, 3500);
+
+		var app4 = new Vue({
+			el:"#app4",
+			data:{
+				texts:[
+				{text:"第一代"},
+				{text:"第二代"}
+				]
+			}
+		});
 	</script>
 	<script type="text/javascript">
-		
+
 	</script>
 </body>
 
