@@ -25,6 +25,14 @@
 			</li>
 		</ol>
 	</div>
+	<div id="app5">
+		<p>{{message}}</p>
+		<button v-on:click="reverse">逆转按钮</button>
+	</div>
+	<div id="app6">
+		<p>{{changeMessage}}</p>
+		<input v-model="changeMessage">
+	</div>
 
 
 
@@ -69,6 +77,25 @@
 				{text:"第一代"},
 				{text:"第二代"}
 				]
+			}
+		});
+
+		var app5 = new Vue({
+			el:"#app5",
+			data:{
+				message:"上水居民居水上，长走宾客宾走长"
+			},
+			methods:{
+				reverse: function(){
+					this.message = this.message.split('').reverse().join('');
+				}
+			}
+		});
+
+		var app6 = new Vue({
+			el:"#app6",
+			data:{
+				changeMessage:"try to change me"
 			}
 		});
 	</script>
