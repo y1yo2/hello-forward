@@ -15,93 +15,109 @@
 		</p>
 	</div>
 	<div id="app3">
-		<img v-if="seen1" src="../img/006mnpAhgy1fkd0big430g30ff0jgnpt.gif">
-		<img v-if="seen2" src="../img/20170221125211.gif">
-	</div>
-	<div id="app4">
-		<ol>
-			<li v-for="liText in texts">
-				{{liText.text}}
-			</li>
-		</ol>
-	</div>
-	<div id="app5">
-		<p>{{message}}</p>
-		<button v-on:click="reverse">逆转按钮</button>
-	</div>
-	<div id="app6">
-		<p>{{changeMessage}}</p>
-		<input v-model="changeMessage">
-	</div>
+		<!-- <img v-if="seen1" src="../img/006mnpAhgy1fkd0big430g30ff0jgnpt.gif">
+			<img v-if="seen2" src="../img/20170221125211.gif"> -->
+		</div>
+		<div id="app4">
+			<ol>
+				<li v-for="liText in texts">
+					{{liText.text}}
+				</li>
+			</ol>
+		</div>
+		<div id="app5">
+			<p>{{message}}</p>
+			<button v-on:click="reverse">逆转按钮</button>
+		</div>
+		<div id="app6">
+			<p>{{changeMessage}}</p>
+			<input v-model="changeMessage">
+		</div>
+
+		<div id="app7">
+			<ol>
+				<li>正常li的显示内容</li>
+				<vue-item></vue-item>
+			</ol>
+		</div>
 
 
 
-	<script type="text/javascript">
-		var app1 = new Vue({
-			el:"#app1",
-			data:{
-				message:"Hello Vue.js! 此处使用声明式渲染"
-			}
-		});
-		var app2 = new Vue({
-			el:"#app2",
-			data:{
-				message:"现在时间是：" + new Date().toLocaleString()
-			}
-		});
-
-		var app3 = new Vue({
-			el:"#app3",
-			data:{
-				seen1:true,
-				seen2:false
-			}
-		});
-		var timeSeen1 = setInterval(function(){
-			if (app3.seen1) {
-				app3.seen1 = false;
-				app3.seen2 = true;
-			}
-		}, 8000);
-		var timeSeen2 = setInterval(function(){
-			if (app3.seen2) {
-				app3.seen1 = true;
-				app3.seen2 = false;
-			}
-		}, 3500);
-
-		var app4 = new Vue({
-			el:"#app4",
-			data:{
-				texts:[
-				{text:"第一代"},
-				{text:"第二代"}
-				]
-			}
-		});
-
-		var app5 = new Vue({
-			el:"#app5",
-			data:{
-				message:"上水居民居水上，长走宾客宾走长"
-			},
-			methods:{
-				reverse: function(){
-					this.message = this.message.split('').reverse().join('');
+		<script type="text/javascript">
+			var app1 = new Vue({
+				el:"#app1",
+				data:{
+					message:"Hello Vue.js! 此处使用声明式渲染"
 				}
-			}
-		});
+			});
+			var app2 = new Vue({
+				el:"#app2",
+				data:{
+					message:"现在时间是：" + new Date().toLocaleString()
+				}
+			});
 
-		var app6 = new Vue({
-			el:"#app6",
-			data:{
-				changeMessage:"try to change me"
-			}
-		});
-	</script>
-	<script type="text/javascript">
+			var app3 = new Vue({
+				el:"#app3",
+				data:{
+					seen1:true,
+					seen2:false
+				}
+			});
+			var timeSeen1 = setInterval(function(){
+				if (app3.seen1) {
+					app3.seen1 = false;
+					app3.seen2 = true;
+				}
+			}, 8000);
+			var timeSeen2 = setInterval(function(){
+				if (app3.seen2) {
+					app3.seen1 = true;
+					app3.seen2 = false;
+				}
+			}, 3500);
 
-	</script>
-</body>
+			var app4 = new Vue({
+				el:"#app4",
+				data:{
+					texts:[
+					{text:"第一代"},
+					{text:"第二代"}
+					]
+				}
+			});
+
+			var app5 = new Vue({
+				el:"#app5",
+				data:{
+					message:"上水居民居水上，长走宾客宾走长"
+				},
+				methods:{
+					reverse: function(){
+						this.message = this.message.split('').reverse().join('');
+					}
+				}
+			});
+
+			var app6 = new Vue({
+				el:"#app6",
+				data:{
+					changeMessage:"try to change me"
+				}
+			});
+
+			// Vue.component("vue-item", 
+			// {
+			// 	template: "<li>通过vue</li>"
+			// }
+			// )
+			Vue.component('vue-item', {
+				template: '<li>这是个待办项</li>'
+			})
+		</script>
+		<script type="text/javascript">
+			
+		</script>
+	</body>
 
 
