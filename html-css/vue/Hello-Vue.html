@@ -37,7 +37,17 @@
 		<div id="app7">
 			<ol>
 				<li>正常li的显示内容</li>
-				<vue-item></vue-item>
+				<vue1-item></vue1-item>
+			</ol>
+		</div>
+		
+		<div id="app8">
+			<ol>
+				<vue2-item
+				v-for="item in vue2Lists"
+				v-bind:item='item'
+				v-bind:key='item.idName'
+				></vue2-item>
 			</ol>
 		</div>
 
@@ -106,17 +116,27 @@
 				}
 			});
 
-			// Vue.component("vue-item", 
-			// {
-			// 	template: "<li>通过vue</li>"
-			// }
-			// )
-			Vue.component('vue-item', {
-				template: '<li>这是个待办项</li>'
-			})
-		</script>
-		<script type="text/javascript">
-			
+			Vue.component('vue1-item', 
+			{
+				template: '<li>通过vue模版加载</li>'
+			});
+			var app7 = new Vue({
+				el:"vue1-item"
+			});
+
+			Vue.component('vue2-item', {
+				props: ['item'],
+				template: '<li>{{item.textName}}</li>'
+			});
+			var app8 = new Vue({
+				el:"#app8",
+				data:{
+					vue2Lists:[
+					{idName:0, textName:'111111'},
+					{idName:1, textName:'222222'}
+					]
+				}
+			});
 		</script>
 	</body>
 

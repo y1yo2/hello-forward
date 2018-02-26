@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Template-Base</title>
+	<style type="text/css">
+	div{
+		margin: 10px auto 10px auto
+	}
+</style>
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+<script type="text/javascript" src="./js/vue.js"></script>
+</head>
+<body>
+	<div id="message">
+		<span>{{message}}</span>
+	</div>
+	<div id="onceMessage">
+		<span v-once>{{message}}</span>
+	</div>
+	<div id="rawHtml">
+		<span>{{rawHtml}}</span></br>
+		<span v-html="rawHtml"></span>
+	</div>
+	<div id="bind">
+		<button v-bind:disabled="isSpanDisabled">用 v-bind 指令控制HTML 特性</button>
+	</div>
+
+	<script type="text/javascript">
+		var messageVM = new Vue(
+		{
+			el:"#message",
+			data:{
+				message:"渲染可改变文本"
+			}
+		}
+		);
+		var time = 600; 
+		var testMessage = setInterval(function(){
+			messageVM.message = "渲染可改变文本" + time;
+			time--;
+			if (time < 0) {time = 600;}
+		},1000);
+
+		var onceMessageVM = new Vue(
+		{
+			el:"#onceMessage",
+			data:{
+				message:"不可改变v-once文本"
+			}
+		}
+		);
+
+		var rawHtmlVM = new Vue(
+		{
+			el:"#rawHtml",
+			data:{
+				rawHtml:"<span style=\"color:red\">原始HTML</span>"
+			}
+		}
+		);
+
+		var bindVM = new Vue(
+		{
+			el:"#bind",
+			data:{
+				isSpanDisabled:"false"
+			}
+		}
+		);
+		// var testButtonDisabled = setInterval(function(){
+		// 	if (bindVM.isSpanDisabled === "true") {
+		// 		bindVM.isSpanDisabled = "false";
+		// 		console.log(bindVM.isSpanDisabled);
+		// 	} else {
+		// 		bindVM.isSpanDisabled = "true";
+		// 		console.log(bindVM.isSpanDisabled);
+		// 	}
+		// }, 1000);
+
+
+	</script>	
+</body>
+
+
