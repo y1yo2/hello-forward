@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>利用表格实现某种布局</title>
+    <style type="text/css">
+        table{
+            border-collapse: collapse;
+            /*border-spacing: 0;*/
+            width: 600px
+
+        }
+        table tr{
+          
+          
+        }
+        table th{
+          font-size: 20px;
+          text-align: left;
+          border-top: 1px solid #ddd;
+        }
+        table td{
+          font-size: 15px;
+          color: #999;
+        }
+        .rowlast{
+          border-bottom: 1px solid #ddd;
+        }
+        /*tr{
+            
+            border-bottom: 1px solid #ddd;
+        }
+        table th, table td{
+            text-align: left;
+            padding: 10px;
+        }
+        caption{
+            text-align: left;
+        }*/
+    </style>
+</head>
+<body>
+      <table>
+          <!-- <caption>my table</caption> -->
+          <tr class="rowone">
+            <th>帮助中心</th> <th>关于我们</th> <th>服务支持</th> <th>关注我们</th>
+          </tr>
+          <tr class="row">
+            <td>购物指南</td> <td>了解我们</td> <td>售后服务</td> <td>新浪微博</td>
+          </tr>
+          <tr class="row">
+            <td>支付方式</td> <td>加入我们</td> <td>自助服务</td> <td>官方微信</td>
+          </tr>
+          <tr class="rowlast">
+            <td>配送方式</td> <td>联系我们</td> <td>相关下载</td> <td>官方论坛</td>
+          </tr>
+      </table>
+</body>
+</html>

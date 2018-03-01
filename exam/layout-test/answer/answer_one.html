@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文字为水平垂直居中</title>
+    <style type="text/css">
+        body{
+        	background: 	#00BB00;
+        }
+        /* 清除浮动 */
+        .clearfix:after{
+        	content: '';
+        	display: block;
+        	clear: both;
+        }
+        .content{
+        	background: 	#484891;
+        }
+    	.box{
+    		background: black;
+    		color: white;
+    		float: left;
+    		text-align: center;
+    		width: 100px;
+    		height: 240px;
+    		margin: 0 0 0 50px;
+    		line-height: 240px;
+    		/*line-height: 2000%;*/
+    	}
+    </style>
+</head>
+<body>
+      <div class="content clearfix">
+      	<div class="box">A</div>
+      	<div class="box">B</div>
+      	<div class="box">C</div>
+      </div>
+</body>
+</html>

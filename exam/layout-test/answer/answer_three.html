@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图文混排的卡片效果</title>
+    <style type="text/css">
+        body{
+            background:     #5B00AE;
+        }
+        .out{
+            background: #9F0050;
+            
+        }
+        .clearfloat:after{
+            content: '';
+            display: block;
+            clear: both; 
+        }
+        .in{
+            background: #C6A300;
+            float: left;
+            padding: 10px;
+
+            border:  #FFF solid;
+            border-radius:20px;   
+        }
+        .content{
+            margin: 5px 0 0 0;
+        }
+    </style>
+</head>
+<body>
+      <div class="out clearfloat">
+          <div class="in">
+              <img src="../images/2.jpg" class="image">
+              <div class="content">卡片内容：<br> magic卡</div>
+          </div>
+      </div>
+</body>
+</html>

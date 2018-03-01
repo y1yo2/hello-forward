@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中间盒子大小确定，水平垂直居中</title>
+    <style type="text/css">
+        body{
+            background: #73BF00;
+        }
+        .out{
+            position: relative;
+
+            background: #000;
+            width: 500px;
+            height: 500px;
+
+            text-align: center;
+        }
+        .in{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+
+            color:  #A6FFFF;
+            background:     #0080FF;
+            width: 200px;
+            height: 200px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+      <div class="out clearfix">
+      	<div class="in">里面的盒子的内容</div>
+      </div>
+</body>
+</html>

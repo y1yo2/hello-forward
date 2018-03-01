@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>利用表格实现某种布局</title>
+    <style type="text/css">
+        table{
+            border-collapse: collapse;
+            /*border-spacing: 0;*/
+            width: 600px
+
+        }
+        tr{
+            
+            border-bottom: 1px solid #ddd;
+        }
+        table th, table td{
+            text-align: left;
+            padding: 10px;
+        }
+        caption{
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+      <!-- <tr>
+          <th class="head">my table</th>
+      </tr> --> 
+      <table>
+          <caption>my table</caption>
+          <tr class="rowone">
+            <th>#</th> <th>First Name</th> <th>Last Name</th> <th>Email</th>
+          </tr>
+          <tr class="row">
+            <th>1</th> <td>AAA</td> <td>aa</td> <td>aaa@AA</td>
+          </tr>
+          <tr class="row">
+            <th>2</th> <td>BB</td> <td>bbb</td> <td>BBB@bbbb</td>
+          </tr>
+      </table>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>利用dt表格实现某种布局</title>
+    <style type="text/css">
+       dl{
+        /*text-align: center;*/
+        
+
+       }
+       dl dt{
+        /*text-align: center;*/
+       }
+       dl dd{
+        /*text-align: right;*/
+        margin: 5px 0;
+        
+       }
+       dd a{
+        text-decoration: none;
+        color: #bbb;
+       }
+       dd a:hover{
+        color:#ff4a00;
+       }
+       .content{
+        float: left;
+        width: 15%;
+        /*height: 200px;*/
+        /*text-align: left;*/
+        /*background: yellow;*/
+        border-right: 1px solid #ddd;
+        margin-left: 30px;
+
+       }
+       .content:last-child{
+        border-right: none;
+       }
+       .content:first-child{
+        margin-left: 0;
+       }
+       .parent{
+        /*background: #8600FF;*/
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        padding: 50px 0;
+
+
+       }
+       .clearfloat:after{
+        content: '';
+        display: block;
+        clear: both;
+       }
+
+
+       /* 第六题 */
+       form{
+        border: 1px solid #e3e3e3;
+        width: 25%;
+        /*height: 200px;*/
+        text-align: center;
+        padding: 20px;
+       }
+       .sixcontent{
+        margin-top: 20px;
+       }
+       .sixcontent label{
+        margin-right: 10px;
+       }
+       .sixcontent input{
+        width: 150px;
+        padding: 10px 5px;
+
+        border-radius: 5px;
+        border: 1px solid #ddd;
+
+        outline: 0;
+       }
+       .sixcontent button{
+       /* background-color: green;*/        
+       background-color: rgb(20, 89, 153);
+       border: 1px solid rgb(32, 125, 189);
+       color: white;
+
+       border-radius: 8px;
+
+       width: 222px;
+       margin: 20px 0;
+       padding: 10px 0;
+
+       outline: 0;
+       }
+
+       /* 第七题 */
+       nav{
+        background: #ddd;
+        padding: 0 20px;
+       }
+
+       .nav-logo{
+        float: left;
+        width: 60px;
+        height: 60px;
+       }
+       .nav-logo a img{
+        margin-top: 25px;
+        width: 100%;
+        height: 100%;
+       }
+
+       .nav-links{
+        float: right;
+        margin: 0;
+       }
+       ul,li,ol{
+        list-style: none;
+       }
+       .nav-links li{
+        float: left;
+       }
+       .nav-links li a{
+        display: block;
+        line-height: 110px;
+        text-decoration: none;
+        color: #6d6d6d;
+        padding: 0 20px;
+       }
+       .nav-links li:hover{
+        background-color: #4484F8;a
+       }
+       .nav-links li:hover a{
+        color: #fff;
+       }
+
+
+       /* 第八题 */
+       .eightcontent{
+        background-image: url(../images/bg-top.jpg);
+        width: auto;
+        height: 350px;
+        background-size: cover;
+
+        text-align: center;
+        padding-top: 150px;
+       }
+
+       .eightcontent h1{
+        color: white;
+        font-size: 50px;
+       }
+       .eightcontent a{
+        color: white;
+        font-size: 20px;
+        text-decoration: none;
+        border: 1px solid white;
+        border-radius: 5px;
+
+        padding: 10px;
+        margin-top: 30px;
+        display: inline-block;
+       }
+       .eightcontent a:hover {
+        border-color: #4484F8;
+       }
+
+
+    </style>
+</head>
+<body>
+      <div class="parent clearfloat">
+        <div class="content">
+          <dl>
+            <dt>帮助中心</dt>
+            <dd><a href="javascript:">购物指南</a></dd>
+            <dd><a href="javascript:">支付方式</a></dd>
+            <dd><a href="javascript:">配送方式</a></dd>
+          </dl>
+        </div>
+        <div class="content">
+          <dl>
+            <dt>关于我们</dt>
+            <dd><a href="javascript:">了解我们</a></dd>
+            <dd><a href="javascript:">加入我们</a></dd>
+            <dd><a href="javascript:">联系我们</a></dd>
+          </dl>
+        </div>
+        <div class="content">
+          <dl>
+            <dt>服务支持</dt>
+            <dd><a href="javascript:">售后服务</a></dd>
+            <dd><a href="javascript:">自助服务</a></dd>
+            <dd><a href="javascript:">相关下载</a></dd>
+          </dl>
+        </div>
+        <div class="content">
+          <dl>
+            <dt>关注我们</dt>
+            <dd><a href="javascript:">新浪微博</a></dd>
+            <dd><a href="javascript:">官方微信</a></dd>
+            <dd><a href="javascript:">官方论坛</a></dd>
+          </dl>
+        </div>
+      </div>
+
+      <h1>第六题部分</h1>
+      <div class="sixparent">
+        <form>
+          <div class="sixcontent">
+            <label>邮&emsp;箱</label>
+            <input type="text" name="email" placeholder="邮箱" />
+          </div>
+          <div class="sixcontent">
+            <label>密&emsp;码</label>
+            <input type="password" name="password" placeholder="密码" />
+          </div>
+          <div class="sixcontent">
+            <button type="submit">登&emsp;陆</button>
+          </div>
+        </form>
+      </div>
+      
+      <div>
+        <ul >
+            <li><a href="javascript:;">Home</a></li>
+            <li><a href="javascript:;">Image</a></li>
+            <li><a href="javascript:;">Map</a></li>
+            <li><a href="javascript:;">Gmail</a></li>
+        </ul>
+      </div>
+
+      <h1>第七题部分</h1>
+      <div class="sevencontent">
+        <nav class="clearfloat">
+          <div class="nav-logo">
+            <a href="javascript:;"><img src="../images/3.jpeg"></a>
+          </div>
+          <ul class="nav-links">
+            <li><a href="javascript:;">Home</a></li> 
+            <li><a href="javascript:;">Image</a></li>
+            <li><a href="javascript:;">Map</a></li>
+            <li><a href="javascript:;">Gmail</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <h1>第八题部分</h1>
+      <div class="eightcontent">
+        <h1>Lorem ipsum dolor sit amet</h1>
+        <a href="javascript:;">Start for free</a>
+      </div>
+
+
+
+          <!-- <caption>my table</caption> -->
+          <!-- <tr class="rowone">
+            <th>帮助中心</th> <th>关于我们</th> <th>服务支持</th> <th>关注我们</th>
+          </tr>
+          <tr class="row">
+            <td>购物指南</td> <td>了解我们</td> <td>售后服务</td> <td>新浪微博</td>
+          </tr>
+          <tr class="row">
+            <td>支付方式</td> <td>加入我们</td> <td>自助服务</td> <td>官方微信</td>
+          </tr>
+          <tr class="rowlast">
+            <td>配送方式</td> <td>联系我们</td> <td>相关下载</td> <td>官方论坛</td>
+          </tr>
+      </table> -->
+</body>
+</html>
