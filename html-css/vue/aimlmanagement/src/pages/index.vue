@@ -224,14 +224,15 @@
         console.log(res);
         this.treeData = new Array();
         this.treeData[0] = {};
+        this.treeData[0].children = new Array();
         var resData = res[0];
         this.treeData[0].label = resData.label;
         if(resData.children.length > 0){
           for(var i=0;i<resData.children.length;i++){
-            this.treeData[0].children = {};
+            this.treeData[0].children[i] = {};
             alert(this.treeData[0].children);
             alert(resData.children)
-            this.treeForEach(this.treeData[0].children, resData.children);
+            this.treeForEach(this.treeData[0].children[i], resData.children[i]);
           }
         }
         console.log(this.treeData);
@@ -317,6 +318,7 @@
       treeForEach(treeChild, resChild){
         alert(treeChild);
         alert(resChild);
+        alert(resChild.label)
         treeChild.label = resChild.label;
         if(!(resChild.children === undefined) && resChild.children.length > 0){
           for(var i=0;i<resChild.children.length;i++){
