@@ -38,10 +38,11 @@
           <div class="entrance-inner">
             <h5 class="entrance-title title">入口问题（标准问题）</h5>
             <div class="entrance-list">
-              <el-radio-group v-model="checkedEntrance" @change="show_result = true">
-                <el-radio v-for="item in entrance_list" :label="item" :key="item.title">{{item}}</el-radio>
-              </el-radio-group>
-
+              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange"></el-checkbox>
+              <el-checkbox-group v-model="checkedEntrances" @change="handleCheckedEntranceChange">
+                <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
+                {{item}}</el-checkbox>
+              </el-checkbox-group>
             </div>
             <el-pagination
               small
@@ -180,6 +181,9 @@
           '我现在要离，我的房子归谁',
           '我现在要离婚，我的子归谁',
         ],
+        checkAll: false,
+        checkedEntrances: '',
+        isIndeterminate: true,
         checkedEntrance: '',
         out_list: [ // 出口问题
           {title: '我现在要离婚，我的'},
@@ -217,6 +221,16 @@
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
+      },
+      handleCheckAllChange(val) { // 全选按钮点击
+        this.checkedEntrances = val ? entrance_list : [];
+        alert(val);
+        this.isIndeterminate = false;
+      },
+      handleCheckedEntranceChange(value) { //多选按钮点击
+        let checkedCount = value.length;
+        this.checkAll = checkedCount === this.entrance_list.length;
+        this.isIndeterminate = checkedCount > 0 && checkedCount < this.entrance_list.length;
       },
       handleSizeChange(val) { // 切换每页条数的回调函数
         console.log(`每页 ${val} 条`);
@@ -299,6 +313,12 @@
   .contract .el-menu-item.is-active {
     background-color: #f2f2f2 !important;
   }
+  .el-input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 90%;
+    text-align: left;
+  }
   .el-tree {
     background-color: rgb(21,28,46);
     color: rgb(115,122,143);
@@ -330,12 +350,12 @@
   .el-tag {
     width: 60px;
   }
-  .el-radio {
+  .el-checkbox {
     width: 100%;
     line-height: 45px;
     border-bottom: 1px solid #c1c1c1;
   }
-  .el-radio+.el-radio{
+  .el-checkbox+.el-checkbox{
     margin-left: 0;
   }
   .out {
