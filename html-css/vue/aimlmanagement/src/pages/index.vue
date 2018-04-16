@@ -222,14 +222,19 @@
         var res = JSON.parse(resstr);
         console.log(this.treeData);
         console.log(res);
-        this.treeData = [];
+        this.treeData = new Array();
+        this.treeData[0] = {};
         var resData = res[0];
-        this.treeData.label = resData.label;
+        this.treeData[0].label = resData.label;
         if(resData.children.length > 0){
           for(var i=0;i<resData.children.length;i++){
-            this.treeForEach(this.treeData.children, resData.children);
+            this.treeData[0].children = {};
+            alert(this.treeData[0].children);
+            alert(resData.children)
+            this.treeForEach(this.treeData[0].children, resData.children);
           }
         }
+        console.log(this.treeData);
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
@@ -310,10 +315,13 @@
       },
       //循环树
       treeForEach(treeChild, resChild){
+        alert(treeChild);
+        alert(resChild);
         treeChild.label = resChild.label;
-        if(resChild.children.length > 0){
+        if(!(resChild.children === undefined) && resChild.children.length > 0){
           for(var i=0;i<resChild.children.length;i++){
-            treeForEach(treeChild.children[0], resChild.children[0]);
+            treeChild.children = {};
+            this.treeForEach(treeChild.children, resChild.children[0]);
           }
         }
       }
