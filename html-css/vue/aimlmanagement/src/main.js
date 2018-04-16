@@ -4,6 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
+import axios from 'axios'
+
 import 'element-ui/lib/theme-chalk/index.css'
 
 // 在 main.js 中添加了这两行代码之后，就能直接在组件的 methods 中使用 $http命令
