@@ -227,7 +227,7 @@
         this.treeData.label = resData.label;
         if(resData.children.length > 0){
           for(var i=0;i<resData.children.length;i++){
-            treeForEach(this.treeData.children, resData.children);
+            this.treeForEach(this.treeData.children, resData.children);
           }
         }
       },
