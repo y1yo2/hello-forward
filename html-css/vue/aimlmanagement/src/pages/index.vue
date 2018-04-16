@@ -218,19 +218,39 @@
       },
       handleNodeClick (data) { // 切换树节点
         console.log(data.label);
+        var resstr='[{"catalog_id":"00000000-0000-0000-0000-000000000000","children":[{"catalog_id":"992944CC-9C3D-480F-89E5-5307544DE549","children":[],"label":"脚本"}],"label":"全部"}]';
+        var res = JSON.parse(resstr);
+        console.log(this.treeData);
+        console.log(res);
+        this.treeData = [];
+        var resData = res[0];
+        this.treeData.label = resData.label;
+        if(resData.children.length > 0){
+          for(var i=0;i<resData.children.length;i++){
+            treeForEach(this.treeData.children, resData.children);
+          }
+        }
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
       },
       handleCheckAllChange(val) { // 全选按钮点击
-        this.checkedEntrances = val ? entrance_list : [];
-        alert(val);
+        console.log(val);
+        this.checkedEntrances = val ? this.entrance_list : [];
         this.isIndeterminate = false;
+        //弹框
+        this.show_result = val;
       },
       handleCheckedEntranceChange(value) { //多选按钮点击
+        console.log(value);
         let checkedCount = value.length;
         this.checkAll = checkedCount === this.entrance_list.length;
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.entrance_list.length;
+        //弹框
+        this.show_result = value.length > 0;
+        if(this.show_result){
+          this.checkedEntrance = value[0];
+        }
       },
       handleSizeChange(val) { // 切换每页条数的回调函数
         console.log(`每页 ${val} 条`);
@@ -271,6 +291,31 @@
       changeTags (id) { // 切换渠道tag 的回调函数
         this.channel_tag  = id
         console.log(this.channel_tag)
+      },
+      initData () {
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/showQaTreeByQepoIdAsync?repoId=E27C5220-CA6E-4EB8-8937-4F9CA6C228C3',
+          baseURL: process.env.BASE_URL, 
+          // data: qs.stringify({ // 如果需要传参数的话
+          //   order_no: this.order_no
+          // }),
+        }).then ((res) => { // ajax的回调函数
+          // 在这里进行赋值操作渲染页面
+          console.log(res);
+          if(res.length > 0){
+            treeData[0] = res[0];
+          }
+        })
+      },
+      //循环树
+      treeForEach(treeChild, resChild){
+        treeChild.label = resChild.label;
+        if(resChild.children.length > 0){
+          for(var i=0;i<resChild.children.length;i++){
+            treeForEach(treeChild.children[0], resChild.children[0]);
+          }
+        }
       }
     },
     watch: {
@@ -279,7 +324,8 @@
       }
     },
     mounted () {
-      this.renderData()
+      this.renderData();
+      //this.initData();
     }
   }
 </script>
