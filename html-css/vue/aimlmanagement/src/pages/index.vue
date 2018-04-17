@@ -394,7 +394,7 @@
         this.$http({
           method: 'get',
           url: '/aimlManage/showQaTreeByQepoIdAsync?repoId=E27C5220-CA6E-4EB8-8937-4F9CA6C228C3',
-          baseURL: process.env.BASE_URL, 
+          baseURL: process.env.BASE_URL,
           // data: qs.stringify({ // 如果需要传参数的话
           //   order_no: this.order_no
           // }),
@@ -438,7 +438,7 @@
         this.$http({
           method: 'get',
           url: '/aimlManage/showQaRepositoryListByUser?qaType=5',
-          baseURL: process.env.BASE_URL, 
+          baseURL: process.env.BASE_URL,
           // data: qs.stringify({ // 如果需要传参数的话
           //   order_no: this.order_no
           // }),
@@ -460,21 +460,22 @@
       var res = JSON.parse(resstr);
       this.getTreeDataFromRes(res);
       this.httpGetRepositoryOptions();
+      console.log('yes')
     }
   }
 </script>
 
 <style>
-  .clearfix:after {  
+  .clearfix:after {
      content: '';
      display: block;
-     clear: both;      
+     clear: both;
   }
   .el-container {
     position: relative;
   }
   .el-icon-plus {
-    
+
   }
   .scene-manage {
     background-color: rgb(21,28,46);
