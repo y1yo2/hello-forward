@@ -1,7 +1,10 @@
 <template>
   <el-container>
-    <el-aside width="200px" class="scene-manage">
-      <h5 class="scene-title title">场景管理</h5>
+    <el-aside width="200px" class="scene-manage clearfix">
+      <div class="scene-title title clearfix">
+         <div class="scene-title-span"><h5>场景管理</h5></div>
+         <i class="scene-title-icon el-icon-plus"></i>
+      </div>
       <el-input v-model="filterText" placeholder="输入关键字进行过滤"></el-input>
       <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"
                default-expand-all :filter-node-method="filterNode" ref="tree2"
@@ -10,7 +13,10 @@
     <el-aside width="250px">
       <el-row class="tac">
         <el-col :span="24">
-          <h5 class="contract-title title">场景管理</h5>
+        <div class="contract-title title clearfix">
+          <div class="contract-title-span"><h5>买卖合同</h5></div>
+            <i class="contract-title-icon el-icon-plus"></i>
+          </div>
           <el-menu
             default-active="2"
             class="contract"
@@ -36,9 +42,14 @@
         </el-col>
         <el-col :span="9" class="entrance">
           <div class="entrance-inner">
-            <h5 class="entrance-title title">入口问题（标准问题）</h5>
+            <div class="entrance-title title clearfix">
+              <div class="entrance-title-div"><h5>入口问题（标准问题）</h5></div>
+              <el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>
+            </div>
+            <!-- <h5 class="entrance-title title">入口问题（标准问题）</h5>
+            <el-button type="primary" icon="el-icon-plus">新增</el-button> -->
             <div class="entrance-list">
-              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange"></el-checkbox>
+              <!-- <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange"></el-checkbox> -->
               <el-checkbox-group v-model="checkedEntrances" @change="handleCheckedEntranceChange">
                 <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
                 {{item}}</el-checkbox>
@@ -59,7 +70,10 @@
           </div>
         </el-col>
         <el-col :span="9" class="out">
-          <h5 class="out-title title">出口问题</h5>
+          <div class="out-title title clearfix">
+              <div class="out-title-div"><h5>出口问题</h5></div>
+              <el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>
+          </div>
           <div class="out-list">
             <div class="out-item" v-for="(item, index) in out_list">{{item.title}}</div>
           </div>
@@ -182,7 +196,7 @@
           '我现在要离婚，我的子归谁',
         ],
         checkAll: false,
-        checkedEntrances: '',
+        checkedEntrances: [],
         isIndeterminate: true,
         checkedEntrance: '',
         out_list: [ // 出口问题
@@ -218,24 +232,6 @@
       },
       handleNodeClick (data) { // 切换树节点
         console.log(data.label);
-        var resstr='[{"catalog_id":"00000000-0000-0000-0000-000000000000","children":[{"catalog_id":"992944CC-9C3D-480F-89E5-5307544DE549","children":[],"label":"脚本"}],"label":"全部"}]';
-        var res = JSON.parse(resstr);
-        console.log(this.treeData);
-        console.log(res);
-        this.treeData = new Array();
-        this.treeData[0] = {};
-        this.treeData[0].children = new Array();
-        var resData = res[0];
-        this.treeData[0].label = resData.label;
-        if(resData.children.length > 0){
-          for(var i=0;i<resData.children.length;i++){
-            this.treeData[0].children[i] = {};
-            alert(this.treeData[0].children);
-            alert(resData.children)
-            this.treeForEach(this.treeData[0].children[i], resData.children[i]);
-          }
-        }
-        console.log(this.treeData);
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
@@ -249,13 +245,13 @@
       },
       handleCheckedEntranceChange(value) { //多选按钮点击
         console.log(value);
-        let checkedCount = value.length;
-        this.checkAll = checkedCount === this.entrance_list.length;
-        this.isIndeterminate = checkedCount > 0 && checkedCount < this.entrance_list.length;
+        // let checkedCount = value.length;
+        // this.checkAll = checkedCount === this.entrance_list.length;
+        // this.isIndeterminate = checkedCount > 0 && checkedCount < this.entrance_list.length;
         //弹框
         this.show_result = value.length > 0;
         if(this.show_result){
-          this.checkedEntrance = value[0];
+          this.checkedEntrance = value[value.length-1];
         }
       },
       handleSizeChange(val) { // 切换每页条数的回调函数
@@ -314,11 +310,24 @@
           }
         })
       },
+      getTreeDataFromRes(res){
+        console.log(this.treeData);
+        console.log(res);
+        this.treeData = new Array();
+        this.treeData[0] = {};
+        this.treeData[0].children = new Array();
+        var resData = res[0];
+        this.treeData[0].label = resData.label;
+        if(resData.children.length > 0){
+          for(var i=0;i<resData.children.length;i++){
+            this.treeData[0].children[i] = {} ;
+            this.treeForEach(this.treeData[0].children[i], resData.children[i]);
+          }
+        }
+        console.log(this.treeData);
+      },
       //循环树
       treeForEach(treeChild, resChild){
-        alert(treeChild);
-        alert(resChild);
-        alert(resChild.label)
         treeChild.label = resChild.label;
         if(!(resChild.children === undefined) && resChild.children.length > 0){
           for(var i=0;i<resChild.children.length;i++){
@@ -336,13 +345,24 @@
     mounted () {
       this.renderData();
       //this.initData();
+      var resstr='[{"catalog_id":"00000000-0000-0000-0000-000000000000","children":[{"catalog_id":"992944CC-9C3D-480F-89E5-5307544DE549","children":[],"label":"脚本"}],"label":"全部"}]';
+      var res = JSON.parse(resstr);
+      this.getTreeDataFromRes(res)
     }
   }
 </script>
 
 <style>
+  .clearfix:after {  
+     content: '';
+     display: block;
+     clear: both;      
+  }
   .el-container {
     position: relative;
+  }
+  .el-icon-plus {
+    
   }
   .scene-manage {
     background-color: rgb(21,28,46);
@@ -358,6 +378,15 @@
   .scene-title {
     border-bottom: 1px solid #fff;
     color: #fff;
+    display: line;
+  }
+  .scene-title-span, .contract-title-span {
+    float: left;
+  }
+  .scene-title-icon {
+    color: #ddd;
+    float: right;
+    margin-top: 14px;
   }
   .contract-title, .tags-title, .entrance-title, .out-title {
     border-bottom: 1px solid #b7b7b7;
@@ -366,8 +395,28 @@
   .contract {
     text-align: left;
   }
+  .contract-title-icon {
+    color: #666;
+    float: right;
+    margin-top: 14px;
+  }
   .contract .el-menu-item.is-active {
     background-color: #f2f2f2 !important;
+  }
+  .entrance-title-div {
+    float: left;
+  }
+  .out-title-div {
+    float: left;
+  }
+  .el-button-plus {
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-right: 0px;
+    height: 30px;
+    padding-top: 0px;
+    padding-bottom: 0px;
   }
   .el-input {
     margin-top: 10px;
