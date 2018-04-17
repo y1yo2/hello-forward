@@ -1,14 +1,38 @@
 <template>
   <el-container>
-    <el-aside width="200px" class="scene-manage clearfix">
+    <el-aside width="300px" class="scene-manage clearfix">
       <div class="scene-title title clearfix">
          <div class="scene-title-span"><h5>场景管理</h5></div>
          <i class="scene-title-icon el-icon-plus"></i>
       </div>
-      <el-input v-model="filterText" placeholder="输入关键字进行过滤"></el-input>
+      <el-select v-model="repositoryValue" placeholder="请选择知识库">
+        <el-option
+          v-for="item in repositoryOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+          size="mini">
+        </el-option>
+      </el-select>
+      <el-input v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
       <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"
                default-expand-all :filter-node-method="filterNode" ref="tree2"
+               size="mini"
       ></el-tree>
+      <el-tree
+      :data="treeData"
+      node-key="id"
+      default-expand-all
+      :expand-on-click-node="false"
+      :render-content="renderContent"
+      size="mini">
+      </el-tree>
+      <el-tree
+      :props="props1"
+      :load="loadNode1"
+      lazy
+      >
+      </el-tree>
     </el-aside>
     <el-aside width="250px">
       <el-row class="tac">
@@ -144,6 +168,23 @@
     name: "index",
     data () {
       return {
+         repositoryOptions: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        repositoryValue: '',
       filterText: '',
         treeData: [{
           label: '一级 1',
@@ -180,6 +221,11 @@
             }]
           }]
         }],
+        props1: {
+          label: 'name',
+          children: 'children',
+          isLeaf: 'leaf'
+        },
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -232,6 +278,56 @@
       },
       handleNodeClick (data) { // 切换树节点
         console.log(data.label);
+      },
+      renderContent(h, { node, data, store }) { //增加树按钮
+        return (
+          <span class="custom-tree-node">
+            <span>{node.label}</span>
+            <span>
+              <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
+              <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
+              <i class="el-icon-plus" size="mini" on-click={ () => this.append(data) }></i>
+              <i class="el-icon-edit-outline" size="mini"></i>
+              <i class="el-icon-delete" size="mini" on-click={ () => this.remove(data) }></i>
+            </span>
+          </span>);
+      },
+      append(data) {  //增加树按钮函数
+        const newChild = { id: "123", label: 'testtest', children: [] };
+        if (!data.children) {
+          this.$set(data, 'children', []);
+        }
+        data.children.push(newChild);
+      },
+      remove(node, data) { //删除树按钮函数
+        const parent = node.parent;
+        const children = parent.data.children || parent.data;
+        const index = children.findIndex(d => d.id === data.id);
+        children.splice(index, 1);
+      },
+      rename(node, data) { //重命名树按钮函数
+        const parent = node.parent;
+        const children = parent.data.children || parent.data;
+        const index = children.findIndex(d => d.id === data.id);
+        children.splice(index, 1);
+      },
+      loadNode1(node, resolve) { //懒加载
+        console.log(node);
+        if (node.level === 0) {
+          return resolve([{ name: 'region' }]);
+        }
+        if (node.level > 1) return resolve([]);
+
+        setTimeout(() => {
+          const data = [{
+            name: 'leaf',
+            leaf: true
+          }, {
+            name: 'zone'
+          }];
+
+          resolve(data);
+        }, 500);
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
@@ -318,6 +414,7 @@
         this.treeData[0].children = new Array();
         var resData = res[0];
         this.treeData[0].label = resData.label;
+        this.treeData[0].id = resData.catalog_id;
         if(resData.children.length > 0){
           for(var i=0;i<resData.children.length;i++){
             this.treeData[0].children[i] = {} ;
@@ -329,13 +426,27 @@
       //循环树
       treeForEach(treeChild, resChild){
         treeChild.label = resChild.label;
+        treeChild.id = resChild.catalog_id;
         if(!(resChild.children === undefined) && resChild.children.length > 0){
           for(var i=0;i<resChild.children.length;i++){
             treeChild.children = {};
             this.treeForEach(treeChild.children, resChild.children[0]);
           }
         }
-      }
+      },
+      httpGetRepositoryOptions(){
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/showQaRepositoryListByUser?qaType=5',
+          baseURL: process.env.BASE_URL, 
+          // data: qs.stringify({ // 如果需要传参数的话
+          //   order_no: this.order_no
+          // }),
+        }).then ((res) => { // ajax的回调函数
+          // 在这里进行赋值操作渲染页面
+          console.log(res);
+        })
+      },
     },
     watch: {
       filterText(val) {
@@ -347,7 +458,8 @@
       //this.initData();
       var resstr='[{"catalog_id":"00000000-0000-0000-0000-000000000000","children":[{"catalog_id":"992944CC-9C3D-480F-89E5-5307544DE549","children":[],"label":"脚本"}],"label":"全部"}]';
       var res = JSON.parse(resstr);
-      this.getTreeDataFromRes(res)
+      this.getTreeDataFromRes(res);
+      this.httpGetRepositoryOptions();
     }
   }
 </script>
@@ -387,6 +499,11 @@
     color: #ddd;
     float: right;
     margin-top: 14px;
+  }
+  .el-select {
+    margin-top: 10px;
+    margin-left: 15px;
+    width: 100%;
   }
   .contract-title, .tags-title, .entrance-title, .out-title {
     border-bottom: 1px solid #b7b7b7;
