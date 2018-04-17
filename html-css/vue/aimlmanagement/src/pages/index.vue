@@ -1,5 +1,41 @@
 <template>
   <el-container>
+  <el-dialog
+    title="删除确认"
+    :visible.sync="deleteVisible"
+    width="30%"
+    >
+    <!-- :before-close="handleClose" -->
+    <span class="dialog-footer">是否删除该节点</span>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="deleteVisible = false">取 消</el-button>
+      <el-button type="primary" @click="deleteVisible = false">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="新增确认"
+    :visible.sync="createVisible"
+    width="30%"
+    >
+    <!-- :before-close="handleClose" -->
+    <span class="dialog-footer">是否新增该节点</span>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="createVisible = false">取 消</el-button>
+      <el-button type="primary" @click="createVisible = false">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="重命名确认"
+    :visible.sync="renameVisible"
+    width="30%"
+    >
+    <!-- :before-close="handleClose" -->
+    <span class="dialog-footer">是否重命名该节点</span>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="renameVisible = false">取 消</el-button>
+      <el-button type="primary" @click="renameVisible = false">确 定</el-button>
+    </span>
+  </el-dialog>
     <el-aside width="300px" class="scene-manage clearfix">
       <div class="scene-title title clearfix">
          <div class="scene-title-span"><h5>场景管理</h5></div>
@@ -168,7 +204,10 @@
     name: "index",
     data () {
       return {
-         repositoryOptions: [{
+        deleteVisible: false,
+        createVisible: false,
+        renameVisible: false,
+        repositoryOptions: [{
           value: '选项1',
           label: '黄金糕'
         }, {
@@ -288,7 +327,7 @@
               <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
               <i class="el-icon-plus" size="mini" on-click={ () => this.append(data) }></i>
               <i class="el-icon-edit-outline" size="mini"></i>
-              <i class="el-icon-delete" size="mini" on-click={ () => this.remove(data) }></i>
+              <i class="el-icon-delete" size="mini" on-click={ () => this.deleteVisible=true }></i>
             </span>
           </span>);
       },
@@ -438,7 +477,8 @@
         this.$http({
           method: 'get',
           url: '/aimlManage/showQaRepositoryListByUser?qaType=5',
-          baseURL: process.env.BASE_URL,
+          baseURL: '/',
+          dataType: 'jsonp',
           // data: qs.stringify({ // 如果需要传参数的话
           //   order_no: this.order_no
           // }),
@@ -454,7 +494,7 @@
       }
     },
     mounted () {
-      this.renderData();
+      // this.renderData();
       //this.initData();
       var resstr='[{"catalog_id":"00000000-0000-0000-0000-000000000000","children":[{"catalog_id":"992944CC-9C3D-480F-89E5-5307544DE549","children":[],"label":"脚本"}],"label":"全部"}]';
       var res = JSON.parse(resstr);
@@ -473,6 +513,9 @@
   }
   .el-container {
     position: relative;
+  }
+  .el-dialog__header, .el-dialog__body {
+    text-align: left
   }
   .el-icon-plus {
 
