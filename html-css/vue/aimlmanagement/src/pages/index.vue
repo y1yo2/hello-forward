@@ -224,7 +224,8 @@
           label: '北京烤鸭'
         }],
         repositoryValue: '',
-      filterText: '',
+        filterText: '',
+        treeDataAdd: [],
         treeData: [{
           label: '一级 1',
           children: [{
@@ -261,9 +262,9 @@
           }]
         }],
         props1: {
-          label: 'name',
+          label: 'label',
           children: 'children',
-          isLeaf: 'leaf'
+          isLeaf: 'isLeaf'
         },
         defaultProps: {
           children: 'children',
@@ -353,20 +354,26 @@
       loadNode1(node, resolve) { //懒加载
         console.log(node);
         if (node.level === 0) {
-          return resolve([{ name: 'region' }]);
+          
+          return resolve([{label: '全部1',
+            isLeaf: false,
+        }]);
         }
-        if (node.level > 1) return resolve([]);
+        if (node.level >= 1) {
+          this.httpGetTreeDataAdd();
+          return resolve(this.treeDataAdd);
+        } 
+        // setTimeout(() => {
+          // const data = [{
+          //   label: 'leaf',
+          //   isLeaf: true
+          // }, {
+          //   label: 'zone'
+          // }];
 
-        setTimeout(() => {
-          const data = [{
-            name: 'leaf',
-            leaf: true
-          }, {
-            name: 'zone'
-          }];
-
-          resolve(data);
-        }, 500);
+          // resolve(data);
+        //   alert("加载树");
+        // }, 500);
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
@@ -446,8 +453,6 @@
         })
       },
       getTreeDataFromRes(res){
-        console.log(this.treeData);
-        console.log(res);
         this.treeData = new Array();
         this.treeData[0] = {};
         this.treeData[0].children = new Array();
@@ -460,13 +465,32 @@
             this.treeForEach(this.treeData[0].children[i], resData.children[i]);
           }
         }
-        console.log(this.treeData);
+      },
+      getTreeDataAddFromRes(treeDataAdd, res){
+        treeDataAdd = new Array();
+        treeDataAdd[0] = {};
+        treeDataAdd[0].children = new Array();
+        var resData = res[0];
+        treeDataAdd[0].label = resData.label;
+        treeDataAdd[0].id = resData.catalog_id;
+        treeDataAdd[0].isLeaf = true;
+        if(resData.children.length > 0){
+          treeDataAdd[0].isLeaf = false;
+          for(var i=0;i<resData.children.length;i++){
+            treeDataAdd[0].children[i] = {} ;
+            this.treeForEach(treeDataAdd[0].children[i], resData.children[i]);
+          }
+        }
+        console.log(treeDataAdd);
       },
       //循环树
       treeForEach(treeChild, resChild){
+        alert("循环树");
         treeChild.label = resChild.label;
         treeChild.id = resChild.catalog_id;
+        treeChild.isLeaf=true;
         if(!(resChild.children === undefined) && resChild.children.length > 0){
+          treeChild.isLeaf=false;
           for(var i=0;i<resChild.children.length;i++){
             treeChild.children = {};
             this.treeForEach(treeChild.children, resChild.children[0]);
@@ -479,12 +503,36 @@
           url: '/aimlManage/showQaRepositoryListByUser?qaType=5',
           baseURL: '/',
           dataType: 'jsonp',
-          // data: qs.stringify({ // 如果需要传参数的话
-          //   order_no: this.order_no
-          // }),
-        }).then ((res) => { // ajax的回调函数
-          // 在这里进行赋值操作渲染页面
-          console.log(res);
+        }).then ((res) => {
+          console.log(res.data);
+          var data = res.data;
+          this.repositoryOptions = new Array();
+          if(data.length > 0){
+            for(var i=0;i<data.length;i++){
+              this.repositoryOptions[i] = {};
+              this.repositoryOptions[i].label = data[i].REPOSITORY_NAME;
+              this.repositoryOptions[i].value = data[i].REPOSITORY_ID;
+            }
+            this.repositoryValue = data[0].REPOSITORY_NAME;
+          }
+        })
+      },
+      httpGetTreeDataAdd(){
+        console.log("this.repositoryValue");
+        console.log(this.repositoryValue);
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/showQaTreeByQepoIdAsync',
+          params: {repoId: encodeURI(this.repositoryValue)},
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          console.log("res.data" + res.data);
+          console.log(res.data);
+          var data = res.data;
+          if(data.length > 0){
+            this.getTreeDataAddFromRes(this.treeDataAdd, data);
+          }
         })
       },
     },
@@ -500,7 +548,6 @@
       var res = JSON.parse(resstr);
       this.getTreeDataFromRes(res);
       this.httpGetRepositoryOptions();
-      console.log('yes')
     }
   }
 </script>
