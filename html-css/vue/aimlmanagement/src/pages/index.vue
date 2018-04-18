@@ -9,7 +9,7 @@
     <span class="dialog-footer">是否删除该节点</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="deleteVisible = false">取 消</el-button>
-      <el-button type="primary" @click="deleteVisible = false">确 定</el-button>
+      <el-button type="primary" @click="removeForButton">确 定</el-button>
     </span>
   </el-dialog>
   <el-dialog
@@ -18,22 +18,26 @@
     width="30%"
     >
     <!-- :before-close="handleClose" -->
-    <span class="dialog-footer">是否新增该节点</span>
+    <span class="dialog-footer">是否新增一个节点</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="createVisible = false">取 消</el-button>
-      <el-button type="primary" @click="createVisible = false">确 定</el-button>
+      <el-button type="primary" @click="appendForButton">确 定</el-button>
     </span>
   </el-dialog>
   <el-dialog
-    title="重命名确认"
+    title="是否重命名该节点？"
     :visible.sync="renameVisible"
     width="30%"
     >
-    <!-- :before-close="handleClose" -->
-    <span class="dialog-footer">是否重命名该节点</span>
+    <!-- <span class="dialog-footer">是否重命名该节点</span> -->
+    <el-form :model="renameForm">
+    <el-form-item label="活动名称" :label-width="formLabelWidth">
+      <el-input v-model="renameForm.name" auto-complete="off"></el-input>
+    </el-form-item>
+  </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="renameVisible = false">取 消</el-button>
-      <el-button type="primary" @click="renameVisible = false">确 定</el-button>
+      <el-button type="primary" @click="renameForButton">确 定</el-button>
     </span>
   </el-dialog>
     <el-aside width="300px" class="scene-manage clearfix">
@@ -66,7 +70,6 @@
       <el-tree
       :props="props1"
       :load="loadNode1"
-      :data="treeData"
       :filter-node-method="filterNode" ref="tree2"
       node-key="id"
       :render-content="renderContent"
@@ -243,6 +246,11 @@
         deleteVisible: false,
         createVisible: false,
         renameVisible: false,
+        renameForm: {
+          name: '',
+          id: '',
+        },
+        formLabelWidth: '120px',
         repositoryOptions: [{
           value: '选项1',
           label: '黄金糕'
@@ -252,52 +260,12 @@
         }, {
           value: '选项3',
           label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
         }],
         repositoryValue: '',
         filterText: '',
         treeDataAdd: [],
-        treeData: [],
-        // treeData: [{
-        //   label: '一级 1',
-        //   children: [{
-        //     label: '二级 1-1',
-        //     children: [{
-        //       label: '三级 1-1-1'
-        //     }]
-        //   }]
-        // }, {
-        //   label: '一级 2',
-        //   children: [{
-        //     label: '二级 2-1',
-        //     children: [{
-        //       label: '三级 2-1-1'
-        //     }]
-        //   }, {
-        //     label: '二级 2-2',
-        //     children: [{
-        //       label: '三级 2-2-1'
-        //     }]
-        //   }]
-        // }, {
-        //   label: '一级 3',
-        //   children: [{
-        //     label: '二级 3-1',
-        //     children: [{
-        //       label: '三级 3-1-1'
-        //     }]
-        //   }, {
-        //     label: '二级 3-2',
-        //     children: [{
-        //       label: '三级 3-2-1'
-        //     }]
-        //   }]
-        // }],
+        treeData: {},
+        treeNode: {},
         props1: {
           label: 'label',
           children: 'children',
@@ -346,11 +314,6 @@
     },
     methods: {
       handleRepositoryChange () {
-        alert("change知识库");
-        // this.treeData = [{
-        //   label: test,
-        //   isLeaf:false
-        // }];
         console.log("this.treeData");
         console.log(this.treeData);
         console.log("this.props1");
@@ -371,42 +334,71 @@
           <div class="custom-tree-node">
             <div class="custom-tree-node-label">{node.label}</div>
             <div class="custom-tree-node-button">
-              <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
-              <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
+              
               <i class="el-icon-plus" size="mini" on-click={ () => this.append(data) }></i>
-              <i class="el-icon-edit-outline" size="mini"></i>
-              <i class="el-icon-delete" size="mini" on-click={ () => this.deleteVisible=true }></i>
+              <i class="el-icon-edit-outline" size="mini" on-click={ () => this.rename(node, data) }></i>
+              <i class="el-icon-delete" size="mini" on-click={ () => this.remove(node, data) }></i>
             </div>
           </div>);
       },
       append(data) {  //增加树按钮函数
-        const newChild = { id: "123", label: 'testtest', children: [] };
-        if (!data.children) {
-          this.$set(data, 'children', []);
-        }
-        data.children.push(newChild);
+        console.log("data");
+        console.log(data);
+        this.treeData = data;
+        this.createVisible = true;
       },
+      appendForButton() {
+        this.createVisible = false;
+        this.httpAppendTree();
+      },
+      // remove(node, data) { //删除树按钮函数
+      //   const parent = node.parent;
+      //   const children = parent.data.children || parent.data;
+      //   const index = children.findIndex(d => d.id === data.id);
+      //   children.splice(index, 1);
+      // },
       remove(node, data) { //删除树按钮函数
-        const parent = node.parent;
+        console.log("node");
+        console.log(node);
+        console.log("data");
+        console.log(data);
+        this.deleteVisible=true;
+        this.treeNode = node;
+        this.treeData = data;
+      },
+      removeForButton() { //删除树按钮函数
+        this.deleteVisible=false;
+        const parent = this.treeNode.parent;
         const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
+        const index = children.findIndex(d => d.id === this.treeData.id);
         children.splice(index, 1);
       },
       rename(node, data) { //重命名树按钮函数
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
+        console.log("node");
+        console.log(node);
+        console.log("data");
+        console.log(data);
+        this.renameVisible=true;
+        this.treeNode = node;
+        this.treeData = data;
+        this.renameForm.name = data.label;
+        this.renameForm.id = data.id;
+      },
+      renameForButton() { //重命名树确认按钮函数
+        this.renameVisible=false;
+        this.treeData.label = this.renameForm.name;
+        this.httpRenameTree();
       },
       loadNode1(node, resolve) { //懒加载
         console.log(node);
         if (node.level === 0) {
           return resolve([{label: '全部',
             isLeaf: false,
+            id: '00000000-0000-0000-0000-000000000000',
         }]);
         }
         if (node.level === 1) {
-          this.httpGetFatherTreeDataAdd(resolve);
+          this.httpGetChildTreeDataAdd(node.data.id, resolve);
         }
         if (node.level > 1) {
           this.httpGetChildTreeDataAdd(node.data.id, resolve);
@@ -592,6 +584,63 @@
             this.treeDataAdd = this.getTreeDataAddFromRes(this.treeDataAdd, data);
             resolve(this.treeDataAdd);
           }
+        })
+      },
+      httpRenameTree(){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/renameQaCatalog',
+          params: {
+            repoId: this.repositoryValue,
+            id: this.renameForm.id,
+            name: this.renameForm.name,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("renameResult");
+          console.log(data);
+        })
+      },
+      httpAppendTree(){
+        this.$http({
+          method: 'post',
+          url: '/kbsqa/renameQaCatalog',
+          params: {
+            repoId: this.repositoryValue,
+            pid: this.treeData.id,
+            name: "新增的目录名",
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("appendResult");
+          console.log(data);
+          const newChild = { id: "123", label: '新增的目录名', children: [], isLeaf: true };
+          if (!this.treeData.children) {
+            this.$set(this.treeData, 'children', []);
+          }
+          this.treeData.isLeaf = false;
+          this.treeData.children.push(newChild);
+        })
+      },
+      httpDeleteTree(){
+        this.$http({
+          method: 'post',
+          url: '/kbsqa/renameQaCatalog',
+          params: {
+            repoId: this.repositoryValue,
+            id: this.renameForm.id,
+            name: this.renameForm.name,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("renameResult");
+          console.log(data);
         })
       },
     },
