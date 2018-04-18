@@ -71,7 +71,7 @@
       node-key="id"
       :render-content="renderContent"
       lazy
-      
+
       size="mini">
       </el-tree>
     </el-aside>
@@ -355,7 +355,7 @@
         console.log(this.treeData);
         console.log("this.props1");
         console.log(this.props1);
-        
+
       },
       filterNode(value, data) { // 过滤树节点
         if (!value) return true;
@@ -399,7 +399,7 @@
       loadNode1(node, resolve) { //懒加载
         console.log(node);
         if (node.level === 0) {
-          
+
           return resolve([{label: '全部1',
             isLeaf: false,
         }]);
@@ -414,10 +414,10 @@
         }
         if (node.level === 2) {
           this.httpGetFatherTreeDataAdd(resolve);
-        } 
+        }
         if (node.level > 2) {
           this.httpGetChildTreeDataAdd(node.data.id, resolve);
-        } 
+        }
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
@@ -632,8 +632,8 @@
   .custom-tree-node-label {
     float: left;
   }
-  .custom-tree-node-button {
-    float: right;
+  .scene-manage .custom-tree-node-button  {
+    margin-left: 120px;
   }
   .el-container {
     position: relative;
