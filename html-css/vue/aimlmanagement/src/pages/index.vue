@@ -355,7 +355,9 @@
         console.log(this.treeData);
         console.log("this.props1");
         console.log(this.props1);
-
+        console.log(this.$refs.tree2);
+        this.$refs.tree2.root.childNodes[0].childNodes = new Array();
+        this.$refs.tree2.root.childNodes[0].loaded = false;
       },
       filterNode(value, data) { // 过滤树节点
         if (!value) return true;
@@ -399,23 +401,14 @@
       loadNode1(node, resolve) { //懒加载
         console.log(node);
         if (node.level === 0) {
-
-          return resolve([{label: '全部1',
+          return resolve([{label: '全部',
             isLeaf: false,
         }]);
         }
         if (node.level === 1) {
-          return resolve([
-            {label: '11111',
-            isLeaf: false,},
-            {label: '22222',
-            isLeaf: false,}
-            ]);
-        }
-        if (node.level === 2) {
           this.httpGetFatherTreeDataAdd(resolve);
         }
-        if (node.level > 2) {
+        if (node.level > 1) {
           this.httpGetChildTreeDataAdd(node.data.id, resolve);
         }
       },
