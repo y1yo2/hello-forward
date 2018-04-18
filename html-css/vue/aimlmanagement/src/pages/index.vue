@@ -625,8 +625,8 @@
   .custom-tree-node-label {
     float: left;
   }
-  .scene-manage .custom-tree-node-button  {
-    margin-left: 120px;
+  .custom-tree-node {
+    flex: 1;
   }
   .el-container {
     position: relative;
