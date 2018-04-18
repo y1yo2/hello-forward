@@ -51,23 +51,26 @@
         </el-option>
       </el-select>
       <el-input v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
-      <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"
+      <!-- <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"
                default-expand-all :filter-node-method="filterNode" ref="tree2"
                size="mini"
-      ></el-tree>
-      <el-tree
+      ></el-tree> -->
+      <!-- <el-tree
       :data="treeData"
       node-key="id"
       default-expand-all
       :expand-on-click-node="false"
       :render-content="renderContent"
       size="mini">
-      </el-tree>
+      </el-tree> -->
       <el-tree
       :props="props1"
       :load="loadNode1"
+      :filter-node-method="filterNode" ref="tree2"
+      node-key="id"
+      :render-content="renderContent"
       lazy
-      >
+      size="mini">
       </el-tree>
     </el-aside>
     <el-aside width="250px">
@@ -92,15 +95,7 @@
     </el-aside>
     <el-main>
       <el-row>
-        <el-col :span="6" class="channel" :gutter="20">
-          <h5 class="tags-title title">渠道</h5>
-          <div class="tag-list">
-            <div class="tag-item" v-for="(item,index) in tag_list" @click="changeTags(item.id)">
-              <el-tag type="info">{{item.name}}</el-tag>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="9" class="entrance">
+        <el-col :span="12" class="entrance">
           <div class="entrance-inner">
             <div class="entrance-title title clearfix">
               <div class="entrance-title-div"><h5>入口问题（标准问题）</h5></div>
@@ -129,7 +124,7 @@
             </el-pagination>
           </div>
         </el-col>
-        <el-col :span="9" class="out">
+        <el-col :span="12" class="out">
           <div class="out-title title clearfix">
               <div class="out-title-div"><h5>出口问题</h5></div>
               <el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>
@@ -152,10 +147,49 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="24">
+        <el-col :span="12">
           <div class="script">
             <h5 class="title">脚本</h5>
             <div class="script-inner"></div>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="groove">
+            <h5 class="title">槽点</h5>
+            <div class="groove-inner">
+              <el-row>
+                <el-col :span="12">
+                  <div class="in-groove">
+                    <div class="in-groove-title">入口问题</div>
+                    <div class="in-groove-list">
+                      <el-tag
+                        size="mini"
+                        :key="tag"
+                        v-for="tag in grooveTags"
+                        :disable-transitions="false"
+                        @close="closeGrooveTag(tag)">
+                        {{tag}}
+                      </el-tag>
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :span="12">
+                  <div class="out-groove">
+                    <div class="out-groove-title">入口问题</div>
+                    <div class="out-groove-list">
+                      <el-tag
+                        size="mini"
+                        :key="tag"
+                        v-for="tag in grooveTags"
+                        :disable-transitions="false"
+                        @close="closeGrooveTag(tag)">
+                        {{tag}}
+                      </el-tag>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -321,16 +355,16 @@
       },
       renderContent(h, { node, data, store }) { //增加树按钮
         return (
-          <span class="custom-tree-node">
+          <div class="custom-tree-node">
             <span>{node.label}</span>
-            <span>
+            <div class="custom-tree-node-button">
               <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
               <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
               <i class="el-icon-plus" size="mini" on-click={ () => this.append(data) }></i>
               <i class="el-icon-edit-outline" size="mini"></i>
               <i class="el-icon-delete" size="mini" on-click={ () => this.deleteVisible=true }></i>
-            </span>
-          </span>);
+            </div>
+          </div>);
       },
       append(data) {  //增加树按钮函数
         const newChild = { id: "123", label: 'testtest', children: [] };
@@ -359,8 +393,19 @@
             isLeaf: false,
         }]);
         }
-        if (node.level >= 1) {
+        if (node.level === 1) {
+          return resolve([
+            {label: '11111',
+            isLeaf: false,},
+            {label: '22222',
+            isLeaf: false,}
+            ]);
+        }
+        if (node.level > 1) {
           this.httpGetTreeDataAdd();
+          alert("??????");
+          console.log("this.treeDataAdd");
+          console.log(this.treeDataAdd);
           return resolve(this.treeDataAdd);
         } 
         // setTimeout(() => {
@@ -485,7 +530,6 @@
       },
       //循环树
       treeForEach(treeChild, resChild){
-        alert("循环树");
         treeChild.label = resChild.label;
         treeChild.id = resChild.catalog_id;
         treeChild.isLeaf=true;
@@ -513,7 +557,7 @@
               this.repositoryOptions[i].label = data[i].REPOSITORY_NAME;
               this.repositoryOptions[i].value = data[i].REPOSITORY_ID;
             }
-            this.repositoryValue = data[0].REPOSITORY_NAME;
+            this.repositoryValue = data[0].REPOSITORY_ID;
           }
         })
       },
@@ -523,7 +567,7 @@
         this.$http({
           method: 'get',
           url: '/aimlManage/showQaTreeByQepoIdAsync',
-          params: {repoId: encodeURI(this.repositoryValue)},
+          params: {repoId: this.repositoryValue},
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
@@ -533,6 +577,20 @@
           if(data.length > 0){
             this.getTreeDataAddFromRes(this.treeDataAdd, data);
           }
+        })
+      },
+      httpGetChildTreeDataAdd(parentId){
+        this.$http({
+          method: 'get',
+          url: '192.168.100.211:9080/aimlManage/showQaTreeByQepoIdAsync?repoId=E27C5220-CA6E-4EB8-8937-4F9CA6C228C3&parentId=0',
+          params: {
+            repoId: this.repositoryValue,
+            parentId: parentId,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
         })
       },
     },
@@ -558,6 +616,14 @@
      display: block;
      clear: both;
   }
+  .el-tree-node {
+     content: '';
+     display: block;
+     clear: both;
+  }
+  .custom-tree-node-button {
+    float: right;
+  }
   .el-container {
     position: relative;
   }
@@ -581,7 +647,6 @@
   .scene-title {
     border-bottom: 1px solid #fff;
     color: #fff;
-    display: line;
   }
   .scene-title-span, .contract-title-span {
     float: left;
@@ -594,7 +659,7 @@
   .el-select {
     margin-top: 10px;
     margin-left: 15px;
-    width: 100%;
+    width: calc(100% - 5px);
   }
   .contract-title, .tags-title, .entrance-title, .out-title {
     border-bottom: 1px solid #b7b7b7;
@@ -645,24 +710,6 @@
     color: #333;
     text-align: center;
   }
-  .channel {
-    min-height: 500px;
-    background-color: #fff;
-    border: 1px solid #f2f2f2;
-  }
-  .tag-list {
-    display: flex;
-    justify-content: space-around;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  .tag-item {
-    margin-top: 10px;
-    flex: 1;
-  }
-  .el-tag {
-    width: 60px;
-  }
   .el-checkbox {
     width: 100%;
     line-height: 45px;
@@ -680,14 +727,13 @@
   .entrance-inner {
     position: relative;
     min-height: 460px;
-    margin-left: 20px;
     padding-bottom: 40px;
     background-color: #fff;
     border-right: 1px solid #f2f2f2;
   }
   .entrance-page, .out-page {
     position: absolute;
-    bottom: 10px;
+    bottom: 20px;
   }
   .entrance-list,.out-list, .similar-list {
     text-align: left;
@@ -705,18 +751,47 @@
     margin-top: 10px;
   }
   .el-pagination__sizes{
-    margin-top: -5px;
+    margin-top: -13px;
   }
-  .script {
+  .script, .groove {
     height: 240px;
+    margin-right: 20px;
     margin-top: 20px;
     background-color: #fff;
+    border: 1px solid #ced3d8;
   }
-  .script-inner {
+  .script-inner, .groove-inner {
     height: 180px;
-    background-color: #e9eef3;
+    /*background-color: #e9eef3;*/
     margin: 0 20px 20px 20px;
     border: 1px solid #ced3d8;
+  }
+  .groove {
+    margin-right: 0;
+  }
+  .in-groove, .out-groove {
+    height: 160px;
+    margin: 10px;
+    border: 1px solid #ced3d8;
+  }
+  .out-groove {
+    margin-left: 0;
+  }
+  .in-groove-title, .out-groove-title {
+    height: 30px;
+    border-bottom: 1px solid #ced3d8;
+    line-height: 30px;
+    background: #f2f2f2
+  }
+  .in-groove-list, .out-groove-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .groove .el-tag--mini {
+    margin-left: 10px;
+    font-size: 12px;
+    margin-bottom: 10px;
   }
   .result {
     position: absolute;
@@ -748,18 +823,10 @@
   .similar-title {
     margin-left: 20px;
   }
-  .groove {
+/*  .groove {
     margin-top: 50px;
   }
   .groove-title {
     margin-bottom: 20px;
-  }
-  .el-tag--mini {
-    margin-left: 10px;
-    font-size: 12px;
-    margin-bottom: 10px;
-  }
-  .el-tag--mini .el-icon-close {
-    margin-left: -10px;
-  }
+  }*/
 </style>
