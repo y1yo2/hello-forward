@@ -41,7 +41,7 @@
          <div class="scene-title-span"><h5>场景管理</h5></div>
          <i class="scene-title-icon el-icon-plus"></i>
       </div>
-      <el-select v-model="repositoryValue" placeholder="请选择知识库">
+      <el-select v-model="repositoryValue" placeholder="请选择知识库" @change="handleRepositoryChange">
         <el-option
           v-for="item in repositoryOptions"
           :key="item.value"
@@ -66,10 +66,12 @@
       <el-tree
       :props="props1"
       :load="loadNode1"
+      :data="treeData"
       :filter-node-method="filterNode" ref="tree2"
       node-key="id"
       :render-content="renderContent"
       lazy
+      
       size="mini">
       </el-tree>
     </el-aside>
@@ -260,49 +262,46 @@
         repositoryValue: '',
         filterText: '',
         treeDataAdd: [],
-        treeData: [{
-          label: '一级 1',
-          children: [{
-            label: '二级 1-1',
-            children: [{
-              label: '三级 1-1-1'
-            }]
-          }]
-        }, {
-          label: '一级 2',
-          children: [{
-            label: '二级 2-1',
-            children: [{
-              label: '三级 2-1-1'
-            }]
-          }, {
-            label: '二级 2-2',
-            children: [{
-              label: '三级 2-2-1'
-            }]
-          }]
-        }, {
-          label: '一级 3',
-          children: [{
-            label: '二级 3-1',
-            children: [{
-              label: '三级 3-1-1'
-            }]
-          }, {
-            label: '二级 3-2',
-            children: [{
-              label: '三级 3-2-1'
-            }]
-          }]
-        }],
+        treeData: [],
+        // treeData: [{
+        //   label: '一级 1',
+        //   children: [{
+        //     label: '二级 1-1',
+        //     children: [{
+        //       label: '三级 1-1-1'
+        //     }]
+        //   }]
+        // }, {
+        //   label: '一级 2',
+        //   children: [{
+        //     label: '二级 2-1',
+        //     children: [{
+        //       label: '三级 2-1-1'
+        //     }]
+        //   }, {
+        //     label: '二级 2-2',
+        //     children: [{
+        //       label: '三级 2-2-1'
+        //     }]
+        //   }]
+        // }, {
+        //   label: '一级 3',
+        //   children: [{
+        //     label: '二级 3-1',
+        //     children: [{
+        //       label: '三级 3-1-1'
+        //     }]
+        //   }, {
+        //     label: '二级 3-2',
+        //     children: [{
+        //       label: '三级 3-2-1'
+        //     }]
+        //   }]
+        // }],
         props1: {
           label: 'label',
           children: 'children',
           isLeaf: 'isLeaf'
-        },
-        defaultProps: {
-          children: 'children',
-          label: 'label'
         },
         tag_list: [ // 渠道
           {id: 1, name:'网页'},
@@ -346,6 +345,18 @@
       }
     },
     methods: {
+      handleRepositoryChange () {
+        alert("change知识库");
+        // this.treeData = [{
+        //   label: test,
+        //   isLeaf:false
+        // }];
+        console.log("this.treeData");
+        console.log(this.treeData);
+        console.log("this.props1");
+        console.log(this.props1);
+        
+      },
       filterNode(value, data) { // 过滤树节点
         if (!value) return true;
         return data.label.indexOf(value) !== -1;
@@ -356,7 +367,7 @@
       renderContent(h, { node, data, store }) { //增加树按钮
         return (
           <div class="custom-tree-node">
-            <span>{node.label}</span>
+            <div class="custom-tree-node-label">{node.label}</div>
             <div class="custom-tree-node-button">
               <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
               <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
@@ -401,24 +412,12 @@
             isLeaf: false,}
             ]);
         }
-        if (node.level > 1) {
-          this.httpGetTreeDataAdd();
-          alert("??????");
-          console.log("this.treeDataAdd");
-          console.log(this.treeDataAdd);
-          return resolve(this.treeDataAdd);
+        if (node.level === 2) {
+          this.httpGetFatherTreeDataAdd(resolve);
         } 
-        // setTimeout(() => {
-          // const data = [{
-          //   label: 'leaf',
-          //   isLeaf: true
-          // }, {
-          //   label: 'zone'
-          // }];
-
-          // resolve(data);
-        //   alert("加载树");
-        // }, 500);
+        if (node.level > 2) {
+          this.httpGetChildTreeDataAdd(node.data.id, resolve);
+        } 
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
@@ -497,36 +496,40 @@
           }
         })
       },
-      getTreeDataFromRes(res){
-        this.treeData = new Array();
-        this.treeData[0] = {};
-        this.treeData[0].children = new Array();
-        var resData = res[0];
-        this.treeData[0].label = resData.label;
-        this.treeData[0].id = resData.catalog_id;
-        if(resData.children.length > 0){
-          for(var i=0;i<resData.children.length;i++){
-            this.treeData[0].children[i] = {} ;
-            this.treeForEach(this.treeData[0].children[i], resData.children[i]);
-          }
-        }
-      },
+      // getTreeDataFromRes(res){
+      //   this.treeData = new Array();
+      //   this.treeData[0] = {};
+      //   this.treeData[0].children = new Array();
+      //   var resData = res[0];
+      //   this.treeData[0].label = resData.label;
+      //   this.treeData[0].id = resData.catalog_id;
+      //   if(resData.children.length > 0){
+      //     for(var i=0;i<resData.children.length;i++){
+      //       this.treeData[0].children[i] = {} ;
+      //       this.treeForEach(this.treeData[0].children[i], resData.children[i]);
+      //     }
+      //   }
+      // },
       getTreeDataAddFromRes(treeDataAdd, res){
         treeDataAdd = new Array();
-        treeDataAdd[0] = {};
-        treeDataAdd[0].children = new Array();
-        var resData = res[0];
-        treeDataAdd[0].label = resData.label;
-        treeDataAdd[0].id = resData.catalog_id;
-        treeDataAdd[0].isLeaf = true;
-        if(resData.children.length > 0){
-          treeDataAdd[0].isLeaf = false;
-          for(var i=0;i<resData.children.length;i++){
-            treeDataAdd[0].children[i] = {} ;
-            this.treeForEach(treeDataAdd[0].children[i], resData.children[i]);
+        if (res.length > 0) {
+          for (var i=0;i<res.length;i++) {
+            treeDataAdd[i] = {};
+            treeDataAdd[i].children = new Array();
+            var resData = res[i];
+            treeDataAdd[i].label = resData.label;
+            treeDataAdd[i].id = resData.catalog_id;
+            treeDataAdd[i].isLeaf = true;
+            if(resData.children.length > 0){
+              treeDataAdd[i].isLeaf = false;
+              for(var j=0;j<resData.children.length;j++){
+                treeDataAdd[i].children[j] = {} ;
+                this.treeForEach(treeDataAdd[i].children[j], resData.children[j]);
+              }
+            }
           }
         }
-        console.log(treeDataAdd);
+        return treeDataAdd;
       },
       //循环树
       treeForEach(treeChild, resChild){
@@ -561,9 +564,9 @@
           }
         })
       },
-      httpGetTreeDataAdd(){
-        console.log("this.repositoryValue");
-        console.log(this.repositoryValue);
+      httpGetFatherTreeDataAdd(resolve){
+        // console.log("this.repositoryValue");
+        // console.log(this.repositoryValue);
         this.$http({
           method: 'get',
           url: '/aimlManage/showQaTreeByQepoIdAsync',
@@ -571,18 +574,19 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
-          console.log("res.data" + res.data);
-          console.log(res.data);
+          // console.log("res.data" + res.data);
+          // console.log(res.data);
           var data = res.data;
           if(data.length > 0){
-            this.getTreeDataAddFromRes(this.treeDataAdd, data);
+            this.treeDataAdd = this.getTreeDataAddFromRes(this.treeDataAdd, data);
+            resolve(this.treeDataAdd);
           }
         })
       },
-      httpGetChildTreeDataAdd(parentId){
+      httpGetChildTreeDataAdd(parentId, resolve){
         this.$http({
           method: 'get',
-          url: '192.168.100.211:9080/aimlManage/showQaTreeByQepoIdAsync?repoId=E27C5220-CA6E-4EB8-8937-4F9CA6C228C3&parentId=0',
+          url: '/aimlManage/showQaTreeByQepoIdAsync',
           params: {
             repoId: this.repositoryValue,
             parentId: parentId,
@@ -591,6 +595,10 @@
           dataType: 'jsonp',
         }).then ((res) => {
           var data = res.data;
+          if(data.length > 0){
+            this.treeDataAdd = this.getTreeDataAddFromRes(this.treeDataAdd, data);
+            resolve(this.treeDataAdd);
+          }
         })
       },
     },
@@ -602,9 +610,9 @@
     mounted () {
       // this.renderData();
       //this.initData();
-      var resstr='[{"catalog_id":"00000000-0000-0000-0000-000000000000","children":[{"catalog_id":"992944CC-9C3D-480F-89E5-5307544DE549","children":[],"label":"脚本"}],"label":"全部"}]';
-      var res = JSON.parse(resstr);
-      this.getTreeDataFromRes(res);
+      // var resstr='[{"catalog_id":"00000000-0000-0000-0000-000000000000","children":[{"catalog_id":"992944CC-9C3D-480F-89E5-5307544DE549","children":[],"label":"脚本"}],"label":"全部"}]';
+      // var res = JSON.parse(resstr);
+      // this.getTreeDataFromRes(res);
       this.httpGetRepositoryOptions();
     }
   }
@@ -620,6 +628,9 @@
      content: '';
      display: block;
      clear: both;
+  }
+  .custom-tree-node-label {
+    float: left;
   }
   .custom-tree-node-button {
     float: right;
