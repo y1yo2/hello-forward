@@ -627,6 +627,11 @@
   }
   .custom-tree-node {
     flex: 1;
+    position: relative;
+  }
+  .custom-tree-node-button {
+    position: absolute;
+    right: 20px;
   }
   .el-container {
     position: relative;
