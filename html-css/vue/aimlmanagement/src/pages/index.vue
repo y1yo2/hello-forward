@@ -122,7 +122,7 @@
               :current-page.sync="currentPage2"
               :page-sizes="[10, 20, 30, 40]"
               :page-size="10"
-              layout="sizes, prev, pager, next"
+              layout="prev, pager, next"
               :total="50"
               class="entrance-page"
             >
@@ -144,7 +144,7 @@
             :current-page.sync="currentPage2"
             :page-sizes="[10, 20, 30, 40]"
             :page-size="10"
-            layout="sizes, prev, pager, next"
+            layout="prev, pager, next"
             :total="50"
             class="out-page"
           >
@@ -152,49 +152,51 @@
         </el-col>
       </el-row>
       <el-row>
+        <el-col :span="6">
+          <div class="groove">
+            <h5 class="title">槽点</h5>
+            <div class="in-groove">
+              <div class="in-groove-title">入口问题</div>
+              <div class="in-groove-list">
+                <el-tag
+                  size="mini"
+                  :key="tag"
+                  v-for="tag in grooveTags"
+                  :disable-transitions="false"
+                  @close="closeGrooveTag(tag)">
+                  {{tag}}
+                </el-tag>
+              </div>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="channel">
+            <h5 class="title">渠道</h5>
+            <div class="channel-list">
+              <div class="channel-item">
+                <i class="el-icon-delete"></i>
+                网络
+              </div>
+              <div class="channel-item">
+                <i class="el-icon-delete"></i>
+                网络
+              </div>
+              <div class="channel-item">
+                <i class="el-icon-delete"></i>
+                网络
+              </div>
+              <div class="channel-item">
+                <i class="el-icon-delete"></i>
+                网络
+              </div>
+            </div>
+          </div>
+        </el-col>
         <el-col :span="12">
           <div class="script">
             <h5 class="title">脚本</h5>
             <div class="script-inner"></div>
-          </div>
-        </el-col>
-        <el-col :span="12">
-          <div class="groove">
-            <h5 class="title">槽点</h5>
-            <div class="groove-inner">
-              <el-row>
-                <el-col :span="12">
-                  <div class="in-groove">
-                    <div class="in-groove-title">入口问题</div>
-                    <div class="in-groove-list">
-                      <el-tag
-                        size="mini"
-                        :key="tag"
-                        v-for="tag in grooveTags"
-                        :disable-transitions="false"
-                        @close="closeGrooveTag(tag)">
-                        {{tag}}
-                      </el-tag>
-                    </div>
-                  </div>
-                </el-col>
-                <el-col :span="12">
-                  <div class="out-groove">
-                    <div class="out-groove-title">入口问题</div>
-                    <div class="out-groove-list">
-                      <el-tag
-                        size="mini"
-                        :key="tag"
-                        v-for="tag in grooveTags"
-                        :disable-transitions="false"
-                        @close="closeGrooveTag(tag)">
-                        {{tag}}
-                      </el-tag>
-                    </div>
-                  </div>
-                </el-col>
-              </el-row>
-            </div>
           </div>
         </el-col>
       </el-row>
@@ -334,7 +336,7 @@
           <div class="custom-tree-node">
             <div class="custom-tree-node-label">{node.label}</div>
             <div class="custom-tree-node-button">
-              
+
               <i class="el-icon-plus" size="mini" on-click={ () => this.append(data) }></i>
               <i class="el-icon-edit-outline" size="mini" on-click={ () => this.rename(node, data) }></i>
               <i class="el-icon-delete" size="mini" on-click={ () => this.remove(node, data) }></i>
@@ -604,27 +606,38 @@
         })
       },
       httpAppendTree(){
-        this.$http({
-          method: 'post',
-          url: '/kbsqa/renameQaCatalog',
-          params: {
-            repoId: this.repositoryValue,
-            pid: this.treeData.id,
-            name: "新增的目录名",
-          },
-          baseURL: '/',
-          dataType: 'jsonp',
-        }).then ((res) => {
-          var data = res.data;
-          console.log("appendResult");
-          console.log(data);
-          const newChild = { id: "123", label: '新增的目录名', children: [], isLeaf: true };
-          if (!this.treeData.children) {
-            this.$set(this.treeData, 'children', []);
-          }
-          this.treeData.isLeaf = false;
-          this.treeData.children.push(newChild);
-        })
+        // this.$http({
+        //   // method: 'post',
+        //   // url: '/kbsqa/renameQaCatalog',
+        //   // params: {
+        //   //   repoId: this.repositoryValue,
+        //   //   pid: this.treeData.id,
+        //   //   name: "新增的目录名",
+        //   // },
+        //   // baseURL: '/',
+        //   // dataType: 'jsonp',
+        // }).then ((res) => {
+        //   var data = res.data;
+        //   console.log("appendResult");
+        //   console.log(data);
+        //   const newChild = { id: "123", label: '新增的目录名', children: [], isLeaf: true };
+        //   if (!this.treeData.children) {
+        //     this.$set(this.treeData, 'children', []);
+        //   }
+        //   this.treeData.isLeaf = false;
+        //   this.treeData.children.push(newChild);
+        //   console.log("this.treeData:" + this.treeData);
+        // })
+        // var data = res.data;
+        // console.log("appendResult");
+        // console.log(data);
+        const newChild = { id: "123", label: '新增的目录名', children: [], isLeaf: true };
+        if (!this.treeData.children) {
+          this.$set(this.treeData, 'children', []);
+        }
+        this.treeData.isLeaf = false;
+        this.treeData.children.push(newChild);
+        console.log(this.treeData);
       },
       httpDeleteTree(){
         this.$http({
@@ -811,9 +824,8 @@
   .el-pagination__sizes{
     margin-top: -13px;
   }
-  .script, .groove {
+  .script, .groove, .channel {
     height: 240px;
-    margin-right: 20px;
     margin-top: 20px;
     background-color: #fff;
     border: 1px solid #ced3d8;
@@ -824,12 +836,12 @@
     margin: 0 20px 20px 20px;
     border: 1px solid #ced3d8;
   }
-  .groove {
-    margin-right: 0;
+  .groove, .channel {
+    margin-right: 20px;
   }
   .in-groove, .out-groove {
     height: 160px;
-    margin: 10px;
+    margin: 0 10px 0;
     border: 1px solid #ced3d8;
   }
   .out-groove {
@@ -850,6 +862,13 @@
     margin-left: 10px;
     font-size: 12px;
     margin-bottom: 10px;
+  }
+  .channel-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .channel-item {
+    flex:  0 0 50%;
   }
   .result {
     position: absolute;
