@@ -68,7 +68,7 @@
       <el-row class="tac">
         <el-col :span="24">
         <div class="contract-title title clearfix">
-          <div class="contract-title-span"><h5>买卖合同</h5></div>
+          <div class="contract-title-span"><h5>场景主题</h5></div>
             <i class="contract-title-icon el-icon-plus"></i>
           </div>
           <el-menu
@@ -81,6 +81,23 @@
             <el-menu-item index="1">房屋买卖合同</el-menu-item>
             <el-menu-item index="2">房屋买卖合同</el-menu-item>
           </el-menu>
+          <el-table
+            :data="tableData4"
+            style="width: 100%"
+            max-height="250">
+            <el-table-column
+              fixed
+              prop="date"
+              label="日期"
+              width="100">
+            <!-- <template slot-scope="scope"><el-button@click.native.prevent="deleteRow(scope.$index, tableData4)"
+              type="text"
+              size="small">
+              移除
+              </el-button>
+            </template> -->
+            </el-table-column>
+          </el-table>
         </el-col>
       </el-row>
     </el-aside>
@@ -254,6 +271,12 @@
           children: 'children',
           isLeaf: 'isLeaf'
         },
+        tableData4: [{
+          date: '2016-05-03111111111111111111111111111111111111111111111111111111111111111111111111',
+        }, {
+          date: '2016-05-02',
+        }, ],
+
         tag_list: [ // 渠道
           {id: 1, name:'网页'},
           {id: 2, name:'微信'},
@@ -390,6 +413,9 @@
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
+      },
+      deleteRow(index, rows) {
+        rows.splice(index, 1);
       },
       handleCheckedEntranceChange(value) { //多选按钮点击
         //弹框
@@ -594,16 +620,12 @@
           var data = res.data;
           console.log("appendResult");
           console.log(data);
-          // const newChild = { id: "123", label: '新增的目录', children: [], isLeaf: true };
-          // if (!this.treeData.children) {
-          //   this.$set(this.treeData, 'children', []);
-          // }
           this.treeData.isLeaf = false;
           this.treeNode.isLeafByUser = false;
           this.treeNode.isLeaf = false;
           this.treeNode.loading = false;
           this.treeNode.loaded = false;
-          this.treeNode.expanded = true;
+          this.treeNode.expanded = false;
           // this.treeData.children.push(newChild);
           console.log("this.treeData:" + this.treeData);
           console.log(this.treeData);
