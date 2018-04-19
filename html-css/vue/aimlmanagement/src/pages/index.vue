@@ -67,37 +67,19 @@
     <el-aside width="250px">
       <el-row class="tac">
         <el-col :span="24">
-        <div class="contract-title title clearfix">
-          <div class="contract-title-span"><h5>场景主题</h5></div>
-            <i class="contract-title-icon el-icon-plus"></i>
+        <div class="scene-theme-title title clearfix">
+          <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
+            <i class="scene-theme-title-icon el-icon-plus"></i>
           </div>
-          <el-menu
-            default-active="2"
-            class="contract"
-            @select="changeScene"
-            background-color="#fff"
-            text-color="#333"
-            active-text-color="#333">
-            <el-menu-item index="1">房屋买卖合同</el-menu-item>
-            <el-menu-item index="2">房屋买卖合同</el-menu-item>
-          </el-menu>
-          <el-table
-            :data="tableData4"
-            style="width: 100%"
-            max-height="250">
-            <el-table-column
-              fixed
-              prop="date"
-              label="日期"
-              width="100">
-            <!-- <template slot-scope="scope"><el-button@click.native.prevent="deleteRow(scope.$index, tableData4)"
-              type="text"
-              size="small">
-              移除
-              </el-button>
-            </template> -->
-            </el-table-column>
-          </el-table>
+          <div class="scene-theme-list">
+            <div class="scene-theme-item" v-for="(item, idx) in scene_list" :class="{'active': scene_id == item.id}" @click="changeScene(item.id)">{{item.title}}</div>
+          </div>
+          <el-pagination
+            class="scene-theme-page"
+            small
+            layout="prev, pager, next"
+            :total="50">
+          </el-pagination>
         </el-col>
       </el-row>
     </el-aside>
@@ -260,6 +242,7 @@
           value: '选项2',
           label: '双皮奶'
         }],
+        scene_id: 1,
         repositoryValue: '',
         filterText: '',
         treeDataAdd: [],
@@ -276,12 +259,18 @@
         }, {
           date: '2016-05-02',
         }, ],
-
-        tag_list: [ // 渠道
-          {id: 1, name:'网页'},
-          {id: 2, name:'微信'},
-          {id: 3, name:'公众号'}
-        ],
+        scene_list: [{
+          id: 1,
+          title: '房屋买卖合同'
+        },
+        {
+          id: 2,
+          title: '房屋买卖合同'
+        },
+        {
+          id: 3,
+          title: '房屋买卖合同'
+        }],
         entrance_list: [ // 入口问题
           '我现在婚，我的房子归谁',
           '我在要离，我的房子归谁',
@@ -329,6 +318,18 @@
       },
       handleNodeClick (data) { // 切换树节点
         console.log(data.label);
+        this.scene_list = [{
+          id: 4,
+          title: '切换后的场景1'
+        },
+        {
+          id: 5,
+          title: '切换后的场景2'
+        },
+        {
+          id: 6,
+          title: '切换后的场景3'
+        }]
       },
       renderContent(h, { node, data, store }) { //增加树按钮
         return (
@@ -336,7 +337,7 @@
             <div class="custom-tree-node-label">{node.label}</div>
             <div class="custom-tree-node-button">
               <i class="el-icon-plus" size="mini" on-click={ () => this.append(node, data) }></i>
-              <i class="el-icon-edit-outline" size="mini" v-show="this.showEditButton(node)" on-click={ () => this.rename(node, data) }></i>
+              <i class="el-icon-edit-outline" size="mini" on-click={ () => this.rename(node, data) }></i>
               <i class="el-icon-delete" size="mini" on-click={ () => this.remove(node, data) }></i>
             </div>
           </div>);
@@ -411,8 +412,8 @@
         }
         node.loading=false;
       },
-      changeScene (key, keyPath) { // 切换场景
-        console.log(key, keyPath);
+      changeScene (id) { // 切换场景
+        this.scene_id = id
       },
       deleteRow(index, rows) {
         rows.splice(index, 1);
@@ -709,7 +710,7 @@
     border-bottom: 1px solid #fff;
     color: #fff;
   }
-  .scene-title-span, .contract-title-span {
+  .scene-title-span, .scene-theme-title-span {
     float: left;
   }
   .scene-title-icon {
@@ -722,19 +723,30 @@
     margin-left: 15px;
     width: calc(100% - 5px);
   }
-  .contract-title, .tags-title, .entrance-title, .out-title {
+  .scene-theme-title, .tags-title, .entrance-title, .out-title {
     border-bottom: 1px solid #b7b7b7;
     color: #666;
   }
-  .contract {
-    text-align: left;
+  .tac {
+    height: 100%;
   }
-  .contract-title-icon {
+  .scene-theme {
+    height: 100%;
+  }
+  .scene-theme {
+    text-align: left;
+    position: relative;
+  }
+  .scene-theme-page {
+    position: absolute;
+    bottom: 20px;
+  }
+  .scene-theme-title-icon {
     color: #666;
     float: right;
     margin-top: 14px;
   }
-  .contract .el-menu-item.is-active {
+  .scene-theme .el-menu-item.is-active {
     background-color: #f2f2f2 !important;
   }
   .entrance-title-div {
@@ -770,6 +782,15 @@
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
+  }
+  .scene-theme-item {
+    padding-left: 20px;
+    line-height: 45px;
+    text-align: left;
+    border-bottom: 1px solid #c1c1c1;
+  }
+  .scene-theme-list .active {
+    background: #E9EEF3;
   }
   .el-checkbox {
     width: 100%;
@@ -889,6 +910,9 @@
   }
   .similar-title {
     margin-left: 20px;
+  }
+  .hide {
+    display: none;
   }
 /*  .groove {
     margin-top: 50px;
