@@ -5,7 +5,6 @@
     :visible.sync="deleteVisible"
     width="30%"
     >
-    <!-- :before-close="handleClose" -->
     <span class="dialog-footer">是否删除该节点</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="deleteVisible = false">取 消</el-button>
@@ -17,7 +16,6 @@
     :visible.sync="createVisible"
     width="30%"
     >
-    <!-- :before-close="handleClose" -->
     <span class="dialog-footer">是否新增一个节点</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="createVisible = false">取 消</el-button>
@@ -55,18 +53,6 @@
         </el-option>
       </el-select>
       <el-input v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
-      <!-- <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"
-               default-expand-all :filter-node-method="filterNode" ref="tree2"
-               size="mini"
-      ></el-tree> -->
-      <!-- <el-tree
-      :data="treeData"
-      node-key="id"
-      default-expand-all
-      :expand-on-click-node="false"
-      :render-content="renderContent"
-      size="mini">
-      </el-tree> -->
       <el-tree
       :props="props1"
       :load="loadNode1"
@@ -74,7 +60,6 @@
       node-key="id"
       :render-content="renderContent"
       lazy
-
       size="mini">
       </el-tree>
     </el-aside>
@@ -109,7 +94,6 @@
             <!-- <h5 class="entrance-title title">入口问题（标准问题）</h5>
             <el-button type="primary" icon="el-icon-plus">新增</el-button> -->
             <div class="entrance-list">
-              <!-- <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange"></el-checkbox> -->
               <el-checkbox-group v-model="checkedEntrances" @change="handleCheckedEntranceChange">
                 <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
                 {{item}}</el-checkbox>
@@ -124,8 +108,7 @@
               :page-size="10"
               layout="prev, pager, next"
               :total="50"
-              class="entrance-page"
-            >
+              class="entrance-page">
             </el-pagination>
           </div>
         </el-col>
@@ -146,8 +129,7 @@
             :page-size="10"
             layout="prev, pager, next"
             :total="50"
-            class="out-page"
-          >
+            class="out-page">
           </el-pagination>
         </el-col>
       </el-row>
@@ -259,15 +241,13 @@
         }, {
           value: '选项2',
           label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
         }],
         repositoryValue: '',
         filterText: '',
         treeDataAdd: [],
         treeData: {},
         treeNode: {},
+        treeThis: {},
         props1: {
           label: 'label',
           children: 'children',
@@ -316,11 +296,6 @@
     },
     methods: {
       handleRepositoryChange () {
-        console.log("this.treeData");
-        console.log(this.treeData);
-        console.log("this.props1");
-        console.log(this.props1);
-        console.log(this.$refs.tree2);
         this.$refs.tree2.root.childNodes[0].childNodes = new Array();
         this.$refs.tree2.root.childNodes[0].loaded = false;
       },
@@ -336,17 +311,24 @@
           <div class="custom-tree-node">
             <div class="custom-tree-node-label">{node.label}</div>
             <div class="custom-tree-node-button">
-
-              <i class="el-icon-plus" size="mini" on-click={ () => this.append(data) }></i>
-              <i class="el-icon-edit-outline" size="mini" on-click={ () => this.rename(node, data) }></i>
+              <i class="el-icon-plus" size="mini" on-click={ () => this.append(node, data) }></i>
+              <i class="el-icon-edit-outline" size="mini" v-show="this.showEditButton(node)" on-click={ () => this.rename(node, data) }></i>
               <i class="el-icon-delete" size="mini" on-click={ () => this.remove(node, data) }></i>
             </div>
           </div>);
       },
-      append(data) {  //增加树按钮函数
+      showEditButton(node) {
+        alert("???");
+        return (node.level !== 1);
+      },
+      append(node, data) {  //增加树按钮函数
+        console.log("node");
+        console.log(node);
         console.log("data");
         console.log(data);
         this.treeData = data;
+        this.treeNode = node;
+        this.treeThis = this;
         this.createVisible = true;
       },
       appendForButton() {
@@ -369,11 +351,8 @@
         this.treeData = data;
       },
       removeForButton() { //删除树按钮函数
+        this.httpDeleteTree();
         this.deleteVisible=false;
-        const parent = this.treeNode.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === this.treeData.id);
-        children.splice(index, 1);
       },
       rename(node, data) { //重命名树按钮函数
         console.log("node");
@@ -409,18 +388,7 @@
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
       },
-      handleCheckAllChange(val) { // 全选按钮点击
-        console.log(val);
-        this.checkedEntrances = val ? this.entrance_list : [];
-        this.isIndeterminate = false;
-        //弹框
-        this.show_result = val;
-      },
       handleCheckedEntranceChange(value) { //多选按钮点击
-        console.log(value);
-        // let checkedCount = value.length;
-        // this.checkAll = checkedCount === this.entrance_list.length;
-        // this.isIndeterminate = checkedCount > 0 && checkedCount < this.entrance_list.length;
         //弹框
         this.show_result = value.length > 0;
         if(this.show_result){
@@ -606,54 +574,50 @@
         })
       },
       httpAppendTree(){
-        // this.$http({
-        //   // method: 'post',
-        //   // url: '/kbsqa/renameQaCatalog',
-        //   // params: {
-        //   //   repoId: this.repositoryValue,
-        //   //   pid: this.treeData.id,
-        //   //   name: "新增的目录名",
-        //   // },
-        //   // baseURL: '/',
-        //   // dataType: 'jsonp',
-        // }).then ((res) => {
-        //   var data = res.data;
-        //   console.log("appendResult");
-        //   console.log(data);
-        //   const newChild = { id: "123", label: '新增的目录名', children: [], isLeaf: true };
-        //   if (!this.treeData.children) {
-        //     this.$set(this.treeData, 'children', []);
-        //   }
-        //   this.treeData.isLeaf = false;
-        //   this.treeData.children.push(newChild);
-        //   console.log("this.treeData:" + this.treeData);
-        // })
-        // var data = res.data;
-        // console.log("appendResult");
-        // console.log(data);
-        const newChild = { id: "123", label: '新增的目录名', children: [], isLeaf: true };
-        if (!this.treeData.children) {
-          this.$set(this.treeData, 'children', []);
-        }
-        this.treeData.isLeaf = false;
-        this.treeData.children.push(newChild);
-        console.log(this.treeData);
-      },
-      httpDeleteTree(){
         this.$http({
           method: 'post',
-          url: '/kbsqa/renameQaCatalog',
+          url: '/kbsqa/createQaCatalog',
           params: {
             repoId: this.repositoryValue,
-            id: this.renameForm.id,
-            name: this.renameForm.name,
+            pid: this.treeData.id,
+            name: "新增的目录名",
           },
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
           var data = res.data;
-          console.log("renameResult");
+          console.log("appendResult");
           console.log(data);
+          const newChild = { id: "123", label: '新增的目录名', children: [], isLeaf: true };
+          if (!this.treeData.children) {
+            this.$set(this.treeData, 'children', []);
+          }
+          this.treeData.isLeaf = false;
+          this.treeNode.loading = false;
+          this.treeNode.expanded = true;
+          this.treeData.children.push(newChild);
+          console.log("this.treeData:" + this.treeData);
+          console.log(this.treeData);
+        })
+      },
+      httpDeleteTree(){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/deleteAImlTopicByCatalogId',
+          params: {
+            repositoryId: this.repositoryValue,
+            catalogId: this.treeData.id,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("deleteResult");
+          console.log(data);
+          const parent = this.treeNode.parent;
+          const children = parent.data.children || parent.data;
+          const index = children.findIndex(d => d.id === this.treeData.id);
+          children.splice(index, 1);
         })
       },
     },
@@ -663,11 +627,6 @@
       }
     },
     mounted () {
-      // this.renderData();
-      //this.initData();
-      // var resstr='[{"catalog_id":"00000000-0000-0000-0000-000000000000","children":[{"catalog_id":"992944CC-9C3D-480F-89E5-5307544DE549","children":[],"label":"脚本"}],"label":"全部"}]';
-      // var res = JSON.parse(resstr);
-      // this.getTreeDataFromRes(res);
       this.httpGetRepositoryOptions();
     }
   }
