@@ -38,6 +38,20 @@
       <el-button type="primary" @click="renameForButton">确 定</el-button>
     </span>
   </el-dialog>
+  <el-dialog
+    title="是否在当前目录下创建一个主题？"
+    :visible.sync="createSceneVisible"
+    width="30%">
+    <el-form :model="renameForm">
+    <el-form-item label="主题名称" :label-width="formLabelWidth">
+      <el-input v-model="renameForm.name" auto-complete="off"></el-input>
+    </el-form-item>
+  </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="createSceneVisible = false">取 消</el-button>
+      <el-button type="primary" @click="httpCreateScene">确 定</el-button>
+    </span>
+  </el-dialog>
     <el-aside width="300px" class="scene-manage clearfix">
       <div class="scene-title title clearfix">
          <div class="scene-title-span"><h5>场景管理</h5></div>
@@ -69,16 +83,21 @@
         <el-col :span="24">
         <div class="scene-theme-title title clearfix">
           <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
-            <i class="scene-theme-title-icon el-icon-plus"></i>
+            <i class="scene-theme-title-icon el-icon-plus" @click="createSceneVisible = true"></i>
           </div>
           <div class="scene-theme-list">
-            <div class="scene-theme-item" v-for="(item, idx) in scene_list" :class="{'active': scene_id == item.id}" @click="changeScene(item.id)">{{item.title}}</div>
+            <div class="scene-theme-item" v-for="(item, idx) in scene_list" :class="{'active': scene_id == item.id}" @click="changeScene(item.id)">
+              {{item.title}}
+              <el-button @click="handleClick(scope.row)" type="text" size="small">编辑</el-button>
+              <el-button type="text" size="small">删除</el-button>
+            </div>
           </div>
           <el-pagination
             class="scene-theme-page"
             small
             layout="prev, pager, next"
-            :total="50">
+            :current-page.sync="sceneCurrentPage"
+            :total="sceneTotal">
           </el-pagination>
         </el-col>
       </el-row>
@@ -230,11 +249,14 @@
         deleteVisible: false,
         createVisible: false,
         renameVisible: false,
+        createSceneVisible: false,
         renameForm: {
           name: '',
           id: '',
         },
         formLabelWidth: '120px',
+        sceneTotal: 50,  //默认总条目数
+        sceneCurrentPage: 1, //默认当前页面
         repositoryOptions: [{
           value: '选项1',
           label: '黄金糕'
@@ -245,10 +267,10 @@
         scene_id: 1,
         repositoryValue: '',
         filterText: '',
-        treeDataAdd: [],
-        treeData: {},
-        treeNode: {},
-        treeThis: {},
+        treeDataAdd: [], //懒加载增加的部分
+        treeData: {}, //当前的树data
+        treeNode: {}, //当前的树node
+        treeThis: {}, 
         props1: {
           label: 'label',
           children: 'children',
@@ -311,25 +333,30 @@
       handleRepositoryChange () {
         this.$refs.tree2.root.childNodes[0].childNodes = new Array();
         this.$refs.tree2.root.childNodes[0].loaded = false;
+        this.$refs.tree2.root.childNodes[0].expanded = false;
+        this.$refs.tree2.root.childNodes[0].isLeafByUser = false;
       },
       filterNode(value, data) { // 过滤树节点
         if (!value) return true;
         return data.label.indexOf(value) !== -1;
       },
-      handleNodeClick (data) { // 切换树节点
+      handleNodeClick (data, node) { // 切换树节点(共三个参数，依次为：传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身。)
         console.log(data.label);
-        this.scene_list = [{
-          id: 4,
-          title: '切换后的场景1'
-        },
-        {
-          id: 5,
-          title: '切换后的场景2'
-        },
-        {
-          id: 6,
-          title: '切换后的场景3'
-        }]
+        this.treeData = data;
+        this.treeNode = node;
+        this.httpChangeSceneList(1);
+        // this.scene_list = [{
+        //   id: 4,
+        //   title: '切换后的场景1'
+        // },
+        // {
+        //   id: 5,
+        //   title: '切换后的场景2'
+        // },
+        // {
+        //   id: 6,
+        //   title: '切换后的场景3'
+        // }]
       },
       renderContent(h, { node, data, store }) { //增加树按钮
         return (
@@ -650,6 +677,59 @@
           const children = parent.data.children || parent.data;
           const index = children.findIndex(d => d.id === this.treeData.id);
           children.splice(index, 1);
+        })
+      },
+      httpChangeSceneList(rows){
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/showAimlList',
+          params: {
+            repositoryId: this.repositoryValue,
+            catalogId: this.treeData.id,
+            rows: rows,
+            pageSize: 10, //默认10行一页
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("changeSceneList");
+          console.log(data);
+          //data.total为总数
+          var list = data.list;
+          this.scene_list = new Array();
+          var total = data.total;
+          if (!(data.total > 0)) total=50;
+          this.sceneTotal = total;
+          this.sceneCurrentPage = 1;
+          if (list.length > 0) {
+            for(var i=0;i<list.length;i++){
+              this.scene_list[i] = {
+                id: list[i].THEME_ID,
+                title: list[i].THEME_NAME,
+              }
+            }
+          }
+        })
+      },
+      httpCreateScene(){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/addAimlTopic',
+          params: {
+            themeName: this.renameForm.name,
+            repositoryId: this.repositoryValue,
+            catalogId: this.treeData.id,
+            // aimlContent: ,
+            // source: ,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("createScene");
+          console.log(data);
+          this.httpChangeSceneList(1);
         })
       },
     },
