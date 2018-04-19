@@ -60,6 +60,7 @@
       node-key="id"
       :render-content="renderContent"
       lazy
+      @node-click="handleNodeClick"
       size="mini">
       </el-tree>
     </el-aside>
@@ -376,14 +377,16 @@
           return resolve([{label: '全部',
             isLeaf: false,
             id: '00000000-0000-0000-0000-000000000000',
+            children: [],
         }]);
         }
         if (node.level === 1) {
-          this.httpGetChildTreeDataAdd(node.data.id, resolve);
+          this.httpGetChildTreeDataAdd(node, resolve);
         }
         if (node.level > 1) {
-          this.httpGetChildTreeDataAdd(node.data.id, resolve);
+          this.httpGetChildTreeDataAdd(node, resolve);
         }
+        node.loading=false;
       },
       changeScene (key, keyPath) { // 切换场景
         console.log(key, keyPath);
@@ -474,7 +477,7 @@
             var resData = res[i];
             treeDataAdd[i].label = resData.label;
             treeDataAdd[i].id = resData.catalog_id;
-            treeDataAdd[i].isLeaf = true;
+            // treeDataAdd[i].isLeaf = true;
             if(resData.children.length > 0){
               treeDataAdd[i].isLeaf = false;
               for(var j=0;j<resData.children.length;j++){
@@ -490,7 +493,7 @@
       treeForEach(treeChild, resChild){
         treeChild.label = resChild.label;
         treeChild.id = resChild.catalog_id;
-        treeChild.isLeaf=true;
+        // treeChild.isLeaf=true;
         if(!(resChild.children === undefined) && resChild.children.length > 0){
           treeChild.isLeaf=false;
           for(var i=0;i<resChild.children.length;i++){
@@ -538,13 +541,13 @@
           }
         })
       },
-      httpGetChildTreeDataAdd(parentId, resolve){
+      httpGetChildTreeDataAdd(parentNode, resolve){
         this.$http({
           method: 'get',
           url: '/aimlManage/showQaTreeByQepoIdAsync',
           params: {
             repoId: this.repositoryValue,
-            parentId: parentId,
+            parentId: parentNode.data.id,
           },
           baseURL: '/',
           dataType: 'jsonp',
@@ -553,6 +556,9 @@
           if(data.length > 0){
             this.treeDataAdd = this.getTreeDataAddFromRes(this.treeDataAdd, data);
             resolve(this.treeDataAdd);
+          }else{
+            parentNode.isLeaf = true;
+            parentNode.isLeafByUser = true;
           }
         })
       },
@@ -576,11 +582,11 @@
       httpAppendTree(){
         this.$http({
           method: 'post',
-          url: '/kbsqa/createQaCatalog',
+          url: '/aimlManage/createQaCatalog',
           params: {
             repoId: this.repositoryValue,
             pid: this.treeData.id,
-            name: "新增的目录名",
+            name: "新增的目录",
           },
           baseURL: '/',
           dataType: 'jsonp',
@@ -588,14 +594,17 @@
           var data = res.data;
           console.log("appendResult");
           console.log(data);
-          const newChild = { id: "123", label: '新增的目录名', children: [], isLeaf: true };
-          if (!this.treeData.children) {
-            this.$set(this.treeData, 'children', []);
-          }
+          // const newChild = { id: "123", label: '新增的目录', children: [], isLeaf: true };
+          // if (!this.treeData.children) {
+          //   this.$set(this.treeData, 'children', []);
+          // }
           this.treeData.isLeaf = false;
+          this.treeNode.isLeafByUser = false;
+          this.treeNode.isLeaf = false;
           this.treeNode.loading = false;
+          this.treeNode.loaded = false;
           this.treeNode.expanded = true;
-          this.treeData.children.push(newChild);
+          // this.treeData.children.push(newChild);
           console.log("this.treeData:" + this.treeData);
           console.log(this.treeData);
         })
