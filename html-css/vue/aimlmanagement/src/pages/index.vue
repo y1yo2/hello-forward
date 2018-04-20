@@ -57,7 +57,7 @@
          <div class="scene-title-span"><h5>场景管理</h5></div>
          <i class="scene-title-icon el-icon-plus"></i>
       </div>
-      <el-select v-model="repositoryValue" placeholder="请选择知识库" @change="handleRepositoryChange">
+      <el-select v-model="repositoryValue" placeholder="请选择知识库" @change="handleRepositoryChange" class="select-base">
         <el-option
           v-for="item in repositoryOptions"
           :key="item.value"
@@ -66,7 +66,7 @@
           size="mini">
         </el-option>
       </el-select>
-      <el-input v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
+      <!--<el-input v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>-->
       <el-tree
       :props="props1"
       :load="loadNode1"
@@ -270,7 +270,7 @@
         treeDataAdd: [], //懒加载增加的部分
         treeData: {}, //当前的树data
         treeNode: {}, //当前的树node
-        treeThis: {}, 
+        treeThis: {},
         props1: {
           label: 'label',
           children: 'children',
@@ -766,6 +766,9 @@
     position: absolute;
     right: 20px;
   }
+  .custom-tree-node-button .el-icon-edit-outline, .custom-tree-node-button .el-icon-delete {
+    margin-left: 5px;
+  }
   .el-container {
     position: relative;
   }
@@ -776,15 +779,15 @@
 
   }
   .scene-manage {
-    background-color: rgb(21,28,46);
+    background-color: #1A273C;
     color: #333;
     text-align: center;
   }
   .title {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 16px;
+    margin-right: 16px;
     text-align: left;
-    line-height: 45px;
+    line-height: 62px;
   }
   .scene-title {
     border-bottom: 1px solid #fff;
@@ -796,15 +799,10 @@
   .scene-title-icon {
     color: #ddd;
     float: right;
-    margin-top: 14px;
+    margin-top: 24px;
   }
-  .el-select {
-    margin-top: 10px;
-    margin-left: 15px;
-    width: calc(100% - 5px);
-  }
-  .scene-theme-title, .tags-title, .entrance-title, .out-title {
-    border-bottom: 1px solid #b7b7b7;
+  .scene-theme-title, .entrance-title, .out-title {
+    border-bottom: 1px solid #E4E7EB;
     color: #666;
   }
   .tac {
@@ -819,12 +817,12 @@
   }
   .scene-theme-page {
     position: absolute;
-    bottom: 20px;
+    bottom: 16px;
   }
   .scene-theme-title-icon {
     color: #666;
     float: right;
-    margin-top: 14px;
+    margin-top: 25px;
   }
   .scene-theme .el-menu-item.is-active {
     background-color: #f2f2f2 !important;
@@ -837,12 +835,14 @@
   }
   .el-button-plus {
     float: right;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    margin-right: 0px;
-    height: 30px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    width: 80px;
+    height: 35px;
+    line-height: 35px;
+    padding: 0;
+    margin-top: 14px;
+    text-align: center;
+    background-color: #4E86EC;
+    border-color: #4E86EC;
   }
   .el-input {
     margin-top: 10px;
@@ -855,22 +855,43 @@
     color: rgb(115,122,143);
   }
   .el-tree-node:focus>.el-tree-node__content {
+    padding-left: 15px;
     background-color: rgb(21,28,46);
     color: #fff;
   }
   .el-main {
-    background-color: #E9EEF3;
+    padding: 16px;
+    background-color: #E4E7EB;
     color: #333;
     text-align: center;
   }
+  .select-base {
+    width: 253px;
+    height: 41px;
+    margin-top: 17px;
+    margin-bottom: 17px;
+    background-color: #1A273C;
+  }
+  .select-base .el-input {
+    width: 100%;
+    margin: 0;
+  }
+  .el-select .el-input.is-focus .el-input__inner:focus, .el-select .el-input.is-focus .el-input__inner {
+    border-color: #1a273c;
+  }
+  .select-base .el-input--suffix .el-input__inner {
+    color: #fff;
+    background-color: #374254;
+    border: none;
+  }
   .scene-theme-item {
-    padding-left: 20px;
+    padding-left: 16px;
     line-height: 45px;
     text-align: left;
-    border-bottom: 1px solid #c1c1c1;
+    border-bottom: 1px solid #E4E7EB;
   }
   .scene-theme-list .active {
-    background: #E9EEF3;
+    background: #E4E7EB;
   }
   .el-checkbox {
     width: 100%;
@@ -891,23 +912,23 @@
     min-height: 460px;
     padding-bottom: 40px;
     background-color: #fff;
-    border-right: 1px solid #f2f2f2;
+    border-right: 1px solid #E4E7EB;
   }
   .entrance-page, .out-page {
     position: absolute;
-    bottom: 20px;
+    bottom: 16px;
   }
   .entrance-list,.out-list, .similar-list {
     text-align: left;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 16px;
+    padding-right: 16px;
     line-height: 45px;
   }
   .out-item, .similar-item {
     color: #606266;
     font-size: 14px;
     line-height: 45px;
-    border-bottom: 1px solid #c1c1c1;
+    border-bottom: 1px solid #E4E7EB;
   }
   .el-pagination--small {
     margin-top: 10px;
@@ -917,30 +938,30 @@
   }
   .script, .groove, .channel {
     height: 240px;
-    margin-top: 20px;
+    margin-top: 16px;
     background-color: #fff;
-    border: 1px solid #ced3d8;
+    border: 1px solid #E4E7EB;
   }
   .script-inner, .groove-inner {
     height: 180px;
     /*background-color: #e9eef3;*/
     margin: 0 20px 20px 20px;
-    border: 1px solid #ced3d8;
+    border: 1px solid #E4E7EB;
   }
   .groove, .channel {
-    margin-right: 20px;
+    margin-right: 16px;
   }
   .in-groove, .out-groove {
     height: 160px;
     margin: 0 10px 0;
-    border: 1px solid #ced3d8;
+    border: 1px solid #E4E7EB;
   }
   .out-groove {
     margin-left: 0;
   }
   .in-groove-title, .out-groove-title {
     height: 30px;
-    border-bottom: 1px solid #ced3d8;
+    border-bottom: 1px solid #E4E7EB;
     line-height: 30px;
     background: #f2f2f2
   }
@@ -968,8 +989,8 @@
     width: 300px;
     height: 100%;
     text-align: left;
-    padding-left: 20px;
-    padding-top: 20px;
+    padding-left: 16px;
+    padding-top: 16px;
     background-color: #fff;
     color: #606266;
     font-size: 14px;
@@ -986,18 +1007,9 @@
   }
   .similar {
     margin-top: 50px;
-    margin-left: -20px;
+    margin-left: -16px;
   }
   .similar-title {
-    margin-left: 20px;
+    margin-left: 16px;
   }
-  .hide {
-    display: none;
-  }
-/*  .groove {
-    margin-top: 50px;
-  }
-  .groove-title {
-    margin-bottom: 20px;
-  }*/
 </style>
