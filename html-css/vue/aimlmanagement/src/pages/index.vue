@@ -89,91 +89,92 @@
       size="mini">
       </el-tree>
     </el-aside>
-    <el-aside width="250px">
-      <el-row class="tac">
-        <el-col :span="24">
-        <div class="scene-theme-title title clearfix">
-          <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
-          <div class="scene-theme-title-icon">
-            <i class="el-icon-upload2" @click="createSceneVisible = true"></i>
-            <i class="el-icon-download" @click="createSceneVisible = true"></i>
-            <i class="el-icon-plus" @click="createSceneVisible = true"></i>
-            <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
-          </div>
-        </div>
-          <div class="scene-theme-list">
-<!--             <div class="scene-theme-item" v-for="(item, idx) in scene_list" :class="{'active': scene_id == item.id}" @click="changeScene(item.id)">
-              {{item.title}}
-              <i class="el-icon-edit-outline" size="mini" @click=""></i>
-            </div> -->
-            <el-checkbox-group v-model="checkedScenes" @change="">
-                <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
-                {{item.title}}<i class="el-icon-edit-outline" size="mini" @click=""></i>
-              </el-checkbox>
-              </el-checkbox-group>
-          </div>
-          <el-pagination
-            class="scene-theme-page"
-            small
-            layout="prev, pager, next"
-            :current-page.sync="sceneCurrentPage"
-            :total="sceneTotal">
-          </el-pagination>
-        </el-col>
-      </el-row>
-    </el-aside>
     <el-main>
       <el-row>
-        <el-col :span="12" class="entrance">
-          <div class="entrance-inner">
-            <div class="entrance-title title clearfix">
-              <div class="entrance-title-div"><h5>入口问题（标准问题）</h5></div>
-              <el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>
+        <el-col :span="24" class="global-search"></el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="4" class="scene-theme-wrapper">
+          <div class="scene-theme">
+            <div class="scene-theme-title title clearfix">
+              <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
+              <div class="scene-theme-title-icon">
+                <i class="el-icon-upload2" @click="createSceneVisible = true"></i>
+                <i class="el-icon-download" @click="createSceneVisible = true"></i>
+                <i class="el-icon-plus" @click="createSceneVisible = true"></i>
+                <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
+              </div>
             </div>
-            <!-- <h5 class="entrance-title title">入口问题（标准问题）</h5>
-            <el-button type="primary" icon="el-icon-plus">新增</el-button> -->
-            <div class="entrance-list">
-              <el-checkbox-group v-model="checkedEntrances" @change="">
-                <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
-                {{item}}</el-checkbox>
+            <div class="scene-theme-list">
+              <!--             <div class="scene-theme-item" v-for="(item, idx) in scene_list" :class="{'active': scene_id == item.id}" @click="changeScene(item.id)">
+                            {{item.title}}
+                            <i class="el-icon-edit-outline" size="mini" @click=""></i>
+                          </div> -->
+              <el-checkbox-group v-model="checkedScenes" @change="">
+                <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
+                  {{item.title}}<i class="el-icon-edit-outline" size="mini" @click=""></i>
+                </el-checkbox>
               </el-checkbox-group>
             </div>
             <el-pagination
+              class="scene-theme-page"
               small
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page.sync="currentPage2"
-              :page-sizes="[10, 20, 30, 40]"
-              :page-size="10"
               layout="prev, pager, next"
-              :total="50"
-              class="entrance-page">
+              :current-page.sync="sceneCurrentPage"
+              :total="sceneTotal">
             </el-pagination>
           </div>
         </el-col>
-        <el-col :span="12" class="out">
-          <div class="out-title title clearfix">
-              <div class="out-title-div"><h5>出口问题</h5></div>
-              <el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>
-          </div>
-          <div class="out-list">
-            <div class="out-item" v-for="(item, index) in out_list">{{item.title}}</div>
-          </div>
-          <el-pagination
-            small
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage2"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="10"
-            layout="prev, pager, next"
-            :total="50"
-            class="out-page">
-          </el-pagination>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="6">
+        <el-col :span="11">
+          <el-tabs v-model="activeQuestions" @tab-click="questionTag" class="questions">
+            <el-tab-pane label="入口问题" name="first">
+              <div class="entrance-inner">
+                <!--<div class="entrance-title title clearfix">-->
+                  <!--<div class="entrance-title-div"><h5>入口问题（标准问题）</h5></div>-->
+                  <!--<el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>-->
+                <!--</div>-->
+                <!-- <h5 class="entrance-title title">入口问题（标准问题）</h5>
+                <el-button type="primary" icon="el-icon-plus">新增</el-button> -->
+                <div class="entrance-list">
+                  <el-checkbox-group v-model="checkedEntrances" @change="">
+                    <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
+                      {{item}}</el-checkbox>
+                  </el-checkbox-group>
+                </div>
+                <el-pagination
+                  small
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page.sync="currentPage2"
+                  :page-sizes="[10, 20, 30, 40]"
+                  :page-size="10"
+                  layout="prev, pager, next"
+                  :total="50"
+                  class="entrance-page">
+                </el-pagination>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="出口问题" name="second">
+              <!--<div class="out-title title clearfix">-->
+                <!--<div class="out-title-div"><h5>出口问题</h5></div>-->
+                <!--<el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>-->
+              <!--</div>-->
+              <div class="out-list">
+                <div class="out-item" v-for="(item, index) in out_list">{{item.title}}</div>
+              </div>
+              <el-pagination
+                small
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage2"
+                :page-sizes="[10, 20, 30, 40]"
+                :page-size="10"
+                layout="prev, pager, next"
+                :total="50"
+                class="out-page">
+              </el-pagination>
+            </el-tab-pane>
+          </el-tabs>
           <div class="groove">
             <h5 class="title">槽点</h5>
             <div class="in-groove">
@@ -191,6 +192,14 @@
             </div>
           </div>
         </el-col>
+        <el-col :span="9">
+          <div class="script">
+            <h5 class="title">脚本</h5>
+            <div class="script-inner"></div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="6">
           <div class="channel">
             <h5 class="title">渠道</h5>
@@ -214,12 +223,6 @@
             </div>
           </div>
         </el-col>
-        <el-col :span="12">
-          <div class="script">
-            <h5 class="title">脚本</h5>
-            <div class="script-inner"></div>
-          </div>
-        </el-col>
       </el-row>
     </el-main>
   </el-container>
@@ -231,6 +234,7 @@
     name: "index",
     data () {
       return {
+        activeQuestions: 'first',
         deleteVisible: false,
         createVisible: false,
         renameVisible: false,
@@ -262,7 +266,7 @@
           children: 'children',
           isLeaf: 'isLeaf'
         },
-        
+
         scene_list: [{
           id: 1,
           title: '默认场景1'
@@ -667,6 +671,9 @@
           this.httpChangeSceneList(this.sceneCurrentPage);
         })
       },
+      questionTag(tab, event) {
+        console.log(tab, event);
+      }
     },
     watch: {
       filterText(val) {
@@ -740,17 +747,19 @@
     margin-top: 24px;
   }
   .scene-theme-title, .entrance-title, .out-title {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 16px;
+    padding-right: 16px;
     height: 64px;
     border-bottom: 1px solid #E4E7EB;
     color: #666;
   }
-  .tac {
-    height: 100%;
-  }
+
   .scene-theme {
-    height: 100%;
-  }
-  .scene-theme {
+    height: 600px;
+    margin-right: 16px;
+    background-color: #fff;
     text-align: left;
     position: relative;
   }
@@ -767,6 +776,23 @@
   }
   .scene-theme .el-menu-item.is-active {
     background-color: #f2f2f2 !important;
+  }
+  .questions {
+    height: 527px;
+    background-color: #fff;
+  }
+  .questions .el-tabs__header {
+    height: 527px;
+    height: 64px;
+    margin: 0;
+    padding-left: 16px;
+  }
+  .questions .el-tabs__item {
+    height: 64px;
+    line-height: 64px;
+  }
+  .questions .el-tabs__header .el-tabs__nav-wrap {
+    height: 66px;
   }
   .entrance-title-div {
     float: left;
@@ -801,10 +827,16 @@
     color: #fff;
   }
   .el-main {
+    height: 100%;
     padding: 16px;
     background-color: #E4E7EB;
     color: #333;
     text-align: center;
+  }
+  .el-main .global-search {
+    height: 64px;
+    margin-bottom: 16px;
+    background-color: #fff;
   }
   .select-base {
     width: 253px;
@@ -826,6 +858,7 @@
     border: none;
   }
   .scene-theme-item {
+    width: 100%;
     padding-left: 16px;
     line-height: 45px;
     text-align: left;
@@ -834,12 +867,12 @@
   .scene-theme-list .active {
     background: #E4E7EB;
   }
-  .el-checkbox {
+  .questions .el-checkbox {
     width: 100%;
     line-height: 45px;
-    border-bottom: 1px solid #c1c1c1;
+    border-bottom: 1px solid #E4E7EB;
   }
-  .el-checkbox+.el-checkbox{
+  .questions .el-checkbox+.el-checkbox{
     margin-left: 0;
   }
   .out {
@@ -850,7 +883,7 @@
   }
   .entrance-inner {
     position: relative;
-    min-height: 460px;
+    min-height: 500px;
     padding-bottom: 40px;
     background-color: #fff;
     border-right: 1px solid #E4E7EB;
@@ -865,6 +898,9 @@
     padding-right: 16px;
     line-height: 45px;
   }
+  .out-list {
+    height: 480px;
+  }
   .out-item, .similar-item {
     color: #606266;
     font-size: 14px;
@@ -877,9 +913,15 @@
   .el-pagination__sizes{
     margin-top: -13px;
   }
-  .script, .groove, .channel {
+  .script, .channel {
     height: 240px;
     margin-top: 16px;
+    background-color: #fff;
+    border: 1px solid #E4E7EB;
+  }
+  .script {
+    height: 527px;
+    margin-top: 0;
     background-color: #fff;
     border: 1px solid #E4E7EB;
   }
@@ -889,8 +931,13 @@
     margin: 0 20px 20px 20px;
     border: 1px solid #E4E7EB;
   }
-  .groove, .channel {
+  .channel {
     margin-right: 16px;
+  }
+  .groove {
+    height: 440px;
+    margin-top: 16px;
+    background-color: #fff;
   }
   .in-groove, .out-groove {
     height: 160px;
