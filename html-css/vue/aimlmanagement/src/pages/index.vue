@@ -66,7 +66,7 @@
           size="mini">
         </el-option>
       </el-select>
-      <!--<el-input v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>-->
+      <el-input v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
       <el-tree
       :props="props1"
       :load="loadNode1"
@@ -83,13 +83,24 @@
         <el-col :span="24">
         <div class="scene-theme-title title clearfix">
           <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
-            <i class="scene-theme-title-icon el-icon-plus" @click="createSceneVisible = true"></i>
+          <div class="scene-theme-title-icon">
+            <i class="el-icon-upload2" @click="createSceneVisible = true"></i>
+            <i class="el-icon-download" @click="createSceneVisible = true"></i>
+            <i class="el-icon-plus" @click="createSceneVisible = true"></i>
+            <i class="el-icon-delete" @click="createSceneVisible = true"></i>
           </div>
+        </div>
           <div class="scene-theme-list">
             <div class="scene-theme-item" v-for="(item, idx) in scene_list" :class="{'active': scene_id == item.id}" @click="changeScene(item.id)">
               {{item.title}}
-              <el-button @click="handleClick(scope.row)" type="text" size="small">编辑</el-button>
-              <el-button type="text" size="small">删除</el-button>
+              <!-- <el-button @click="handleClick(scope.row)" type="text" size="small">编辑</el-button> -->
+              <i class="el-icon-edit-outline" size="mini" @click=""></i>
+            </div>
+            <div class="entrance-list">
+              <el-checkbox-group v-model="checkedEntrances" @change="handleCheckedEntranceChange">
+                <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
+                {{item}}</el-checkbox>
+              </el-checkbox-group>
             </div>
           </div>
           <el-pagination
@@ -713,6 +724,7 @@
         })
       },
       httpCreateScene(){
+        this.createSceneVisible=false;
         this.$http({
           method: 'post',
           url: '/aimlManage/addAimlTopic',
@@ -773,10 +785,13 @@
     position: relative;
   }
   .el-dialog__header, .el-dialog__body {
-    text-align: left
+    text-align: left;
   }
-  .el-icon-plus {
-
+  .el-icon-plus:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
+  .el-icon-edit-outline:hover 
+  {
+    color: #409EFF;
+    cursor: pointer;
   }
   .scene-manage {
     background-color: #1A273C;
@@ -802,6 +817,7 @@
     margin-top: 24px;
   }
   .scene-theme-title, .entrance-title, .out-title {
+    height: 64px;
     border-bottom: 1px solid #E4E7EB;
     color: #666;
   }
@@ -820,9 +836,11 @@
     bottom: 16px;
   }
   .scene-theme-title-icon {
+    text-align: center;
+    border-bottom: 21px;
     color: #666;
     float: right;
-    margin-top: 25px;
+    /*margin-top: 25px;*/
   }
   .scene-theme .el-menu-item.is-active {
     background-color: #f2f2f2 !important;
@@ -845,7 +863,7 @@
     border-color: #4E86EC;
   }
   .el-input {
-    margin-top: 10px;
+    /*margin-top: 10px;*/
     margin-bottom: 10px;
     width: 90%;
     text-align: left;
