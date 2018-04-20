@@ -213,41 +213,6 @@
         </el-col>
       </el-row>
     </el-main>
-    <div class="result" v-show="show_result" @click.self="show_result = false">
-      <div class="checkedEntrance">
-        <div class="checkedEntrance-title">标准问题</div>
-        <div class="checkedEntrance-question">{{checkedEntrance}}</div>
-      </div>
-      <div class="similar">
-        <div class="similar-title">相似问题</div>
-        <div class="similar-list">
-          <div class="similar-item" v-for="(item, index) in similar_list">{{item.title}}</div>
-        </div>
-      </div>
-      <div class="groove">
-        <div class="groove-title">槽点</div>
-        <el-tag
-          size="mini"
-          :key="tag"
-          v-for="tag in grooveTags"
-          closable
-          :disable-transitions="false"
-          @close="closeGrooveTag(tag)">
-          {{tag}}
-        </el-tag>
-        <el-input
-          class="input-new-tag"
-          v-if="inputVisible"
-          v-model="inputValue"
-          ref="saveTagInput"
-          size="small"
-          @keyup.enter.native="handleInputConfirm"
-          @blur="handleInputConfirm"
-        >
-        </el-input>
-        <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
-      </div>
-    </div>
   </el-container>
 </template>
 
@@ -324,19 +289,6 @@
           {title: '现在要离婚，我的房子归谁'}
         ],
         currentPage2: 5,
-        similar_list: [ // 相似问题
-          {title: '我现在要离婚，我的'},
-          {title: '我现在要婚，我的房子归谁'},
-          {title: '我现在要离婚，我的房归谁'},
-          {title: '我现在要离婚，我房子归谁'},
-          {title: '我现在离婚，我的子归谁'},
-          {title: '我现在要离婚，我的子归谁'},
-          {title: '现在要离婚，我的房子归谁'}
-        ],
-        grooveTags: ['标签一', '标签二', '标签三', '标签四'], // 槽点列表
-        inputVisible: false,
-        inputValue: '',
-        show_result: false,
         channel_tag: ''
       }
     },
@@ -458,33 +410,16 @@
       },
       handleCheckedEntranceChange(value) { //多选按钮点击
         //弹框
-        this.show_result = value.length > 0;
-        if(this.show_result){
-          this.checkedEntrance = value[value.length-1];
-        }
+        // this.show_result = value.length > 0;
+        // if(this.show_result){
+        //   this.checkedEntrance = value[value.length-1];
+        // }
       },
       handleSizeChange(val) { // 切换每页条数的回调函数
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) { // // 选择某页的回调函数
         console.log(`当前页: ${val}`);
-      },
-      closeGrooveTag(tag) { // 关闭槽点tag的回调
-        this.grooveTags.splice(this.grooveTags.indexOf(tag), 1);
-      },
-      showInput() { // 新增槽点tag，显示输入框
-        this.inputVisible = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });
-      },
-      handleInputConfirm() { // 新增槽点tag回调
-        let inputValue = this.inputValue;
-        if (inputValue) {
-          this.grooveTags.push(inputValue);
-        }
-        this.inputVisible = false;
-        this.inputValue = '';
       },
       renderData () {
         this.$http({ // ajax方法，用的axios插件，$http一个可以直接用的方法，在main.js中，引入 axios 之后，通过修改原型链，来更方便的使用
@@ -788,7 +723,7 @@
     text-align: left;
   }
   .el-icon-plus:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
-  .el-icon-edit-outline:hover 
+  .el-icon-edit-outline:hover
   {
     color: #409EFF;
     cursor: pointer;
@@ -999,35 +934,5 @@
   }
   .channel-item {
     flex:  0 0 50%;
-  }
-  .result {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 100%;
-    text-align: left;
-    padding-left: 16px;
-    padding-top: 16px;
-    background-color: #fff;
-    color: #606266;
-    font-size: 14px;
-    box-shadow:0 0 20px 0 rgba(0,0,0,0.70);
-  }
-  .checkedEntrance-title, .similar-title, .groove-title {
-    font-size: 14px;
-    line-height: 25px;
-    color: #333;
-    font-weight: bold;
-  }
-  .checkedEntrance-question {
-    line-height: 45px;
-  }
-  .similar {
-    margin-top: 50px;
-    margin-left: -16px;
-  }
-  .similar-title {
-    margin-left: 16px;
   }
 </style>
