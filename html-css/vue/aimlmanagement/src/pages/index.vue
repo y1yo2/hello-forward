@@ -52,6 +52,17 @@
       <el-button type="primary" @click="httpCreateScene">确 定</el-button>
     </span>
   </el-dialog>
+  <el-dialog
+    title="删除确认"
+    :visible.sync="deleteSceneVisible"
+    width="30%"
+    >
+    <span class="dialog-footer">是否删除选中的主题</span>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="deleteSceneVisible = false">取 消</el-button>
+      <el-button type="primary" @click="deleteSceneClick">确 定</el-button>
+    </span>
+  </el-dialog>
     <el-aside width="300px" class="scene-manage clearfix">
       <div class="scene-title title clearfix">
          <div class="scene-title-span"><h5>场景管理</h5></div>
@@ -87,21 +98,19 @@
             <i class="el-icon-upload2" @click="createSceneVisible = true"></i>
             <i class="el-icon-download" @click="createSceneVisible = true"></i>
             <i class="el-icon-plus" @click="createSceneVisible = true"></i>
-            <i class="el-icon-delete" @click="createSceneVisible = true"></i>
+            <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
           </div>
         </div>
           <div class="scene-theme-list">
-            <div class="scene-theme-item" v-for="(item, idx) in scene_list" :class="{'active': scene_id == item.id}" @click="changeScene(item.id)">
+<!--             <div class="scene-theme-item" v-for="(item, idx) in scene_list" :class="{'active': scene_id == item.id}" @click="changeScene(item.id)">
               {{item.title}}
-              <!-- <el-button @click="handleClick(scope.row)" type="text" size="small">编辑</el-button> -->
               <i class="el-icon-edit-outline" size="mini" @click=""></i>
-            </div>
-            <div class="entrance-list">
-              <el-checkbox-group v-model="checkedEntrances" @change="handleCheckedEntranceChange">
-                <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
-                {{item}}</el-checkbox>
+            </div> -->
+            <el-checkbox-group v-model="checkedScenes" @change="">
+                <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
+                {{item.title}}<i class="el-icon-edit-outline" size="mini" @click=""></i>
+              </el-checkbox>
               </el-checkbox-group>
-            </div>
           </div>
           <el-pagination
             class="scene-theme-page"
@@ -124,7 +133,7 @@
             <!-- <h5 class="entrance-title title">入口问题（标准问题）</h5>
             <el-button type="primary" icon="el-icon-plus">新增</el-button> -->
             <div class="entrance-list">
-              <el-checkbox-group v-model="checkedEntrances" @change="handleCheckedEntranceChange">
+              <el-checkbox-group v-model="checkedEntrances" @change="">
                 <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
                 {{item}}</el-checkbox>
               </el-checkbox-group>
@@ -169,7 +178,7 @@
             <h5 class="title">槽点</h5>
             <div class="in-groove">
               <div class="in-groove-title">入口问题</div>
-              <div class="in-groove-list">
+              <!-- <div class="in-groove-list">
                 <el-tag
                   size="mini"
                   :key="tag"
@@ -178,7 +187,7 @@
                   @close="closeGrooveTag(tag)">
                   {{tag}}
                 </el-tag>
-              </div>
+              </div> -->
             </div>
           </div>
         </el-col>
@@ -226,6 +235,7 @@
         createVisible: false,
         renameVisible: false,
         createSceneVisible: false,
+        deleteSceneVisible: false,
         renameForm: {
           name: '',
           id: '',
@@ -252,23 +262,20 @@
           children: 'children',
           isLeaf: 'isLeaf'
         },
-        tableData4: [{
-          date: '2016-05-03111111111111111111111111111111111111111111111111111111111111111111111111',
-        }, {
-          date: '2016-05-02',
-        }, ],
+        
         scene_list: [{
           id: 1,
-          title: '房屋买卖合同'
+          title: '默认场景1'
         },
         {
           id: 2,
-          title: '房屋买卖合同'
+          title: '默认场景2'
         },
         {
           id: 3,
-          title: '房屋买卖合同'
+          title: '默认场景3'
         }],
+        checkedScenes: [],
         entrance_list: [ // 入口问题
           '我现在婚，我的房子归谁',
           '我在要离，我的房子归谁',
@@ -309,17 +316,6 @@
         this.treeNode = node;
         this.httpChangeSceneList(1);
         // this.scene_list = [{
-        //   id: 4,
-        //   title: '切换后的场景1'
-        // },
-        // {
-        //   id: 5,
-        //   title: '切换后的场景2'
-        // },
-        // {
-        //   id: 6,
-        //   title: '切换后的场景3'
-        // }]
       },
       renderContent(h, { node, data, store }) { //增加树按钮
         return (
@@ -350,12 +346,6 @@
         this.createVisible = false;
         this.httpAppendTree();
       },
-      // remove(node, data) { //删除树按钮函数
-      //   const parent = node.parent;
-      //   const children = parent.data.children || parent.data;
-      //   const index = children.findIndex(d => d.id === data.id);
-      //   children.splice(index, 1);
-      // },
       remove(node, data) { //删除树按钮函数
         console.log("node");
         console.log(node);
@@ -402,6 +392,11 @@
         }
         node.loading=false;
       },
+      //场景列涉及的函数
+      deleteSceneClick(){
+        console.log(this.checkedScenes);
+        console.log(JSON.stringify(this.checkedScenes));
+      },
       changeScene (id) { // 切换场景
         this.scene_id = id
       },
@@ -409,11 +404,6 @@
         rows.splice(index, 1);
       },
       handleCheckedEntranceChange(value) { //多选按钮点击
-        //弹框
-        // this.show_result = value.length > 0;
-        // if(this.show_result){
-        //   this.checkedEntrance = value[value.length-1];
-        // }
       },
       handleSizeChange(val) { // 切换每页条数的回调函数
         console.log(`每页 ${val} 条`);
@@ -454,20 +444,6 @@
           }
         })
       },
-      // getTreeDataFromRes(res){
-      //   this.treeData = new Array();
-      //   this.treeData[0] = {};
-      //   this.treeData[0].children = new Array();
-      //   var resData = res[0];
-      //   this.treeData[0].label = resData.label;
-      //   this.treeData[0].id = resData.catalog_id;
-      //   if(resData.children.length > 0){
-      //     for(var i=0;i<resData.children.length;i++){
-      //       this.treeData[0].children[i] = {} ;
-      //       this.treeForEach(this.treeData[0].children[i], resData.children[i]);
-      //     }
-      //   }
-      // },
       getTreeDataAddFromRes(treeDataAdd, res){
         treeDataAdd = new Array();
         if (res.length > 0) {
@@ -523,8 +499,6 @@
         })
       },
       httpGetFatherTreeDataAdd(resolve){
-        // console.log("this.repositoryValue");
-        // console.log(this.repositoryValue);
         this.$http({
           method: 'get',
           url: '/aimlManage/showQaTreeByQepoIdAsync',
@@ -532,8 +506,6 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
-          // console.log("res.data" + res.data);
-          // console.log(res.data);
           var data = res.data;
           if(data.length > 0){
             this.treeDataAdd = this.getTreeDataAddFromRes(this.treeDataAdd, data);
@@ -600,7 +572,6 @@
           this.treeNode.loading = false;
           this.treeNode.loaded = false;
           this.treeNode.expanded = false;
-          // this.treeData.children.push(newChild);
           console.log("this.treeData:" + this.treeData);
           console.log(this.treeData);
         })
@@ -676,7 +647,24 @@
           var data = res.data;
           console.log("createScene");
           console.log(data);
-          this.httpChangeSceneList(1);
+          this.httpChangeSceneList(this.sceneCurrentPage);
+        })
+      },
+      httpDeleteScene(){
+        this.deleteSceneVisible=false;
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/deleteAimlTopic',
+          params: {
+            themeIds: JSON.stringify(this.checkedScenes),
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("deleteScene");
+          console.log(data);
+          this.httpChangeSceneList(this.sceneCurrentPage);
         })
       },
     },
