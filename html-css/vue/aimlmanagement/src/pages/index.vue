@@ -130,7 +130,7 @@
             size="medium"
             placeholder="请输入内容"
             suffix-icon="el-icon-search"
-            v-model="input7">
+            v-model="global_search">
           </el-input>
           <el-dropdown>
           <span class="el-dropdown-link">
@@ -179,16 +179,11 @@
         </el-col>
         <el-col :span="10" class="questions">
           <div class="questions-inner">
+            <el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>
             <el-tabs v-model="activeQuestions" @tab-click="questionTag">
               <el-tab-pane label="入口问题" name="first">
-                <!--<div class="entrance-title title clearfix">-->
-                <!--<div class="entrance-title-div"><h5>入口问题（标准问题）</h5></div>-->
-                <!--<el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>-->
-                <!--</div>-->
-                <!-- <h5 class="entrance-title title">入口问题（标准问题）</h5>
-                <el-button type="primary" icon="el-icon-plus">新增</el-button> -->
                 <div class="entrance-list">
-                  <el-checkbox-group v-model="checkedEntrances" @change="">
+                  <el-checkbox-group v-model="checkedEntrances" @change="entranceChange">
                     <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
                       {{item}}</el-checkbox>
                   </el-checkbox-group>
@@ -206,12 +201,11 @@
                 </div>
               </el-tab-pane>
               <el-tab-pane label="出口问题" name="second">
-                <!--<div class="out-title title clearfix">-->
-                <!--<div class="out-title-div"><h5>出口问题</h5></div>-->
-                <!--<el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>-->
-                <!--</div>-->
                 <div class="out-list">
-                  <div class="out-item" v-for="(item, index) in out_list">{{item.title}}</div>
+                  <el-checkbox-group v-model="checkedOut" @change="outChange">
+                    <el-checkbox v-for="item in out_list" :label="item.title" :key="item.title">
+                      {{item.title}}</el-checkbox>
+                  </el-checkbox-group>
                   <el-pagination
                     small
                     @size-change="handleSizeChange"
@@ -228,14 +222,19 @@
             </el-tabs>
           </div>
           <div class="groove">
+            <div class="edit">编辑</div>
             <h5 class="groove-title">槽点</h5>
             <div class="groove-inner">
               <el-tabs v-model="activeGroove" @tab-click="grooveTag">
                 <el-tab-pane label="入口问题" name="checkedEntrenace">
-                  入口问题槽点
+                  <div class="list">
+                    <div class="item" v-for="(item, index) in checkedEntrances">{{item}}</div>
+                  </div>
                 </el-tab-pane>
                 <el-tab-pane label="出口问题" name="checkedOut">
-                  出口问题槽点
+                  <div class="list">
+                    <div class="item" v-for="(item, index) in checkedOut">{{item}}</div>
+                  </div>
                 </el-tab-pane>
               </el-tabs>
             </div>
@@ -247,6 +246,7 @@
             <div class="script-inner"></div>
           </div>
           <div class="channel">
+            <div class="edit">编辑</div>
             <h5 class="channel-title">渠道</h5>
             <div class="channel-list">
               <el-checkbox-group v-model="checkedChannel">
@@ -266,8 +266,9 @@
     name: "index",
     data () {
       return {
+        global_search: '',
         activeQuestions: 'first',
-        activeGroove: 'first',
+        activeGroove: 'checkedEntrenace',
         deleteVisible: false,
         createVisible: false,
         renameVisible: false,
@@ -333,7 +334,7 @@
         checkAll: false,
         checkedEntrances: [],
         isIndeterminate: true,
-        checkedEntrance: '',
+        checkedOut: [],
         out_list: [ // 出口问题
           {title: '我现在要离婚，我的'},
           {title: '我现在要婚，我的房子归谁'},
@@ -345,7 +346,7 @@
         ],
         currentPage2: 5,
         channels: [
-          '网站', 'APP', '短信', '短信', '微信', '微博', 'QQ'
+          '网站', 'APP', '短信', '微信', '微博', 'QQ'
         ],
         checkedChannel: []
       }
@@ -464,10 +465,14 @@
       changeScene (id) { // 切换场景
         this.scene_id = id
       },
+      entranceChange () {
+        console.log(this.checkedEntrances)
+      },
+      outChange () {
+        console.log(this.checkedOut)
+      },
       deleteRow(index, rows) {
         rows.splice(index, 1);
-      },
-      handleCheckedEntranceChange(value) { //多选按钮点击
       },
       handleSizeChange(val) { // 切换每页条数的回调函数
         console.log(`每页 ${val} 条`);
@@ -807,7 +812,7 @@
 
           // data.end_question_list.QUESTION
           // data.entry_question_list.QUESTION_ID
-          
+
 
           // data.key_word_list_entry.KEYWORD_ID
           // data.key_word_list_end.KEYWORD
@@ -836,7 +841,7 @@
           var data = res.data;
           console.log("questions");
           console.log(data);
-          
+
         })
       },
       httpGetKeyWordList(themeId, type){
@@ -855,7 +860,7 @@
           var data = res.data;
           console.log("keyWordList");
           console.log(data);
-          
+
         })
       },
       httpAddStandardQuestion(themeId, type, question){
@@ -873,7 +878,7 @@
           var data = res.data;
           console.log("addStandardQuestion");
           console.log(data);
-          
+
         })
       },
       httpUpdateStandardQuestion(themeId, questionId, question){
@@ -891,7 +896,7 @@
           var data = res.data;
           console.log("updateStandardQuestion");
           console.log(data);
-          
+
         })
       },
       httpDeleteQuestion(questionId){
@@ -907,7 +912,7 @@
           var data = res.data;
           console.log("deleteQuestion");
           console.log(data);
-          
+
         })
       },
       httpAddKeyWord(themeId, keyword){
@@ -924,7 +929,7 @@
           var data = res.data;
           console.log("addKeyWord");
           console.log(data);
-          
+
         })
       },
       httpDeleteKeyWord(keywordId){
@@ -940,7 +945,7 @@
           var data = res.data;
           console.log("deleteKeyWord");
           console.log(data);
-          
+
         })
       },
       httpUpdateKeyWord(themeId, keywordId, keyword){
@@ -958,7 +963,7 @@
           var data = res.data;
           console.log("updateKeyWord");
           console.log(data);
-          
+
         })
       },
       httpUpdateApplyChannel(themeId, applyChannel){
@@ -975,7 +980,7 @@
           var data = res.data;
           console.log("updateApplyChannel");
           console.log(data);
-          
+
         })
       },
       httpUpdateAimlContent(themeId, aimlContent){
@@ -992,7 +997,7 @@
           var data = res.data;
           console.log("updateAimlContent");
           console.log(data);
-          
+
         })
       },
     },
@@ -1069,7 +1074,7 @@
       .scene-theme-wrapper {
         padding-right: 16px;
         .scene-theme {
-          height: 983px;
+          height: 796px;
           background-color: #fff;
           text-align: left;
           position: relative;
@@ -1126,11 +1131,24 @@
           line-height: 64px;
         }
         .questions-inner {
+          position: relative;
           border: 1px solid #cdd0d4;
           background-color: #fff;
+          .el-button-plus {
+            position: absolute;
+            right: 16px;
+            width: 80px;
+            height: 35px;
+            line-height: 35px;
+            padding: 0;
+            margin-top: 14px;
+            text-align: center;
+            background-color: #4E86EC;
+            border-color: #4E86EC;
+          }
           .entrance-list {
             position: relative;
-            height: 463px;
+            height: 363px;
             text-align: left;
             padding-left: 16px;
             padding-right: 16px;
@@ -1151,10 +1169,9 @@
             text-align: left;
             padding-left: 16px;
             padding-right: 16px;
-            line-height: 45px;
-            .out-item {
-              color: #606266;
-              font-size: 14px;
+            line-height: 43px;
+            .el-checkbox {
+              width: 100%;
               line-height: 45px;
               border-bottom: 1px solid #E4E7EB;
             }
@@ -1165,19 +1182,34 @@
           }
         }
         .groove {
+          position: relative;
           margin-top: 16px;
           padding: 0 16px 16px;
           text-align: left;
           background-color: #fff;
           border: 1px solid #cdd0d4;
+          .edit {
+            position: absolute;
+            right: 18px;
+            font-size: 14px;
+            line-height: 55px;
+            color: #6294EF;
+          }
           .groove-title {
             line-height: 55px;
           }
           .groove-inner {
-            height: 366px;
+            height: 266px;
             border: 1px solid #cdd0d4;
             .el-tab-pane {
-              padding: 16px;
+              padding: 0 16px;
+              font-size: 14px;
+              .list {
+                .item {
+                  line-height: 45px;
+                  border-bottom: 1px solid #E4E7EB;
+                }
+              }
             }
           }
         }
@@ -1187,19 +1219,27 @@
         background-color: #fff;
         border: 1px solid #cdd0d4;
         .script-inner {
-          height: 446px;
+          height: 346px;
           margin: 0 16px 16px;
           border: 1px solid #cdd0d4;
         }
       }
       .channel {
-        height: 440px;
+        position: relative;
+        height: 340px;
         margin-top: 16px;
         padding-left: 16px;
         padding-right: 16px;
         background-color: #fff;
         border: 1px solid #cdd0d4;
         text-align: left;
+        .edit {
+          position: absolute;
+          right: 18px;
+          font-size: 14px;
+          line-height: 55px;
+          color: #6294EF;
+        }
         .channel-title  {
           line-height: 55px;
           border-bottom: 1px solid #cdd0d4;
@@ -1236,17 +1276,6 @@
     color: #ddd;
     float: right;
     margin-top: 24px;
-  }
-  .el-button-plus {
-    float: right;
-    width: 80px;
-    height: 35px;
-    line-height: 35px;
-    padding: 0;
-    margin-top: 14px;
-    text-align: center;
-    background-color: #4E86EC;
-    border-color: #4E86EC;
   }
   .el-input {
     /*margin-top: 10px;*/
