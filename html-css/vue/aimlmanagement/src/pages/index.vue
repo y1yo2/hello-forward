@@ -1074,7 +1074,7 @@
       .scene-theme-wrapper {
         padding-right: 16px;
         .scene-theme {
-          height: 796px;
+          height: 983px;
           background-color: #fff;
           text-align: left;
           position: relative;
@@ -1099,11 +1099,17 @@
           }
           .scene-theme-list {
             .scene-theme-item {
+              position: relative;
               width: calc(~"100% - 16px");
               padding-left: 16px;
               line-height: 45px;
               text-align: left;
               border-bottom: 1px solid #cdd0d4;
+              .el-icon-edit-outline {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+              }
               &.is-checked {
                 background-color: #e4e7eb;
               }
@@ -1148,7 +1154,7 @@
           }
           .entrance-list {
             position: relative;
-            height: 363px;
+            height: 463px;
             text-align: left;
             padding-left: 16px;
             padding-right: 16px;
@@ -1160,7 +1166,7 @@
             }
             .entrance-page {
               position: absolute;
-              bottom: 16px;
+              bottom: 0;
             }
           }
           .out-list {
@@ -1177,7 +1183,7 @@
             }
             .out-page {
               position: absolute;
-              bottom: 16px;
+              bottom: 0;
             }
           }
         }
@@ -1199,7 +1205,7 @@
             line-height: 55px;
           }
           .groove-inner {
-            height: 266px;
+            height: 366px;
             border: 1px solid #cdd0d4;
             .el-tab-pane {
               padding: 0 16px;
@@ -1219,14 +1225,14 @@
         background-color: #fff;
         border: 1px solid #cdd0d4;
         .script-inner {
-          height: 346px;
+          height: 446px;
           margin: 0 16px 16px;
           border: 1px solid #cdd0d4;
         }
       }
       .channel {
         position: relative;
-        height: 340px;
+        height: 440px;
         margin-top: 16px;
         padding-left: 16px;
         padding-right: 16px;
