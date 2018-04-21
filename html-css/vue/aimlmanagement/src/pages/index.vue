@@ -63,6 +63,40 @@
       <el-button type="primary" @click="deleteSceneClick">确 定</el-button>
     </span>
   </el-dialog>
+  <el-dialog
+    title="是否重命名该主题？"
+    :visible.sync="renameSceneVisible"
+    width="30%">
+    <el-form :model="renameSceneForm">
+      <el-form-item label="活动名称" :label-width="formLabelWidth">
+        <el-input v-model="renameSceneForm.name" auto-complete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="renameSceneVisible = false">取 消</el-button>
+      <el-button type="primary" @click="httpRenameScene">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="发布确认"
+    :visible.sync="publishSceneVisible"
+    width="30%">
+    <span class="dialog-footer">是否发布选中的主题？</span>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="publishSceneVisible=false">取 消</el-button>
+      <el-button type="primary" @click="publishSceneVisible=false">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="下架确认"
+    :visible.sync="underSceneVisible"
+    width="30%">
+    <span class="dialog-footer">是否下架选中的主题？</span>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="underSceneVisible=false">取 消</el-button>
+      <el-button type="primary" @click="underSceneVisible=false">确 定</el-button>
+    </span>
+  </el-dialog>
     <el-aside width="300px" class="scene-manage clearfix">
       <div class="scene-title title clearfix">
          <div class="scene-title-span"><h5>场景管理</h5></div>
@@ -116,8 +150,8 @@
             <div class="scene-theme-title title clearfix">
               <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
               <div class="scene-theme-title-icon">
-                <i class="el-icon-upload2" @click="createSceneVisible = true"></i>
-                <i class="el-icon-download" @click="createSceneVisible = true"></i>
+                <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
+                <i class="el-icon-download" @click="underSceneVisible = true"></i>
                 <i class="el-icon-plus" @click="createSceneVisible = true"></i>
                 <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
               </div>
@@ -129,7 +163,7 @@
                           </div> -->
               <el-checkbox-group v-model="checkedScenes" @change="">
                 <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
-                  {{item.title}}<i class="el-icon-edit-outline" size="mini" @click=""></i>
+                  {{item.title}}<i class="el-icon-edit-outline" size="mini" @click="renameSceneClick(item)"></i>
                 </el-checkbox>
               </el-checkbox-group>
             </div>
@@ -137,6 +171,7 @@
               class="scene-theme-page"
               small
               layout="prev, pager, next"
+              @current-change="handleSceneCurrentChange"
               :current-page.sync="sceneCurrentPage"
               :total="sceneTotal">
             </el-pagination>
@@ -161,11 +196,11 @@
                     small
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
-                    :current-page.sync="currentPage2"
                     :page-sizes="[10, 20, 30, 40]"
                     :page-size="10"
                     layout="prev, pager, next"
-                    :total="50"
+                    :total="entranceTotal"
+                    :current-page.sync="entranceCurrentPage"
                     class="entrance-page">
                   </el-pagination>
                 </div>
@@ -181,11 +216,11 @@
                     small
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
-                    :current-page.sync="currentPage2"
                     :page-sizes="[10, 20, 30, 40]"
                     :page-size="10"
                     layout="prev, pager, next"
-                    :total="50"
+                    :total="outTotal"
+                    :current-page.sync="outCurrentPage"
                     class="out-page">
                   </el-pagination>
                 </div>
@@ -238,13 +273,24 @@
         renameVisible: false,
         createSceneVisible: false,
         deleteSceneVisible: false,
+        renameSceneVisible: false,
+        publishSceneVisible: false,
+        underSceneVisible: false,
         renameForm: {
+          name: '',
+          id: '',
+        },
+        renameSceneForm: {
           name: '',
           id: '',
         },
         formLabelWidth: '120px',
         sceneTotal: 50,  //默认总条目数
         sceneCurrentPage: 1, //默认当前页面
+        entranceTotal: 50,
+        entranceCurrentPage: 1,
+        outTotal: 50,
+        outCurrentPage: 1,
         repositoryOptions: [{
           value: '选项1',
           label: '黄金糕'
@@ -399,8 +445,21 @@
       },
       //场景列涉及的函数
       deleteSceneClick(){
-        console.log(this.checkedScenes);
-        console.log(JSON.stringify(this.checkedScenes));
+        // console.log(this.checkedScenes);
+        // console.log(JSON.stringify(this.checkedScenes));
+        this.httpDeleteScene();
+      },
+      renameSceneClick(item){
+        this.renameSceneForm.id = item.id;
+        this.renameSceneForm.name = item.title;
+        this.renameSceneVisible = true;
+      },
+      sceneClick(item){
+        console.log(item);
+        this.sceneId = item.id;
+      },
+      handleSceneCurrentChange(val){
+        this.httpChangeSceneList(val);
       },
       changeScene (id) { // 切换场景
         this.scene_id = id
@@ -432,6 +491,12 @@
       changeTags (id) { // 切换渠道tag 的回调函数
         this.channel_tag  = id
         console.log(this.channel_tag)
+      },
+      questionTag(tab, event) {
+        console.log(tab, event);
+      },
+      grooveTag (tab, event) {
+        console.log(tab, event);
       },
       initData () {
         this.$http({
@@ -623,7 +688,7 @@
           var total = data.total;
           if (!(data.total > 0)) total=50;
           this.sceneTotal = total;
-          this.sceneCurrentPage = 1;
+          this.sceneCurrentPage = rows;
           if (list.length > 0) {
             for(var i=0;i<list.length;i++){
               this.scene_list[i] = {
@@ -669,15 +734,267 @@
           var data = res.data;
           console.log("deleteScene");
           console.log(data);
+          this.httpChangeSceneList(1);
+        })
+      },
+      httpRenameScene(){
+        this.renameSceneVisible=false;
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/updateAimlThemeName',
+          params: {
+            themeId: this.renameSceneForm.id,
+            themeName: this.renameSceneForm.name,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("renameScene");
+          console.log(data);
           this.httpChangeSceneList(this.sceneCurrentPage);
         })
       },
-      questionTag(tab, event) {
-        console.log(tab, event);
+      httpPublishScene(){
+        this.publishSceneVisible=false;
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/publishAimlTopic',
+          params: {
+            themeIds: JSON.stringify(this.checkedScenes),
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("publishScene");
+          console.log(data);
+          // this.httpChangeSceneList(1);
+        })
       },
-      grooveTag (tab, event) {
-        console.log(tab, event);
-      }
+      httpUnderScene(){
+        this.underSceneVisible=false;
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/underCarriageAimlTopic',
+          params: {
+            themeIds: JSON.stringify(this.checkedScenes),
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("underScene");
+          console.log(data);
+          // this.httpChangeSceneList(1);
+        })
+      },
+      httpGetSceneDetails(themeId){
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/getQuestionAndKeyWordAndChannel',
+          params: {
+            themeId: themeId,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("sceneDetail");
+          console.log(data);
+          this.outTotal = data.end_question_list_total;
+          this.entranceTotal = data.entry_question_list_total;
+
+          // data.end_question_list.QUESTION
+          // data.entry_question_list.QUESTION_ID
+          
+
+          // data.key_word_list_entry.KEYWORD_ID
+          // data.key_word_list_end.KEYWORD
+
+          // data.channel_list.CHANNEL_ID
+          //                  .CHANNEL_CODE
+          //                  .SHOW
+          //                  .CHANNEL_NAME
+
+          // this.httpChangeSceneList(1);
+        })
+      },
+      httpGetQuestions(themeId, type, rows){
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/getStandardQuestion',
+          params: {
+            themeId: themeId,
+            type: type, // end为出口问题  entry为入口问题
+            rows: rows,
+            pageSize: 10,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("questions");
+          console.log(data);
+          
+        })
+      },
+      httpGetKeyWordList(themeId, type){
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/getKeyWordList',
+          params: {
+            themeId: themeId,
+            type: type,
+            // rows: rows,
+            // pageSize: 10,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("keyWordList");
+          console.log(data);
+          
+        })
+      },
+      httpAddStandardQuestion(themeId, type, question){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/addStandardQuestion',
+          params: {
+            themeId: themeId,
+            type: type, // end为出口问题  entry为入口问题
+            question: question,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("addStandardQuestion");
+          console.log(data);
+          
+        })
+      },
+      httpUpdateStandardQuestion(themeId, questionId, question){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/updateStandardQuestion',
+          params: {
+            themeId: themeId,
+            questionId: questionId,
+            question: question,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("updateStandardQuestion");
+          console.log(data);
+          
+        })
+      },
+      httpDeleteQuestion(questionId){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/deleteQuestion',
+          params: {
+            questionId: questionId,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("deleteQuestion");
+          console.log(data);
+          
+        })
+      },
+      httpAddKeyWord(themeId, keyword){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/addKeyWord',
+          params: {
+            themeId: themeId,
+            keyword: keyword,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("addKeyWord");
+          console.log(data);
+          
+        })
+      },
+      httpDeleteKeyWord(keywordId){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/deleteKeyWord',
+          params: {
+            keywordId: keywordId,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("deleteKeyWord");
+          console.log(data);
+          
+        })
+      },
+      httpUpdateKeyWord(themeId, keywordId, keyword){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/updateKeyWord',
+          params: {
+            themeId: themeId,
+            keywordId: keywordId,
+            keyword: keyword,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("updateKeyWord");
+          console.log(data);
+          
+        })
+      },
+      httpUpdateApplyChannel(themeId, applyChannel){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/updateApplyChannel',
+          params: {
+            themeId: themeId,
+            applyChannel: applyChannel,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("updateApplyChannel");
+          console.log(data);
+          
+        })
+      },
+      httpUpdateAimlContent(themeId, aimlContent){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/updateAimlContent',
+          params: {
+            themeId: themeId,
+            aimlContent: aimlContent,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log("updateAimlContent");
+          console.log(data);
+          
+        })
+      },
     },
     watch: {
       filterText(val) {
