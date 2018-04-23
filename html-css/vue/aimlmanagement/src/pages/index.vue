@@ -131,7 +131,7 @@
     width="30%">
     <el-form :model="renameQuestionForm">
     <el-form-item label="主题名称" :label-width="formLabelWidth">
-      <el-input v-model="renameQuestionForm.question" auto-complete="off" 
+      <el-input v-model="renameQuestionForm.question" auto-complete="off"
       placeholder="请输入入口问题"></el-input>
     </el-form-item>
   </el-form>
@@ -146,7 +146,7 @@
     width="30%">
     <el-form :model="renameQuestionForm">
     <el-form-item label="主题名称" :label-width="formLabelWidth">
-      <el-input v-model="renameQuestionForm.question" auto-complete="off" 
+      <el-input v-model="renameQuestionForm.question" auto-complete="off"
       placeholder="请输入入口问题"></el-input>
     </el-form-item>
   </el-form>
@@ -161,7 +161,7 @@
     width="30%">
     <el-form :model="renameQuestionForm">
     <el-form-item label="槽点内容" :label-width="formLabelWidth">
-      <el-input v-model="renameGrooveForm.title" auto-complete="off" 
+      <el-input v-model="renameGrooveForm.title" auto-complete="off"
       placeholder="请输入入口问题"></el-input>
     </el-form-item>
   </el-form>
@@ -1269,7 +1269,7 @@
             this.httpGetKeyWordList(themeId, 'entry');
           }else{
             this.httpGetKeyWordList(themeId, 'end');
-          }       
+          }
         })
       },
       httpGetChannels(){
@@ -1337,7 +1337,7 @@
     },
     mounted () {
       this.httpGetRepositoryOptions();
-      
+
     }
   }
 </script>
@@ -1487,17 +1487,18 @@
             position: relative;
             height: 463px;
             text-align: left;
+            margin-top: 5px;
             padding-left: 16px;
             padding-right: 16px;
-            line-height: 43px;
             .el-checkbox {
               width: 100%;
-              line-height: 45px;
+              line-height: 40px;
               border-bottom: 1px solid #E4E7EB;
             }
             .entrance-page {
               position: absolute;
-              bottom: 0;
+              bottom: 5px;
+              left: 0;
             }
             .el-icon-edit-outline {
                 position: absolute;
@@ -1508,18 +1509,19 @@
           .out-list {
             position: relative;
             height: 463px;
+            margin-top: 5px;
             text-align: left;
             padding-left: 16px;
             padding-right: 16px;
-            line-height: 43px;
             .el-checkbox {
               width: 100%;
-              line-height: 45px;
+              line-height: 40px;
               border-bottom: 1px solid #E4E7EB;
             }
             .out-page {
               position: absolute;
-              bottom: 0;
+              bottom: 5px;
+              left: 0;
             }
             .el-icon-edit-outline {
                 position: absolute;
