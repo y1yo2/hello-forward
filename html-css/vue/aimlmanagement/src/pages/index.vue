@@ -131,7 +131,8 @@
     width="30%">
     <el-form :model="renameQuestionForm">
     <el-form-item label="主题名称" :label-width="formLabelWidth">
-      <el-input v-model="renameQuestionForm.name" auto-complete="off"></el-input>
+      <el-input v-model="renameQuestionForm.question" auto-complete="off" 
+      placeholder="请输入入口问题"></el-input>
     </el-form-item>
   </el-form>
     <span slot="footer" class="dialog-footer">
@@ -145,12 +146,28 @@
     width="30%">
     <el-form :model="renameQuestionForm">
     <el-form-item label="主题名称" :label-width="formLabelWidth">
-      <el-input v-model="renameQuestionForm.name" auto-complete="off"></el-input>
+      <el-input v-model="renameQuestionForm.question" auto-complete="off" 
+      placeholder="请输入入口问题"></el-input>
     </el-form-item>
   </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="createOutVisible = false">取 消</el-button>
       <el-button type="primary" @click="createQuestion">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="是否修改该槽点？"
+    :visible.sync="updateGrooveVisible"
+    width="30%">
+    <el-form :model="renameQuestionForm">
+    <el-form-item label="槽点内容" :label-width="formLabelWidth">
+      <el-input v-model="renameGrooveForm.title" auto-complete="off" 
+      placeholder="请输入入口问题"></el-input>
+    </el-form-item>
+  </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="updateGrooveVisible = false">取 消</el-button>
+      <el-button type="primary" @click="updateGroove">确 定</el-button>
     </span>
   </el-dialog>
     <el-aside width="300px" class="scene-manage clearfix">
@@ -246,7 +263,7 @@
                   <el-pagination
                     small
                     @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
+                    @current-change="handleEntranceCurrentChange"
                     :page-sizes="[10, 20, 30, 40]"
                     :page-size="10"
                     layout="prev, pager, next"
@@ -266,7 +283,7 @@
                   <el-pagination
                     small
                     @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
+                    @current-change="handleOutCurrentChange"
                     :page-sizes="[10, 20, 30, 40]"
                     :page-size="10"
                     layout="prev, pager, next"
@@ -279,7 +296,7 @@
             </el-tabs>
           </div>
           <div class="groove">
-            <div class="edit">编辑</div>
+            <div class="edit" @click="updateGrooveClick">编辑</div>
             <h5 class="groove-title">槽点</h5>
             <div class="groove-inner">
               <el-tabs v-model="activeGroove" @tab-click="grooveTag">
@@ -314,11 +331,13 @@
             </el-input>
           </div>
           <div class="channel">
-            <div class="edit">编辑</div>
+            <div class="edit" @click="updateChannel">{{channelUpdateText}}</div>
             <h5 class="channel-title">渠道</h5>
             <div class="channel-list">
               <el-checkbox-group v-model="checkedChannel">
-                <el-checkbox v-for="channel in channels" :label="channel" :key="channel">{{channel}}</el-checkbox>
+                <el-checkbox v-for="channel in channels" :label="channel.name" :key="channel.name"
+                :disabled="channelUpdateDisabledFlag">
+                {{channel.name}}</el-checkbox>
               </el-checkbox-group>
             </div>
           </div>
@@ -350,6 +369,7 @@
         renameOutVisible: false,
         createEntranceVisible: false,
         createOutVisible: false,
+        updateGrooveVisible: false,
         renameForm: {
           name: '',
           id: '',
@@ -360,6 +380,10 @@
         },
         renameQuestionForm: {
           question: '',
+          id: '',
+        },
+        renameGrooveForm: {
+          title: '',
           id: '',
         },
         formLabelWidth: '120px',
@@ -463,13 +487,21 @@
         }],
         entranceGroovesIndex: 0,
         outGroovesIndex: 0,
+        groovesUpdateText: '编辑',
+        groovesUpdateFlag: true,
         //脚本
         script_text: '',
         //渠道
         channels: [
-          '网站', 'APP', '短信', '微信', '微博', 'QQ'
+          {
+            id: 1,
+            code: "网络",
+            name: "网络",
+          },
         ],
-        checkedChannel: []
+        checkedChannel: [],
+        channelUpdateText: '编辑',
+        channelUpdateDisabledFlag:true,
       }
     },
     methods: {
@@ -478,6 +510,7 @@
         this.$refs.tree2.root.childNodes[0].loaded = false;
         this.$refs.tree2.root.childNodes[0].expanded = false;
         this.$refs.tree2.root.childNodes[0].isLeafByUser = false;
+        this.httpGetChannels();
       },
       filterNode(value, data) { // 过滤树节点
         if (!value) return true;
@@ -602,14 +635,12 @@
         this.httpUpdateStandardQuestion(this.checkedScene.id, this.renameQuestionForm.id, this.renameQuestionForm.question);
       },
       createQuestionClick(){
-        console.log("????????");
-        alert('?????');
         this.renameQuestionForm.id = '';
         if(this.activeQuestions === 'first'){
-          this.renameQuestionForm.question = '请输入入口问题';
+          this.renameQuestionForm.question = '';
           this.createEntranceVisible = true;
         }else{
-          this.renameQuestionForm.question = '请输入出口问题';
+          this.renameQuestionForm.question = '';
           this.createOutVisible = true;
         }
       },
@@ -617,8 +648,10 @@
         var type = '';
         if(this.activeQuestions === 'first'){
           type = 'entry';
+          this.createEntranceVisible = false;
         }else{
           type = 'end';
+          this.createOutVisible = false;
         }
         this.httpAddStandardQuestion(this.checkedScene.id, type, this.renameQuestionForm.question);
       },
@@ -628,14 +661,42 @@
       outChange () {
         console.log(this.checkedOut)
       },
-      deleteRow(index, rows) {
-        rows.splice(index, 1);
-      },
       handleSizeChange(val) { // 切换每页条数的回调函数
         console.log(`每页 ${val} 条`);
       },
-      handleCurrentChange(val) { // // 选择某页的回调函数
-        console.log(`当前页: ${val}`);
+      handleEntranceCurrentChange(val){
+        this.httpGetQuestions(this.checkedScene.id, 'entry', val);
+      },
+      handleOutCurrentChange(val){
+        this.httpGetQuestions(this.checkedScene.id, 'end', val);
+      },
+      updateGrooveClick(){
+        if (this.activeGroove === 'checkedEntrenace') {
+          let groove = this.entrance_grooves[this.entranceGroovesIndex];
+          this.renameGrooveForm.id = groove.id;
+          this.renameGrooveForm.title = groove.title;
+        }else{
+          let groove = this.out_grooves[this.outGroovesIndex];
+          this.renameGrooveForm.id = groove.id;
+          this.renameGrooveForm.title = groove.title;
+        }
+        this.updateGrooveVisible = true;
+      },
+      updateGroove(){
+        this.updateGrooveVisible = false;
+        this.httpUpdateKeyWord(this.checkedScene.id, this.renameGrooveForm.id, this.renameGrooveForm.title);
+      },
+      updateChannel(){
+        if (this.channelUpdateDisabledFlag) {
+          this.channelUpdateText = "点击确认修改";
+          this.channelUpdateDisabledFlag = false;
+        }else{
+          this.channelUpdateText = "编辑";
+          this.channelUpdateDisabledFlag = true;
+          console.log(this.checkedChannel);
+          this.httpUpdateApplyChannel(this.checkedScene.id, JSON.stringify(this.checkedChannel));
+        }
+        return this.channelUpdateDisabledFlag;
       },
       renderData () {
         this.$http({ // ajax方法，用的axios插件，$http一个可以直接用的方法，在main.js中，引入 axios 之后，通过修改原型链，来更方便的使用
@@ -651,7 +712,7 @@
         })
       },
       changeTags (id) { // 切换渠道tag 的回调函数
-        this.channel_tag  = id
+        this.channel_tag  = id;
         console.log(this.channel_tag)
       },
       questionTag(tab, event) {
@@ -659,22 +720,6 @@
       },
       grooveTag (tab, event) {
         console.log(tab, event);
-      },
-      initData () {
-        this.$http({
-          method: 'get',
-          url: '/aimlManage/showQaTreeByQepoIdAsync?repoId=E27C5220-CA6E-4EB8-8937-4F9CA6C228C3',
-          baseURL: process.env.BASE_URL,
-          // data: qs.stringify({ // 如果需要传参数的话
-          //   order_no: this.order_no
-          // }),
-        }).then ((res) => { // ajax的回调函数
-          // 在这里进行赋值操作渲染页面
-          console.log(res);
-          if(res.length > 0){
-            treeData[0] = res[0];
-          }
-        })
       },
       getTreeDataAddFromRes(treeDataAdd, res){
         treeDataAdd = new Array();
@@ -727,6 +772,7 @@
               this.repositoryOptions[i].value = data[i].REPOSITORY_ID;
             }
             this.repositoryValue = data[0].REPOSITORY_ID;
+            this.httpGetChannels();
           }
         })
       },
@@ -1012,15 +1058,19 @@
             }
           }
 
-          // data.key_word_list_entry.KEYWORD_ID
-          // data.key_word_list_end.KEYWORD
-
+          let allChannel = data.channel_list;
+          this.checkedChannel = new Array();
+          if (allChannel.length > 0) {
+            for (var i = 0; i < allChannel.length; i++) {
+              if (allChannel[i].SHOW) {
+                this.checkedChannel.push(allChannel[i].CHANNEL_NAME);
+              }
+            }
+          }
           // data.channel_list.CHANNEL_ID
           //                  .CHANNEL_CODE
           //                  .SHOW
           //                  .CHANNEL_NAME
-
-          // this.httpChangeSceneList(1);
         })
       },
       httpGetQuestions(themeId, type, rows){
@@ -1037,9 +1087,31 @@
           dataType: 'jsonp',
         }).then ((res) => {
           var data = res.data;
-          console.log("questions");
-          console.log(data);
-
+          var total = data.total;
+          var list = data.list;
+          if (type === 'entry') {
+            this.entrance_list = new Array();
+            this.entranceTotal = total;
+            this.entranceCurrentPage = rows;
+            if (list.length > 0) {
+              for(var i=0;i<list.length;i++){
+                this.entrance_list[i] = {};
+                this.entrance_list[i].id = list[i].QUESTION_ID;
+                this.entrance_list[i].title = list[i].QUESTION;
+              }
+            }
+          }else{
+            this.out_list = new Array();
+            this.outTotal = total;
+            this.outCurrentPage = rows;
+            if (list.length > 0) {
+              for(var i=0;i<list.length;i++){
+                this.out_list[i] = {};
+                this.out_list[i].id = list[i].QUESTION_ID;
+                this.out_list[i].title = list[i].QUESTION;
+              }
+            }
+          }
         })
       },
       httpGetKeyWordList(themeId, type){
@@ -1056,9 +1128,28 @@
           dataType: 'jsonp',
         }).then ((res) => {
           var data = res.data;
-          console.log("keyWordList");
-          console.log(data);
-
+          //修改槽点
+          if (type === 'entry') {
+            this.entrance_grooves = new Array();
+            let eg_list = data;
+            if (eg_list.length > 0) {
+            for(var i=0;i<eg_list.length;i++){
+              this.entrance_grooves[i] = {};
+              this.entrance_grooves[i].id = eg_list[i].KEYWORD_ID;
+              this.entrance_grooves[i].title = eg_list[i].KEYWORD;
+            }
+          }
+          }else{
+            this.out_grooves = new Array();
+            let og_list = data;
+            if (og_list.length > 0) {
+              for(var i=0;i<og_list.length;i++){
+                this.out_grooves[i] = {};
+                this.out_grooves[i].id = og_list[i].KEYWORD_ID;
+                this.out_grooves[i].title = og_list[i].KEYWORD;
+              }
+            }
+          }
         })
       },
       httpAddStandardQuestion(themeId, type, question){
@@ -1098,8 +1189,11 @@
           var data = res.data;
           console.log("updateStandardQuestion");
           console.log(data);
-          this.httpGetQuestions(themeId, 'entry', this.entranceCurrentPage);
-          this.httpGetQuestions(themeId, 'end', this.outCurrentPage);
+          if (this.activeQuestions === 'first') {
+            this.httpGetQuestions(themeId, 'entry', this.entranceCurrentPage);
+          }else{
+            this.httpGetQuestions(themeId, 'end', this.outCurrentPage);
+          }
         })
       },
       httpDeleteQuestion(questionId){
@@ -1115,17 +1209,21 @@
           var data = res.data;
           console.log("deleteQuestion");
           console.log(data);
-          this.httpGetQuestions(themeId, 'entry', 1);
-          this.httpGetQuestions(themeId, 'end', 1);
+          if (this.activeQuestions === 'first') {
+            this.httpGetQuestions(themeId, 'entry', 1);
+          }else{
+            this.httpGetQuestions(themeId, 'end', 1);
+          }
         })
       },
-      httpAddKeyWord(themeId, keyword){
+      httpAddKeyWord(themeId, keyword, type){
         this.$http({
           method: 'post',
           url: '/aimlManage/addKeyWord',
           params: {
             themeId: themeId,
             keyword: keyword,
+            type: type,
           },
           baseURL: '/',
           dataType: 'jsonp',
@@ -1167,8 +1265,35 @@
           var data = res.data;
           console.log("updateKeyWord");
           console.log(data);
-
+          if (this.activeGroove === 'checkedEntrenace') {
+            this.httpGetKeyWordList(themeId, 'entry');
+          }else{
+            this.httpGetKeyWordList(themeId, 'end');
+          }       
         })
+      },
+      httpGetChannels(){
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/getChannelByRepositoryId',
+          params: {
+            repositoryId: this.repositoryValue,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          this.channels = new Array();
+          if (data.length > 0) {
+            for(var i=0;i<data.length;i++){
+              this.channels[i] = {
+                id: data[i].CHANNEL_ID,
+                code: data[i].CHANNEL_CODE,
+                name: data[i].CHANNEL_NAME,
+              }
+            }
+          }
+         })
       },
       httpUpdateApplyChannel(themeId, applyChannel){
         this.$http({
@@ -1212,6 +1337,7 @@
     },
     mounted () {
       this.httpGetRepositoryOptions();
+      
     }
   }
 </script>
