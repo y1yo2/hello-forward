@@ -255,14 +255,14 @@
               <el-tabs v-model="activeGroove" @tab-click="grooveTag">
                 <el-tab-pane label="入口问题" name="checkedEntrenace">
                   <div class="list">
-                    <div class="item" v-for="(item, index) in entrance_grooves" 
+                    <div class="item" v-for="(item, index) in entrance_grooves"
                     :class="{'active':entranceGroovesIndex==index}" @click="entranceGroovesIndex=index">
                     {{item.title}}</div>
                   </div>
                 </el-tab-pane>
                 <el-tab-pane label="出口问题" name="checkedOut">
                   <div class="list">
-                    <div class="item" v-for="(item, index) in out_grooves" 
+                    <div class="item" v-for="(item, index) in out_grooves"
                     :class="{'active':outGroovesIndex==index}" @click="outGroovesIndex=index">
                     {{item.title}}</div>
                   </div>
@@ -274,7 +274,13 @@
         <el-col :span="9">
           <div class="script">
             <h5 class="title">脚本</h5>
-            <div class="script-inner"></div>
+            <!-- <div class="script-inner"></div> -->
+            <el-input
+              class="script-inner"
+              type="textarea"
+              placeholder="请输入内容"
+              v-model="script_text">
+            </el-input>
           </div>
           <div class="channel">
             <div class="edit">编辑</div>
@@ -297,6 +303,7 @@
     name: "index",
     data () {
       return {
+        script_text: '',
         global_search: '',
         activeQuestions: 'first',
         activeGroove: 'checkedEntrenace',
@@ -1376,6 +1383,14 @@
           height: 446px;
           margin: 0 16px 16px;
           border: 1px solid #cdd0d4;
+          &.el-textarea {
+            width: calc(~"100% - 32px");
+            .el-textarea__inner {
+              border: none;
+              height: 446px;
+              resize:none;
+            }
+          }
         }
       }
       .channel {
