@@ -263,7 +263,7 @@
                 <el-tab-pane label="出口问题" name="checkedOut">
                   <div class="list">
                     <div class="item" v-for="(item, index) in out_grooves" 
-                    :class="{'active':outGroovesIndex==index}" @click="outGroovesIndex=index">>
+                    :class="{'active':outGroovesIndex==index}" @click="outGroovesIndex=index">
                     {{item.title}}</div>
                   </div>
                 </el-tab-pane>
