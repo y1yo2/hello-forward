@@ -255,12 +255,16 @@
               <el-tabs v-model="activeGroove" @tab-click="grooveTag">
                 <el-tab-pane label="入口问题" name="checkedEntrenace">
                   <div class="list">
-                    <div class="item" v-for="(item, index) in entrance_grooves">{{item.title}}</div>
+                    <div class="item" v-for="(item, index) in entrance_grooves" 
+                    :class="{'active':entranceGroovesIndex==index}" @click="entranceGroovesIndex=index">
+                    {{item.title}}</div>
                   </div>
                 </el-tab-pane>
                 <el-tab-pane label="出口问题" name="checkedOut">
                   <div class="list">
-                    <div class="item" v-for="(item, index) in out_grooves">{{item.title}}</div>
+                    <div class="item" v-for="(item, index) in out_grooves" 
+                    :class="{'active':outGroovesIndex==index}" @click="outGroovesIndex=index">>
+                    {{item.title}}</div>
                   </div>
                 </el-tab-pane>
               </el-tabs>
@@ -414,6 +418,10 @@
           id: 3,
           title: '默认出口槽点3'
         }],
+        entranceGroovesIndex: 0,
+        outGroovesIndex: 0,
+        //脚本
+        script_text: '',
         //渠道
         channels: [
           '网站', 'APP', '短信', '微信', '微博', 'QQ'
@@ -918,6 +926,25 @@
           }
 
           //修改槽点
+          this.entrance_grooves = new Array();
+          this.out_grooves = new Array();
+          let eg_list = data.key_word_list_entry;
+          let og_list = data.key_word_list_end;
+          if (eg_list.length > 0) {
+            for(var i=0;i<eg_list.length;i++){
+              this.entrance_grooves[i] = {};
+              this.entrance_grooves[i].id = eg_list[i].KEYWORD_ID;
+              this.entrance_grooves[i].title = eg_list[i].KEYWORD;
+            }
+          }
+
+          if (og_list.length > 0) {
+            for(var i=0;i<og_list.length;i++){
+              this.out_grooves[i] = {};
+              this.out_grooves[i].id = og_list[i].KEYWORD_ID;
+              this.out_grooves[i].title = og_list[i].KEYWORD;
+            }
+          }
 
           // data.key_word_list_entry.KEYWORD_ID
           // data.key_word_list_end.KEYWORD
@@ -1329,6 +1356,12 @@
                 .item {
                   line-height: 45px;
                   border-bottom: 1px solid #E4E7EB;
+                  &.active {
+                    color: #409EFF
+                  }
+                }
+                .item:hover {
+                  cursor: pointer;
                 }
               }
             }
