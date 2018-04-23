@@ -1435,6 +1435,13 @@
               line-height: 45px;
               text-align: left;
               border-bottom: 1px solid #cdd0d4;
+              .el-checkbox__label {
+                width: 70%;
+                height: 15px;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+              }
               .el-icon-edit-outline {
                 position: absolute;
                 top: 16px;
@@ -1494,6 +1501,14 @@
               width: 100%;
               line-height: 40px;
               border-bottom: 1px solid #E4E7EB;
+              .el-checkbox__label {
+                width: 85%;
+                height: 14px;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+
+              }
             }
             .entrance-page {
               position: absolute;
