@@ -125,6 +125,34 @@
       <el-button type="primary" @click="renameQuestion">确 定</el-button>
     </span>
   </el-dialog>
+  <el-dialog
+    title="是否在当前主题下创建一个入口问题？"
+    :visible.sync="createEntranceVisible"
+    width="30%">
+    <el-form :model="renameQuestionForm">
+    <el-form-item label="主题名称" :label-width="formLabelWidth">
+      <el-input v-model="renameQuestionForm.name" auto-complete="off"></el-input>
+    </el-form-item>
+  </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="createEntranceVisible = false">取 消</el-button>
+      <el-button type="primary" @click="createQuestion">确 定</el-button>
+    </span>
+  </el-dialog>
+    <el-dialog
+    title="是否在当前主题下创建一个出口问题？"
+    :visible.sync="createOutVisible"
+    width="30%">
+    <el-form :model="renameQuestionForm">
+    <el-form-item label="主题名称" :label-width="formLabelWidth">
+      <el-input v-model="renameQuestionForm.name" auto-complete="off"></el-input>
+    </el-form-item>
+  </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="createOutVisible = false">取 消</el-button>
+      <el-button type="primary" @click="createQuestion">确 定</el-button>
+    </span>
+  </el-dialog>
     <el-aside width="300px" class="scene-manage clearfix">
       <div class="scene-title title clearfix">
          <div class="scene-title-span"><h5>场景管理</h5></div>
@@ -204,7 +232,9 @@
         </el-col>
         <el-col :span="10" class="questions">
           <div class="questions-inner">
-            <el-button class="el-button-plus" type="primary" icon="el-icon-plus">新增</el-button>
+            <el-button class="el-button-plus" type="primary" icon="el-icon-plus" 
+            @click="createQuestionClick">
+            新增</el-button>
             <el-tabs v-model="activeQuestions" @tab-click="questionTag">
               <el-tab-pane label="入口问题" name="first">
                 <div class="entrance-list">
@@ -278,7 +308,8 @@
             <el-input
               class="script-inner"
               type="textarea"
-              placeholder="请输入内容"
+              placeholder="脚本内容显示区域"
+              disabled
               v-model="script_text">
             </el-input>
           </div>
@@ -317,6 +348,8 @@
         underSceneVisible: false,
         renameEntranceVisible: false,
         renameOutVisible: false,
+        createEntranceVisible: false,
+        createOutVisible: false,
         renameForm: {
           name: '',
           id: '',
@@ -357,15 +390,18 @@
         },
         scene_list: [{
           id: 1,
-          title: '默认场景1'
+          title: '默认场景1',
+          theme_content: '脚本内容',
         },
         {
           id: 2,
-          title: '默认场景2'
+          title: '默认场景2',
+          theme_content: '脚本内容',
         },
         {
           id: 3,
-          title: '默认场景3'
+          title: '默认场景3',
+          theme_content: '脚本内容',
         }],
         checkedScene: {id: '', title: '',},//当前主题
         checkedScenes: [],
@@ -541,6 +577,7 @@
       sceneClick(item){
         this.checkedScene.id = item.id;
         this.checkedScene.title = item.title;
+        this.script_text = item.theme_content;
         this.httpGetSceneDetails(item.id);
       },
       handleSceneCurrentChange(val){
@@ -563,6 +600,27 @@
         this.renameEntranceVisible = false;
         this.renameOutVisible = false;
         this.httpUpdateStandardQuestion(this.checkedScene.id, this.renameQuestionForm.id, this.renameQuestionForm.question);
+      },
+      createQuestionClick(){
+        console.log("????????");
+        alert('?????');
+        this.renameQuestionForm.id = '';
+        if(this.activeQuestions === 'first'){
+          this.renameQuestionForm.question = '请输入入口问题';
+          this.createEntranceVisible = true;
+        }else{
+          this.renameQuestionForm.question = '请输入出口问题';
+          this.createOutVisible = true;
+        }
+      },
+      createQuestion(){
+        var type = '';
+        if(this.activeQuestions === 'first'){
+          type = 'entry';
+        }else{
+          type = 'end';
+        }
+        this.httpAddStandardQuestion(this.checkedScene.id, type, this.renameQuestionForm.question);
       },
       entranceChange () {
         console.log(this.checkedEntrances)
@@ -798,6 +856,7 @@
               this.scene_list[i] = {
                 id: list[i].THEME_ID,
                 title: list[i].THEME_NAME,
+                theme_content: list[i].THEME_CONTENT,
               }
             }
           }
@@ -1017,7 +1076,11 @@
           var data = res.data;
           console.log("addStandardQuestion");
           console.log(data);
-
+          if (type === 'entry') {
+            this.httpGetQuestions(themeId, type, this.entranceCurrentPage);
+          }else{
+            this.httpGetQuestions(themeId, type, this.outCurrentPage);
+          }       
         })
       },
       httpUpdateStandardQuestion(themeId, questionId, question){
@@ -1035,7 +1098,8 @@
           var data = res.data;
           console.log("updateStandardQuestion");
           console.log(data);
-
+          this.httpGetQuestions(themeId, 'entry', this.entranceCurrentPage);
+          this.httpGetQuestions(themeId, 'end', this.outCurrentPage);
         })
       },
       httpDeleteQuestion(questionId){
@@ -1051,7 +1115,8 @@
           var data = res.data;
           console.log("deleteQuestion");
           console.log(data);
-
+          this.httpGetQuestions(themeId, 'entry', 1);
+          this.httpGetQuestions(themeId, 'end', 1);
         })
       },
       httpAddKeyWord(themeId, keyword){
