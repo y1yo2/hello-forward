@@ -232,8 +232,8 @@
         </el-col>
         <el-col :span="10" class="questions">
           <div class="questions-inner">
-            <el-button class="el-button-plus" type="primary" icon="el-icon-plus" 
-            @click="createQuestionClick">
+            <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
+            @click.native="createQuestionClick">
             新增</el-button>
             <el-tabs v-model="activeQuestions" @tab-click="questionTag">
               <el-tab-pane label="入口问题" name="first">
@@ -1080,7 +1080,7 @@
             this.httpGetQuestions(themeId, type, this.entranceCurrentPage);
           }else{
             this.httpGetQuestions(themeId, type, this.outCurrentPage);
-          }       
+          }
         })
       },
       httpUpdateStandardQuestion(themeId, questionId, question){
@@ -1355,6 +1355,7 @@
             text-align: center;
             background-color: #4E86EC;
             border-color: #4E86EC;
+            z-index: 999;
           }
           .entrance-list {
             position: relative;
