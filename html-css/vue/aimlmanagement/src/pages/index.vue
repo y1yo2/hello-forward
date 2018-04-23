@@ -97,6 +97,20 @@
       <el-button type="primary" @click="underSceneVisible=false">确 定</el-button>
     </span>
   </el-dialog>
+  <el-dialog
+    title="是否重命名该主题？"
+    :visible.sync="renameEntranceVisible"
+    width="30%">
+    <el-form :model="renameQuestionForm">
+      <el-form-item label="活动名称" :label-width="formLabelWidth">
+        <el-input v-model="renameQuestionForm.question" auto-complete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="renameEntranceVisible = false">取 消</el-button>
+      <el-button type="primary" @click="httpUpdateStandardQuestion">确 定</el-button>
+    </span>
+  </el-dialog>
     <el-aside width="300px" class="scene-manage clearfix">
       <div class="scene-title title clearfix">
          <div class="scene-title-span"><h5>场景管理</h5></div>
@@ -157,10 +171,6 @@
               </div>
             </div>
             <div class="scene-theme-list">
-              <!--             <div class="scene-theme-item" v-for="(item, idx) in scene_list" :class="{'active': scene_id == item.id}" @click="changeScene(item.id)">
-                            {{item.title}}
-                            <i class="el-icon-edit-outline" size="mini" @click=""></i>
-                          </div> -->
               <el-checkbox-group v-model="checkedScenes" @change="">
                 <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
                   {{item.title}}<i class="el-icon-edit-outline" size="mini" @click="renameSceneClick(item)"></i>
@@ -184,8 +194,9 @@
               <el-tab-pane label="入口问题" name="first">
                 <div class="entrance-list">
                   <el-checkbox-group v-model="checkedEntrances" @change="entranceChange">
-                    <el-checkbox v-for="item in entrance_list" :label="item" :key="item">
-                      {{item}}</el-checkbox>
+                    <el-checkbox v-for="item in entrance_list" :label="item.id" :key="item.id">
+                      {{item.title}}<i class="el-icon-edit-outline" size="mini" @click="renameSceneClick(item)"></i>
+                    </el-checkbox>
                   </el-checkbox-group>
                   <el-pagination
                     small
@@ -203,8 +214,9 @@
               <el-tab-pane label="出口问题" name="second">
                 <div class="out-list">
                   <el-checkbox-group v-model="checkedOut" @change="outChange">
-                    <el-checkbox v-for="item in out_list" :label="item.title" :key="item.title">
-                      {{item.title}}</el-checkbox>
+                    <el-checkbox v-for="item in out_list" :label="item.id" :key="item.id">
+                      {{item.title}}<i class="el-icon-edit-outline" size="mini" @click="renameSceneClick(item)"></i>
+                    </el-checkbox>
                   </el-checkbox-group>
                   <el-pagination
                     small
@@ -277,12 +289,17 @@
         renameSceneVisible: false,
         publishSceneVisible: false,
         underSceneVisible: false,
+        renameEntranceVisible: false,
         renameForm: {
           name: '',
           id: '',
         },
         renameSceneForm: {
           name: '',
+          id: '',
+        },
+        renameQuestionForm: {
+          question: '',
           id: '',
         },
         formLabelWidth: '120px',
@@ -300,7 +317,7 @@
           label: '双皮奶'
         }],
         scene_id: 1,
-        repositoryValue: '',
+        repositoryValue: '',//当前知识库
         filterText: '',
         treeDataAdd: [], //懒加载增加的部分
         treeData: {}, //当前的树data
@@ -311,7 +328,6 @@
           children: 'children',
           isLeaf: 'isLeaf'
         },
-
         scene_list: [{
           id: 1,
           title: '默认场景1'
@@ -324,26 +340,38 @@
           id: 3,
           title: '默认场景3'
         }],
+        checkedScene: {id: '', title: '',},//当前主题
         checkedScenes: [],
         entrance_list: [ // 入口问题
-          '我现在婚，我的房子归谁',
-          '我在要离，我的房子归谁',
-          '我现在要离，我的房子归谁',
-          '我现在要离婚，我的子归谁',
-        ],
+          {
+          id: 1,
+          title: '默认入口问题1'
+        },
+        {
+          id: 2,
+          title: '默认入口问题2'
+        },
+        {
+          id: 3,
+          title: '默认入口问题3'
+        }],
         checkAll: false,
         checkedEntrances: [],
         isIndeterminate: true,
         checkedOut: [],
         out_list: [ // 出口问题
-          {title: '我现在要离婚，我的'},
-          {title: '我现在要婚，我的房子归谁'},
-          {title: '我现在要离婚，我的房归谁'},
-          {title: '我现在要离婚，我房子归谁'},
-          {title: '我现在离婚，我的子归谁'},
-          {title: '我现在要离婚，我的子归谁'},
-          {title: '现在要离婚，我的房子归谁'}
-        ],
+          {
+          id: 1,
+          title: '默认出口问题1'
+        },
+        {
+          id: 2,
+          title: '默认出口问题2'
+        },
+        {
+          id: 3,
+          title: '默认出口问题3'
+        }],
         currentPage2: 5,
         channels: [
           '网站', 'APP', '短信', '微信', '微博', 'QQ'
@@ -453,6 +481,8 @@
       renameSceneClick(item){
         this.renameSceneForm.id = item.id;
         this.renameSceneForm.name = item.title;
+        this.checkedScene.id = item.id;
+        this.checkedScene.title = item.title;
         this.renameSceneVisible = true;
       },
       sceneClick(item){
@@ -1168,6 +1198,11 @@
               position: absolute;
               bottom: 0;
             }
+            .el-icon-edit-outline {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+              }
           }
           .out-list {
             position: relative;
@@ -1185,6 +1220,11 @@
               position: absolute;
               bottom: 0;
             }
+            .el-icon-edit-outline {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+              }
           }
         }
         .groove {
