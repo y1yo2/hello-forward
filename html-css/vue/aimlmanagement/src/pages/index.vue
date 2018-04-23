@@ -23,13 +23,13 @@
     </span>
   </el-dialog>
   <el-dialog
-    title="是否重命名该节点？"
+    title="是否重命名该目录？"
     :visible.sync="renameVisible"
     width="30%"
     >
     <!-- <span class="dialog-footer">是否重命名该节点</span> -->
     <el-form :model="renameForm">
-    <el-form-item label="活动名称" :label-width="formLabelWidth">
+    <el-form-item label="目录名称" :label-width="formLabelWidth">
       <el-input v-model="renameForm.name" auto-complete="off"></el-input>
     </el-form-item>
   </el-form>
@@ -68,7 +68,7 @@
     :visible.sync="renameSceneVisible"
     width="30%">
     <el-form :model="renameSceneForm">
-      <el-form-item label="活动名称" :label-width="formLabelWidth">
+      <el-form-item label="主题名称" :label-width="formLabelWidth">
         <el-input v-model="renameSceneForm.name" auto-complete="off"></el-input>
       </el-form-item>
     </el-form>
@@ -98,17 +98,31 @@
     </span>
   </el-dialog>
   <el-dialog
-    title="是否重命名该主题？"
+    title="是否修改该入口问题？"
     :visible.sync="renameEntranceVisible"
     width="30%">
     <el-form :model="renameQuestionForm">
-      <el-form-item label="活动名称" :label-width="formLabelWidth">
+      <el-form-item label="入口问题" :label-width="formLabelWidth">
         <el-input v-model="renameQuestionForm.question" auto-complete="off"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="renameEntranceVisible = false">取 消</el-button>
-      <el-button type="primary" @click="httpUpdateStandardQuestion">确 定</el-button>
+      <el-button type="primary" @click="renameQuestion">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="是否修改该出口问题？"
+    :visible.sync="renameOutVisible"
+    width="30%">
+    <el-form :model="renameQuestionForm">
+      <el-form-item label="出口问题" :label-width="formLabelWidth">
+        <el-input v-model="renameQuestionForm.question" auto-complete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="renameOutVisible = false">取 消</el-button>
+      <el-button type="primary" @click="renameQuestion">确 定</el-button>
     </span>
   </el-dialog>
     <el-aside width="300px" class="scene-manage clearfix">
@@ -173,7 +187,8 @@
             <div class="scene-theme-list">
               <el-checkbox-group v-model="checkedScenes" @change="">
                 <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
-                  {{item.title}}<i class="el-icon-edit-outline" size="mini" @click="renameSceneClick(item)"></i>
+                  <span @click.prevent="sceneClick(item)">{{item.title}}</span>
+                  <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                 </el-checkbox>
               </el-checkbox-group>
             </div>
@@ -195,7 +210,7 @@
                 <div class="entrance-list">
                   <el-checkbox-group v-model="checkedEntrances" @change="entranceChange">
                     <el-checkbox v-for="item in entrance_list" :label="item.id" :key="item.id">
-                      {{item.title}}<i class="el-icon-edit-outline" size="mini" @click="renameSceneClick(item)"></i>
+                      {{item.title}}<i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
                     </el-checkbox>
                   </el-checkbox-group>
                   <el-pagination
@@ -215,7 +230,7 @@
                 <div class="out-list">
                   <el-checkbox-group v-model="checkedOut" @change="outChange">
                     <el-checkbox v-for="item in out_list" :label="item.id" :key="item.id">
-                      {{item.title}}<i class="el-icon-edit-outline" size="mini" @click="renameSceneClick(item)"></i>
+                      {{item.title}}<i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
                     </el-checkbox>
                   </el-checkbox-group>
                   <el-pagination
@@ -240,12 +255,12 @@
               <el-tabs v-model="activeGroove" @tab-click="grooveTag">
                 <el-tab-pane label="入口问题" name="checkedEntrenace">
                   <div class="list">
-                    <div class="item" v-for="(item, index) in checkedEntrances">{{item}}</div>
+                    <div class="item" v-for="(item, index) in entrance_grooves">{{item.title}}</div>
                   </div>
                 </el-tab-pane>
                 <el-tab-pane label="出口问题" name="checkedOut">
                   <div class="list">
-                    <div class="item" v-for="(item, index) in checkedOut">{{item}}</div>
+                    <div class="item" v-for="(item, index) in out_grooves">{{item.title}}</div>
                   </div>
                 </el-tab-pane>
               </el-tabs>
@@ -290,6 +305,7 @@
         publishSceneVisible: false,
         underSceneVisible: false,
         renameEntranceVisible: false,
+        renameOutVisible: false,
         renameForm: {
           name: '',
           id: '',
@@ -372,7 +388,33 @@
           id: 3,
           title: '默认出口问题3'
         }],
-        currentPage2: 5,
+        //出入口槽点
+        entrance_grooves: [
+         {
+          id: 1,
+          title: '默认入口槽点1'
+        },
+        {
+          id: 2,
+          title: '默认入口槽点2'
+        },
+        {
+          id: 3,
+          title: '默认入口槽点3'
+        }],
+        out_grooves: [{
+          id: 1,
+          title: '默认出口槽点1'
+        },
+        {
+          id: 2,
+          title: '默认出口槽点2'
+        },
+        {
+          id: 3,
+          title: '默认出口槽点3'
+        }],
+        //渠道
         channels: [
           '网站', 'APP', '短信', '微信', '微博', 'QQ'
         ],
@@ -474,26 +516,38 @@
       },
       //场景列涉及的函数
       deleteSceneClick(){
-        // console.log(this.checkedScenes);
-        // console.log(JSON.stringify(this.checkedScenes));
         this.httpDeleteScene();
       },
       renameSceneClick(item){
         this.renameSceneForm.id = item.id;
         this.renameSceneForm.name = item.title;
-        this.checkedScene.id = item.id;
-        this.checkedScene.title = item.title;
         this.renameSceneVisible = true;
       },
       sceneClick(item){
-        console.log(item);
-        this.sceneId = item.id;
+        this.checkedScene.id = item.id;
+        this.checkedScene.title = item.title;
+        this.httpGetSceneDetails(item.id);
       },
       handleSceneCurrentChange(val){
         this.httpChangeSceneList(val);
       },
       changeScene (id) { // 切换场景
         this.scene_id = id
+      },
+      //出入口问题列表涉及的函数
+      renameQuestionClick(item){
+        this.renameQuestionForm.id = item.id;
+        this.renameQuestionForm.question = item.title;
+        if(this.activeQuestions === 'first'){
+          this.renameEntranceVisible = true;
+        }else{
+          this.renameOutVisible = true;
+        }
+      },
+      renameQuestion(){
+        this.renameEntranceVisible = false;
+        this.renameOutVisible = false;
+        this.httpUpdateStandardQuestion(this.checkedScene.id, this.renameQuestionForm.id, this.renameQuestionForm.question);
       },
       entranceChange () {
         console.log(this.checkedEntrances)
@@ -837,12 +891,33 @@
           var data = res.data;
           console.log("sceneDetail");
           console.log(data);
+          //修改出入口问题列表
           this.outTotal = data.end_question_list_total;
           this.entranceTotal = data.entry_question_list_total;
+          this.outCurrentPage = 1;
+          this.entranceCurrentPage = 1;
 
-          // data.end_question_list.QUESTION
-          // data.entry_question_list.QUESTION_ID
+          this.entrance_list = new Array();
+          this.out_list = new Array();
+          let eq_list = data.entry_question_list;
+          let oq_list = data.end_question_list;
+          if (eq_list.length > 0) {
+            for(var i=0;i<eq_list.length;i++){
+              this.entrance_list[i] = {};
+              this.entrance_list[i].id = eq_list[i].QUESTION_ID;
+              this.entrance_list[i].title = eq_list[i].QUESTION;
+            }
+          }
 
+          if (oq_list.length > 0) {
+            for(var i=0;i<oq_list.length;i++){
+              this.out_list[i] = {};
+              this.out_list[i].id = oq_list[i].QUESTION_ID;
+              this.out_list[i].title = oq_list[i].QUESTION;
+            }
+          }
+
+          //修改槽点
 
           // data.key_word_list_entry.KEYWORD_ID
           // data.key_word_list_end.KEYWORD
