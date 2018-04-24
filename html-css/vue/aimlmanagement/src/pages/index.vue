@@ -1,10 +1,23 @@
 <template>
   <el-container>
   <el-dialog
+    :title="progressTitle"
+    :visible.sync="progressPublishVisible"
+    width="30%">
+    <!-- <span class="dialog-footer">是否删除该节点</span> -->
+    <el-progress class="dialog-footer" type="circle" 
+    :percentage="percentage" :status="progressStatus">
+    </el-progress>
+    <div class="progressContent"><span class="dialog-footer">{{progressContent}}</span></div>
+    <span slot="footer" class="dialog-footer">
+      <!-- <el-button @click="progressPublishVisible = false">取 消</el-button> -->
+      <el-button type="primary" @click="progressPublishVisible = false" :loading="progressButtonLoading">{{progressButtonText}}</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
     title="删除确认"
     :visible.sync="deleteVisible"
-    width="30%"
-    >
+    width="30%">
     <span class="dialog-footer">是否删除该节点</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="deleteVisible = false">取 消</el-button>
@@ -14,8 +27,7 @@
   <el-dialog
     title="新增确认"
     :visible.sync="createVisible"
-    width="30%"
-    >
+    width="30%">
     <span class="dialog-footer">是否新增一个节点</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="createVisible = false">取 消</el-button>
@@ -25,8 +37,7 @@
   <el-dialog
     title="是否重命名该目录？"
     :visible.sync="renameVisible"
-    width="30%"
-    >
+    width="30%">
     <!-- <span class="dialog-footer">是否重命名该节点</span> -->
     <el-form :model="renameForm">
     <el-form-item label="目录名称" :label-width="formLabelWidth">
@@ -84,7 +95,7 @@
     <span class="dialog-footer">是否发布选中的主题？</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="publishSceneVisible=false">取 消</el-button>
-      <el-button type="primary" @click="publishSceneVisible=false">确 定</el-button>
+      <el-button type="primary" @click="httpPublishScene">确 定</el-button>
     </span>
   </el-dialog>
   <el-dialog
@@ -94,7 +105,7 @@
     <span class="dialog-footer">是否下架选中的主题？</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="underSceneVisible=false">取 消</el-button>
-      <el-button type="primary" @click="underSceneVisible=false">确 定</el-button>
+      <el-button type="primary" @click="httpUnderScene">确 定</el-button>
     </span>
   </el-dialog>
   <el-dialog
@@ -353,7 +364,6 @@
     name: "index",
     data () {
       return {
-        script_text: '',
         global_search: '',
         activeQuestions: 'first',
         activeGroove: 'checkedEntrenace',
@@ -370,6 +380,13 @@
         createEntranceVisible: false,
         createOutVisible: false,
         updateGrooveVisible: false,
+        progressPublishVisible: false,
+        percentage: 0,
+        progressTitle: '正在发布主题',
+        progressContent: '正在发布，请稍后',
+        progressButtonText: '发布中',
+        progressButtonLoading: true,
+        progressStatus: '',
         renameForm: {
           name: '',
           id: '',
@@ -616,8 +633,16 @@
       handleSceneCurrentChange(val){
         this.httpChangeSceneList(val);
       },
-      changeScene (id) { // 切换场景
-        this.scene_id = id
+      updateSceneDetail (id) { // 切换场景
+        this.entrance_list = new Array();
+        this.out_list = new Array();
+        this.entrance_grooves = new Array();
+        this.out_grooves = new Array();
+        this.script_text = '';
+        this.checkedChannel = new Array();
+        if (id !== null) {
+          this.httpGetSceneDetails(id);
+        }
       },
       //出入口问题列表涉及的函数
       renameQuestionClick(item){
@@ -897,6 +922,7 @@
           if (!(data.total > 0)) total=50;
           this.sceneTotal = total;
           this.sceneCurrentPage = rows;
+          var themeId = null;
           if (list.length > 0) {
             for(var i=0;i<list.length;i++){
               this.scene_list[i] = {
@@ -905,7 +931,9 @@
                 theme_content: list[i].THEME_CONTENT,
               }
             }
+            themeId = list[0].THEME_ID;
           }
+          this.updateSceneDetail(themeId);
         })
       },
       httpCreateScene(){
@@ -943,7 +971,53 @@
           var data = res.data;
           console.log("deleteScene");
           console.log(data);
+          this.progressTitle='正在删除主题';
+          this.progressContent='正在删除，请稍后';
+          this.progressStatus='';
+          this.percentage=0;      
+          this.progressButtonText='删除中';
+          this.progressButtonLoading=true;
+          this.progressPublishVisible=true;
+          this.checkedScenes=[];
+          this.httpCheckDeleteScene();
           this.httpChangeSceneList(1);
+        })
+      },
+      httpCheckDeleteScene(){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/checkDeleteAimlTopic',
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          var code = res.status;
+          var value = data.value;
+          if (code === 200) {
+            if (value === 100 || value === '100') {
+              //成功
+              this.percentage = parseInt(value);
+              this.progressContent='删除主题成功';
+              this.progressTitle='删除成功'
+              this.progressStatus='success';
+              this.progressButtonText='完成';
+              this.progressButtonLoading=false;
+              this.httpChangeSceneList(1);
+              if (data.status === '3') {
+                 this.progressContent='删除主题成功：成功 ' + data.successNum + ' 条，' + '失败 ' + data.failureNum + ' 条。';
+                 this.progressStatus='success';
+              }
+            }else{
+              this.percentage = parseInt(value);
+              setTimeout(this.httpCheckPublishScene, 500);
+            }
+          }else{
+            this.progressContent='删除失败';
+            this.progressStatus='exception';
+            this.progressButtonText='完成';
+            this.progressButtonLoading=false;
+            this.httpChangeSceneList(1);
+          }
         })
       },
       httpRenameScene(){
@@ -975,10 +1049,56 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
+          this.progressTitle='正在发布主题';
+          this.progressContent='正在发布，请稍后';
+          this.progressStatus='';
+          this.percentage=0;
+          this.progressButtonText='发布中';
+          this.progressButtonLoading=true;
+          this.progressPublishVisible = true;
+          this.checkedScenes=[];
+          this.httpCheckPublishScene();
+        })
+      },
+      httpCheckPublishScene(){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/checkPublishAimlTopic',
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
           var data = res.data;
-          console.log("publishScene");
-          console.log(data);
-          // this.httpChangeSceneList(1);
+          var code = res.status;
+          var value = data.value;
+          if (code === 200) {
+            if (value === 100 || value === '100') {
+              //成功
+              this.percentage = parseInt(value);
+              this.progressContent='发布主题成功';
+              this.progressTitle='发布成功'
+              this.progressStatus='success';
+              this.progressButtonText='完成';
+              this.progressButtonLoading=false;
+              if (data.status === '3') {
+                 this.progressContent='发布主题成功：成功 ' + data.successNum + ' 条，' + '失败 ' + data.failureNum + ' 条。';
+                 this.progressStatus='success';
+              }
+            }
+            // else if (value >= 100 && (data.status!="3" ||data.status!="5" ||data.status!="6" )) {
+            //   value=99;
+            //   this.percentage = parseInt(value);
+            //   setTimeout(this.httpCheckPublishScene, 500);
+            // }
+            else{
+              this.percentage = parseInt(value);
+              setTimeout(this.httpCheckPublishScene, 500);
+            }
+          }else{
+            this.progressContent='发布失败';
+            this.progressStatus='exception';
+            this.progressButtonText='完成';
+            this.progressButtonLoading=false;
+          }
         })
       },
       httpUnderScene(){
@@ -992,10 +1112,50 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
+          this.progressTitle='正在下架主题';
+          this.progressContent='正在下架，请稍后';
+          this.progressStatus='';
+          this.percentage=0;
+          this.progressButtonText='下架中';
+          this.progressButtonLoading=true;
+          this.progressPublishVisible = true;
+          this.checkedScenes=[];
+          this.httpCheckUnderScene();
+        })
+      },
+      httpCheckUnderScene(){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/checkUnderCarriageAimlTopic',
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
           var data = res.data;
-          console.log("underScene");
-          console.log(data);
-          // this.httpChangeSceneList(1);
+          var code = res.status;
+          var value = data.value;
+          if (code === 200) {
+            if (value === 100 || value === '100') {
+              //成功
+              this.percentage = parseInt(value);
+              this.progressContent='下架主题成功';
+              this.progressTitle='下架成功'
+              this.progressStatus='success';
+              this.progressButtonText='完成';
+              this.progressButtonLoading=false;
+              if (data.status === '3') {
+                 this.progressContent='下架主题成功：成功 ' + data.successNum + ' 条，' + '失败 ' + data.failureNum + ' 条。';
+                 this.progressStatus='success';
+              }
+            }else{
+              this.percentage = parseInt(value);
+              setTimeout(this.httpCheckPublishScene, 500);
+            }
+          }else{
+            this.progressContent='下架失败';
+            this.progressStatus='exception';
+            this.progressButtonText='完成';
+            this.progressButtonLoading=false;
+          }
         })
       },
       httpGetSceneDetails(themeId){
@@ -1086,6 +1246,7 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
+          console.log(res);
           var data = res.data;
           var total = data.total;
           var list = data.list;
@@ -1348,6 +1509,16 @@
      display: block;
      clear: both;
   }
+  .progressContent {
+    float: right;
+    height: 126px;
+    width: 250px;
+    border: 0px;
+    .dialog-footer{
+      display: inline-block;
+      margin-top: 50px;
+    }
+  }
   .el-tree-node {
      content: '';
      display: block;
@@ -1372,6 +1543,10 @@
   }
   .el-dialog__header, .el-dialog__body {
     text-align: left;
+    content: '';
+    display: block;
+    clear: both;
+    position: relative;
   }
   .el-icon-plus:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
   .el-icon-edit-outline:hover
