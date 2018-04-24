@@ -1009,7 +1009,7 @@
               }
             }else{
               this.percentage = parseInt(value);
-              setTimeout(this.httpCheckPublishScene, 500);
+              setTimeout(this.httpCheckDeleteScene, 500);
             }
           }else{
             this.progressContent='删除失败';
@@ -1148,7 +1148,7 @@
               }
             }else{
               this.percentage = parseInt(value);
-              setTimeout(this.httpCheckPublishScene, 500);
+              setTimeout(this.httpCheckUnderScene, 500);
             }
           }else{
             this.progressContent='下架失败';
@@ -1611,8 +1611,11 @@
               text-align: left;
               border-bottom: 1px solid #cdd0d4;
               .el-checkbox__label {
+                display: inline-block;
                 width: 70%;
                 height: 15px;
+                line-height: 15px;
+                margin-top: 10px;
                 overflow: hidden;
                 text-overflow:ellipsis;
                 white-space: nowrap;
@@ -1676,9 +1679,13 @@
               width: 100%;
               line-height: 40px;
               border-bottom: 1px solid #E4E7EB;
+              height: 39px;
               .el-checkbox__label {
+                display: inline-block;
                 width: 85%;
-                height: 14px;
+                height: 16px;
+                line-height: 16px;
+                margin-top: 10px;
                 overflow: hidden;
                 text-overflow:ellipsis;
                 white-space: nowrap;
@@ -1687,8 +1694,8 @@
             }
             .entrance-page {
               position: absolute;
-              bottom: 5px;
-              left: 0;
+              bottom: 15px;
+              left: 5px;
             }
             .el-icon-edit-outline {
                 position: absolute;
