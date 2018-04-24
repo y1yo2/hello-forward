@@ -959,6 +959,13 @@
       },
       httpDeleteScene(){
         this.deleteSceneVisible=false;
+        this.progressTitle='正在删除主题';
+        this.progressContent='正在删除，请稍后';
+        this.progressStatus='';
+        this.percentage=0;
+        this.progressButtonText='删除中';
+        this.progressButtonLoading=true;
+        this.checkedScenes=[];
         this.$http({
           method: 'post',
           url: '/aimlManage/deleteAimlTopic',
@@ -968,19 +975,9 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
-          var data = res.data;
-          console.log("deleteScene");
-          console.log(data);
-          this.progressTitle='正在删除主题';
-          this.progressContent='正在删除，请稍后';
-          this.progressStatus='';
-          this.percentage=0;
-          this.progressButtonText='删除中';
-          this.progressButtonLoading=true;
+          // var data = res.data;
           this.progressPublishVisible=true;
-          this.checkedScenes=[];
           this.httpCheckDeleteScene();
-          this.httpChangeSceneList(1);
         })
       },
       httpCheckDeleteScene(){
@@ -1040,6 +1037,13 @@
       },
       httpPublishScene(){
         this.publishSceneVisible=false;
+        this.progressTitle='正在发布主题';
+        this.progressContent='正在发布，请稍后';
+        this.progressStatus='';
+        this.percentage=0;
+        this.progressButtonText='发布中';
+        this.progressButtonLoading=true;
+        this.checkedScenes=[];
         this.$http({
           method: 'post',
           url: '/aimlManage/publishAimlTopic',
@@ -1049,14 +1053,7 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
-          this.progressTitle='正在发布主题';
-          this.progressContent='正在发布，请稍后';
-          this.progressStatus='';
-          this.percentage=0;
-          this.progressButtonText='发布中';
-          this.progressButtonLoading=true;
           this.progressPublishVisible = true;
-          this.checkedScenes=[];
           this.httpCheckPublishScene();
         })
       },
@@ -1103,6 +1100,13 @@
       },
       httpUnderScene(){
         this.underSceneVisible=false;
+        this.progressTitle='正在下架主题';
+        this.progressContent='正在下架，请稍后';
+        this.progressStatus='';
+        this.percentage=0;
+        this.progressButtonText='下架中';
+        this.progressButtonLoading=true;
+        this.checkedScenes=[];
         this.$http({
           method: 'post',
           url: '/aimlManage/underCarriageAimlTopic',
@@ -1112,14 +1116,7 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
-          this.progressTitle='正在下架主题';
-          this.progressContent='正在下架，请稍后';
-          this.progressStatus='';
-          this.percentage=0;
-          this.progressButtonText='下架中';
-          this.progressButtonLoading=true;
           this.progressPublishVisible = true;
-          this.checkedScenes=[];
           this.httpCheckUnderScene();
         })
       },
