@@ -1613,12 +1613,12 @@
               .el-checkbox__label {
                 display: inline-block;
                 width: 70%;
-                height: 15px;
-                line-height: 15px;
-                margin-top: 10px;
+                height: 18px;
+                line-height: 16px;
                 overflow: hidden;
                 text-overflow:ellipsis;
                 white-space: nowrap;
+                vertical-align: middle;
               }
               .el-icon-edit-outline {
                 position: absolute;
@@ -1683,12 +1683,12 @@
               .el-checkbox__label {
                 display: inline-block;
                 width: 85%;
-                height: 16px;
-                /*line-height: 16px;*/
-                margin-top: 10px;
+                height: 18px;
+                line-height: 16px;
                 overflow: hidden;
                 text-overflow:ellipsis;
                 white-space: nowrap;
+                vertical-align: middle;
 
               }
             }
@@ -1699,7 +1699,7 @@
             }
             .el-icon-edit-outline {
                 position: absolute;
-                top: 16px;
+                top: 10px;
                 right: 16px;
               }
           }
@@ -1717,12 +1717,12 @@
               .el-checkbox__label {
                 display: inline-block;
                 width: 85%;
-                height: 16px;
-                /*line-height: 16px;*/
-                margin-top: 10px;
+                height: 18px;
+                line-height: 16px;
                 overflow: hidden;
                 text-overflow:ellipsis;
                 white-space: nowrap;
+                vertical-align: middle;
 
               }
             }
@@ -1733,7 +1733,7 @@
             }
             .el-icon-edit-outline {
                 position: absolute;
-                top: 16px;
+                top: 10px;
                 right: 16px;
               }
           }
