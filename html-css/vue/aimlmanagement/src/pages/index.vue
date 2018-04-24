@@ -1676,7 +1676,6 @@
               width: 100%;
               line-height: 40px;
               border-bottom: 1px solid #E4E7EB;
-              height: 39px;
               .el-checkbox__label {
                 display: inline-block;
                 width: 85%;
@@ -1696,7 +1695,7 @@
             }
             .el-icon-edit-outline {
                 position: absolute;
-                top: 10px;
+                top: 14px;
                 right: 16px;
               }
           }
@@ -1725,12 +1724,12 @@
             }
             .out-page {
               position: absolute;
-              bottom: 5px;
-              left: 0;
+              bottom: 15px;
+              left: 5px;
             }
             .el-icon-edit-outline {
                 position: absolute;
-                top: 10px;
+                top: 14px;
                 right: 16px;
               }
           }
