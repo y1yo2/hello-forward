@@ -18,7 +18,7 @@
     title="删除确认"
     :visible.sync="deleteVisible"
     width="30%">
-    <span class="dialog-footer">是否删除该节点</span>
+    <span class="dialog-footer">是否删除该目录</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="deleteVisible = false">取 消</el-button>
       <el-button type="primary" @click="removeForButton">确 定</el-button>
@@ -167,6 +167,20 @@
     </span>
   </el-dialog>
   <el-dialog
+    title="是否删除该问题？"
+    :visible.sync="deleteEntranceVisible"
+    width="30%">
+    <el-form :model="renameQuestionForm">
+      <el-form-item label="问题内容" :label-width="formLabelWidth">
+        <el-input v-model="renameQuestionForm.question" auto-complete="off" :disabled="true"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="deleteEntranceVisible = false">取 消</el-button>
+      <el-button type="primary" @click="deleteQuestion">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
     title="是否修改该槽点？"
     :visible.sync="updateGrooveVisible"
     width="30%">
@@ -268,7 +282,9 @@
                 <div class="entrance-list">
                   <el-checkbox-group v-model="checkedEntrances" @change="entranceChange">
                     <el-checkbox v-for="item in entrance_list" :label="item.id" :key="item.id">
-                      {{item.title}}<i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
+                      {{item.title}}
+                      <i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
+                      <i class="el-icon-delete" size="mini" @click.prevent="deleteQuestionClick(item)"></i>
                     </el-checkbox>
                   </el-checkbox-group>
                   <el-pagination
@@ -288,7 +304,9 @@
                 <div class="out-list">
                   <el-checkbox-group v-model="checkedOut" @change="outChange">
                     <el-checkbox v-for="item in out_list" :label="item.id" :key="item.id">
-                      {{item.title}}<i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
+                      {{item.title}}
+                      <i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
+                      <i class="el-icon-delete" size="mini" @click.prevent="deleteQuestionClick(item)"></i>
                     </el-checkbox>
                   </el-checkbox-group>
                   <el-pagination
@@ -381,6 +399,7 @@
         createOutVisible: false,
         updateGrooveVisible: false,
         progressPublishVisible: false,
+        deleteEntranceVisible: false,
         percentage: 0,
         progressTitle: '正在发布主题',
         progressContent: '正在发布，请稍后',
@@ -680,6 +699,15 @@
         }
         this.httpAddStandardQuestion(this.checkedScene.id, type, this.renameQuestionForm.question);
       },
+      deleteQuestionClick(item){
+        this.renameQuestionForm.id = item.id;
+        this.renameQuestionForm.question = item.title;
+        this.deleteEntranceVisible = true;
+      },
+      deleteQuestion(){
+        this.deleteEntranceVisible = false;
+        this.httpDeleteQuestion(this.renameQuestionForm.id);
+      },
       entranceChange () {
         console.log(this.checkedEntrances)
       },
@@ -965,7 +993,6 @@
         this.percentage=0;
         this.progressButtonText='删除中';
         this.progressButtonLoading=true;
-        this.checkedScenes=[];
         this.$http({
           method: 'post',
           url: '/aimlManage/deleteAimlTopic',
@@ -978,6 +1005,7 @@
           // var data = res.data;
           this.progressPublishVisible=true;
           this.httpCheckDeleteScene();
+          this.checkedScenes=[];
         })
       },
       httpCheckDeleteScene(){
@@ -1043,7 +1071,6 @@
         this.percentage=0;
         this.progressButtonText='发布中';
         this.progressButtonLoading=true;
-        this.checkedScenes=[];
         this.$http({
           method: 'post',
           url: '/aimlManage/publishAimlTopic',
@@ -1055,6 +1082,7 @@
         }).then ((res) => {
           this.progressPublishVisible = true;
           this.httpCheckPublishScene();
+          this.checkedScenes=[];
         })
       },
       httpCheckPublishScene(){
@@ -1106,7 +1134,6 @@
         this.percentage=0;
         this.progressButtonText='下架中';
         this.progressButtonLoading=true;
-        this.checkedScenes=[];
         this.$http({
           method: 'post',
           url: '/aimlManage/underCarriageAimlTopic',
@@ -1118,6 +1145,7 @@
         }).then ((res) => {
           this.progressPublishVisible = true;
           this.httpCheckUnderScene();
+          this.checkedScenes=[];
         })
       },
       httpCheckUnderScene(){
@@ -1368,9 +1396,9 @@
           console.log("deleteQuestion");
           console.log(data);
           if (this.activeQuestions === 'first') {
-            this.httpGetQuestions(themeId, 'entry', 1);
+            this.httpGetQuestions(this.checkedScene.id, 'entry', 1);
           }else{
-            this.httpGetQuestions(themeId, 'end', 1);
+            this.httpGetQuestions(this.checkedScene.id, 'end', 1);
           }
         })
       },
@@ -1696,7 +1724,12 @@
             .el-icon-edit-outline {
                 position: absolute;
                 top: 14px;
-                right: 16px;
+                right: 32px;
+              }
+            .el-icon-delete {
+                position: absolute;
+                top: 14px;
+                right: 10px;
               }
           }
           .out-list {
@@ -1730,7 +1763,12 @@
             .el-icon-edit-outline {
                 position: absolute;
                 top: 14px;
-                right: 16px;
+                right: 32px;
+              }
+            .el-icon-delete {
+                position: absolute;
+                top: 14px;
+                right: 10px;
               }
           }
         }
