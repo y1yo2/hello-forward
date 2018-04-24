@@ -5,7 +5,7 @@
     :visible.sync="progressPublishVisible"
     width="30%">
     <!-- <span class="dialog-footer">是否删除该节点</span> -->
-    <el-progress class="dialog-footer" type="circle" 
+    <el-progress class="dialog-footer" type="circle"
     :percentage="percentage" :status="progressStatus">
     </el-progress>
     <div class="progressContent"><span class="dialog-footer">{{progressContent}}</span></div>
@@ -974,7 +974,7 @@
           this.progressTitle='正在删除主题';
           this.progressContent='正在删除，请稍后';
           this.progressStatus='';
-          this.percentage=0;      
+          this.percentage=0;
           this.progressButtonText='删除中';
           this.progressButtonLoading=true;
           this.progressPublishVisible=true;
@@ -1684,7 +1684,7 @@
                 display: inline-block;
                 width: 85%;
                 height: 16px;
-                line-height: 16px;
+                /*line-height: 16px;*/
                 margin-top: 10px;
                 overflow: hidden;
                 text-overflow:ellipsis;
@@ -1714,6 +1714,17 @@
               width: 100%;
               line-height: 40px;
               border-bottom: 1px solid #E4E7EB;
+              .el-checkbox__label {
+                display: inline-block;
+                width: 85%;
+                height: 16px;
+                /*line-height: 16px;*/
+                margin-top: 10px;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+
+              }
             }
             .out-page {
               position: absolute;
