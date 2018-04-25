@@ -28,7 +28,7 @@
     title="新增确认"
     :visible.sync="createVisible"
     width="30%">
-    <span class="dialog-footer">是否新增一个节点</span>
+    <span class="dialog-footer">是否新增一个目录</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="createVisible = false">取 消</el-button>
       <el-button type="primary" @click="appendForButton">确 定</el-button>
