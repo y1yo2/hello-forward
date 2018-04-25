@@ -1,6 +1,23 @@
 <template>
   <el-container>
   <el-dialog
+    title="测试脚本"
+    :visible.sync="testScriptVisible"
+    width="80%"
+    height="80%">
+    <textarea readonly class="test-script-show-div">{{testScriptText}}</textarea>
+    <el-form :model="testScriptForm">
+    <el-form-item label="请输入：" :label-width="formLabelWidth">
+      <el-input v-model="testScriptForm.title" auto-complete="off"></el-input>
+      <el-input v-model="testScriptForm.id" auto-complete="off" disabled></el-input>
+    </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="testScriptVisible = false">取 消</el-button>
+      <el-button type="primary" @click="testScriptSendClick">发送</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
     :title="progressTitle"
     :visible.sync="progressPublishVisible"
     width="30%">
@@ -256,7 +273,7 @@
             </div>
             <div class="scene-theme-list">
               <el-checkbox-group v-model="checkedScenes" @change="">
-                <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id" @click.prevent="sceneClick(item)">
+                <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
                   <span @click.prevent="sceneClick(item)">{{item.title}}</span>
                   <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                 </el-checkbox>
@@ -348,8 +365,11 @@
           </div>
         </el-col>
         <el-col :span="9">
-          <div class="script">
-            <h5 class="title">脚本</h5>
+          <div class="script clearfix">
+            <h5 class="title floatLeft">脚本</h5>
+            <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
+            @click.native="handleTestScriptClick">
+            测试</el-button>
             <!-- <div class="script-inner"></div> -->
             <el-input
               class="script-inner"
@@ -406,6 +426,12 @@
         progressButtonText: '发布中',
         progressButtonLoading: true,
         progressStatus: '',
+        testScriptVisible: true,
+        testScriptText: '显示内容 \n 123123',
+        testScriptForm: {
+          title: '',
+          id: '',
+        },
         renameForm: {
           name: '',
           id: '',
@@ -739,6 +765,25 @@
         this.updateGrooveVisible = false;
         this.httpUpdateKeyWord(this.checkedScene.id, this.renameGrooveForm.id, this.renameGrooveForm.title);
       },
+      //脚本测试
+      handleTestScriptClick(){
+        this.testScriptVisible=true;
+        this.testScriptForm.title='';
+        this.testScriptText='';
+        var chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+        var maxPos = chars.length;
+        var pwd = '';
+        for (var i = 0; i < 32; i++) {
+          pwd = pwd + chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        this.testScriptForm.id=pwd;
+      },
+      testScriptSendClick(){
+        this.httpTestScript(this.testScriptForm.title, this.testScriptForm.id);
+        this.testScriptText = this.testScriptText + "我：" + this.testScriptForm.title + "\n";
+        this.testScriptForm.title='';
+      },
+      //渠道
       updateChannel(){
         if (this.channelUpdateDisabledFlag) {
           this.channelUpdateText = "点击确认修改";
@@ -1515,6 +1560,23 @@
 
         })
       },
+      httpTestScript(question, sessionId){
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/updateAimlContent',
+          params: {
+            themeId: this.checkedScene.id,
+            question: question,
+            sessionId: sessionId,
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log(data);
+          this.testScriptText = this.testScriptText + "小明：" + data.msg + "\n";
+        })
+      },
     },
     watch: {
       filterText(val) {
@@ -1533,6 +1595,12 @@
      content: '';
      display: block;
      clear: both;
+  }
+  .test-script-show-div {
+    margin-left: 120px;
+    background-color: #f5f7fa;
+    height: 300px;
+    width: 500px;
   }
   .progressContent {
     float: right;
@@ -1815,6 +1883,20 @@
         margin-top: 0;
         background-color: #fff;
         border: 1px solid #cdd0d4;
+        position: relative;
+        .el-button-plus {
+            position: absolute;
+            right: 16px;
+            width: 80px;
+            height: 35px;
+            line-height: 35px;
+            padding: 0;
+            margin-top: 14px;
+            text-align: center;
+            background-color: #4E86EC;
+            border-color: #4E86EC;
+            z-index: 999;
+          }
         .script-inner {
           height: 446px;
           margin: 0 16px 16px;
@@ -1869,6 +1951,10 @@
     margin-right: 16px;
     text-align: left;
     line-height: 62px;
+    
+  }
+  .floatLeft {
+    float: left;
   }
   .scene-title {
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
