@@ -195,7 +195,7 @@
       <el-button type="primary" @click="updateGroove">确 定</el-button>
     </span>
   </el-dialog>
-    <el-aside width="300px" class="scene-manage clearfix">
+    <el-aside width="240px" class="scene-manage clearfix">
       <div class="scene-title title clearfix">
          <div class="scene-title-span"><h5>场景管理</h5></div>
          <i class="scene-title-icon el-icon-plus"></i>
@@ -256,7 +256,7 @@
             </div>
             <div class="scene-theme-list">
               <el-checkbox-group v-model="checkedScenes" @change="">
-                <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
+                <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id" @click.prevent="sceneClick(item)">
                   <span @click.prevent="sceneClick(item)">{{item.title}}</span>
                   <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                 </el-checkbox>
@@ -1695,7 +1695,7 @@
           }
           .entrance-list {
             position: relative;
-            height: 463px;
+            height: 457px;
             text-align: left;
             margin-top: 5px;
             padding-left: 16px;
@@ -1871,7 +1871,7 @@
     line-height: 62px;
   }
   .scene-title {
-    border-bottom: 1px solid #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
   }
   .scene-title-span {
@@ -1898,7 +1898,7 @@
     color: #fff;
   }
   .select-base {
-    width: 253px;
+    width: 90%;
     height: 41px;
     margin-top: 17px;
     margin-bottom: 17px;
