@@ -8,13 +8,13 @@
     <textarea readonly class="test-script-show-div">{{testScriptText}}</textarea>
     <el-form :model="testScriptForm">
     <el-form-item label="请输入：" :label-width="formLabelWidth">
-      <el-input v-model="testScriptForm.title" auto-complete="off"></el-input>
+      <el-input v-model="testScriptForm.title" auto-complete="off" @keyup.enter.native="testScriptSendClick"></el-input>
       <el-input v-model="testScriptForm.id" auto-complete="off" disabled></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="testScriptVisible = false">取 消</el-button>
-      <el-button type="primary" @click="testScriptSendClick">发送</el-button>
+      <el-button type="primary" @click="testScriptSendClick" >发送</el-button>
     </span>
   </el-dialog>
   <el-dialog
@@ -168,7 +168,7 @@
       <el-button type="primary" @click="createQuestion">确 定</el-button>
     </span>
   </el-dialog>
-    <el-dialog
+  <el-dialog
     title="是否在当前主题下创建一个出口问题？"
     :visible.sync="createOutVisible"
     width="30%">
@@ -201,7 +201,7 @@
     title="是否修改该槽点？"
     :visible.sync="updateGrooveVisible"
     width="30%">
-    <el-form :model="renameQuestionForm">
+    <el-form :model="renameGrooveForm">
     <el-form-item label="槽点内容" :label-width="formLabelWidth">
       <el-input v-model="renameGrooveForm.title" auto-complete="off"
       placeholder="请输入入口问题"></el-input>
@@ -210,6 +210,35 @@
     <span slot="footer" class="dialog-footer">
       <el-button @click="updateGrooveVisible = false">取 消</el-button>
       <el-button type="primary" @click="updateGroove">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="是否删除该槽点？"
+    :visible.sync="deleteGrooveVisible"
+    width="30%">
+    <el-form :model="renameGrooveForm">
+      <el-form-item label="槽点内容" :label-width="formLabelWidth">
+        <el-input v-model="renameGrooveForm.title" auto-complete="off" :disabled="true"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="deleteGrooveVisible = false">取 消</el-button>
+      <el-button type="primary" @click="deleteGroove">确 定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="是否创建一个槽点？"
+    :visible.sync="createGrooveVisible"
+    width="30%">
+    <el-form :model="renameQuestionForm">
+    <el-form-item label="槽点内容" :label-width="formLabelWidth">
+      <el-input v-model="renameQuestionForm.question" auto-complete="off"
+      placeholder="请输入槽点内容"></el-input>
+    </el-form-item>
+  </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="createGrooveVisible = false">取 消</el-button>
+      <el-button type="primary" @click="createGrovve">确 定</el-button>
     </span>
   </el-dialog>
     <el-aside width="240px" class="scene-manage clearfix">
@@ -294,6 +323,7 @@
             <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
             @click.native="createQuestionClick">
             新增</el-button>
+
             <el-tabs v-model="activeQuestions" @tab-click="questionTag">
               <el-tab-pane label="入口问题" name="first">
                 <div class="entrance-list">
@@ -342,7 +372,12 @@
             </el-tabs>
           </div>
           <div class="groove">
-            <div class="edit" @click="updateGrooveClick">编辑</div>
+            <div class="edit">
+            <!-- <div class="edit" @click="updateGrooveClick"> -->
+                <i class="el-icon-edit-outline" @click="updateGrooveClick"></i>
+                <i class="el-icon-plus" @click="createGrooveClick"></i>
+                <i class="el-icon-delete" @click="deleteGrooveClick"></i>
+              </div>
             <h5 class="groove-title">槽点</h5>
             <div class="groove-inner">
               <el-tabs v-model="activeGroove" @tab-click="grooveTag">
@@ -418,6 +453,8 @@
         createEntranceVisible: false,
         createOutVisible: false,
         updateGrooveVisible: false,
+        deleteGrooveVisible: false,
+        createGrooveVisible: false,
         progressPublishVisible: false,
         deleteEntranceVisible: false,
         percentage: 0,
@@ -426,7 +463,7 @@
         progressButtonText: '发布中',
         progressButtonLoading: true,
         progressStatus: '',
-        testScriptVisible: true,
+        testScriptVisible: false,
         testScriptText: '显示内容 \n 123123',
         testScriptForm: {
           title: '',
@@ -764,6 +801,35 @@
       updateGroove(){
         this.updateGrooveVisible = false;
         this.httpUpdateKeyWord(this.checkedScene.id, this.renameGrooveForm.id, this.renameGrooveForm.title);
+      },
+      createGrooveClick(){
+        this.createGrooveVisible = true;
+      },
+      createGrovve(){
+        this.createGrooveVisible = false;
+        var type='';
+        if (this.activeGroove === 'checkedEntrenace') {
+          type='entry';
+        }else{
+          type='end';
+        }
+        this.httpAddKeyWord(this.checkedScene.id, this.renameGrooveForm.title, type)
+      },
+      deleteGrooveClick(){
+        if (this.activeGroove === 'checkedEntrenace') {
+          let groove = this.entrance_grooves[this.entranceGroovesIndex];
+          this.renameGrooveForm.id = groove.id;
+          this.renameGrooveForm.title = groove.title;
+        }else{
+          let groove = this.out_grooves[this.outGroovesIndex];
+          this.renameGrooveForm.id = groove.id;
+          this.renameGrooveForm.title = groove.title;
+        }
+        this.deleteGrooveVisible = true;
+      },
+      deleteGroove(){
+        this.deleteGrooveVisible = false;
+        this.httpDeleteKeyWord(this.renameGrooveForm.id);
       },
       //脚本测试
       handleTestScriptClick(){
@@ -1563,7 +1629,7 @@
       httpTestScript(question, sessionId){
         this.$http({
           method: 'get',
-          url: '/aimlManage/updateAimlContent',
+          url: '/aimlManage/aimlReply',
           params: {
             themeId: this.checkedScene.id,
             question: question,
@@ -1850,9 +1916,7 @@
           .edit {
             position: absolute;
             right: 18px;
-            font-size: 14px;
             line-height: 55px;
-            color: #6294EF;
           }
           .groove-title {
             line-height: 55px;
