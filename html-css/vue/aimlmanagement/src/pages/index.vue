@@ -294,6 +294,7 @@
             <div class="scene-theme-title title clearfix">
               <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
               <div class="scene-theme-title-icon">
+                <el-checkbox :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
                 <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
                 <i class="el-icon-download" @click="underSceneVisible = true"></i>
                 <i class="el-icon-plus" @click="createSceneVisible = true"></i>
@@ -301,8 +302,9 @@
               </div>
             </div>
             <div class="scene-theme-list">
-              <el-checkbox-group v-model="checkedScenes" @change="">
+              <el-checkbox-group v-model="checkedScenes" @change="CheckedSceneChange">
                 <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
+                  <el-tag size="mini">小型标签</el-tag>
                   <span @click.prevent="sceneClick(item)">{{item.title}}</span>
                   <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                 </el-checkbox>
@@ -457,6 +459,8 @@
         createGrooveVisible: false,
         progressPublishVisible: false,
         deleteEntranceVisible: false,
+        sceneCheckAll: false,
+        isIndeterminate: true,
         percentage: 0,
         progressTitle: '正在发布主题',
         progressContent: '正在发布，请稍后',
@@ -725,6 +729,23 @@
         if (id !== null) {
           this.httpGetSceneDetails(id);
         }
+      },
+      checkAllSceneChange (val) {
+        console.log(val)
+        if (val) {
+          this.scene_list.forEach((arr) => {
+            this.checkedScenes.push(arr.id)
+          })
+        } else {
+          this.checkedScenes = []
+        }
+        this.isIndeterminate = false;
+      },
+      CheckedSceneChange (value) {
+        console.log(this.checkedScenes)
+        let checkedCount = value.length;
+        this.sceneCheckAll = checkedCount === this.scene_list.length;
+        this.isIndeterminate = checkedCount > 0 && checkedCount < this.scene_list.length;
       },
       //出入口问题列表涉及的函数
       renameQuestionClick(item){
@@ -1723,13 +1744,19 @@
       margin-left: 0;
     }
     .global-search {
+      display: flex;
+      justify-content: flex-end;
       height: 64px;
       margin-bottom: 16px;
       padding-top: 15px;
+      padding-right: 24px;
       background-color: #fff;
       .el-input {
         width: 364px;
         margin-right: 16px;
+      }
+      .el-dropdown {
+        padding-top: 8px;
       }
     }
     .main-inner {
@@ -1769,10 +1796,14 @@
               line-height: 45px;
               text-align: left;
               border-bottom: 1px solid #cdd0d4;
+              .el-checkbox__input {
+                display: none;
+              }
               .el-checkbox__label {
                 display: inline-block;
                 width: 70%;
-                height: 18px;
+                height: 20px;
+                padding-left: 0;
                 line-height: 16px;
                 overflow: hidden;
                 text-overflow:ellipsis;
@@ -1785,7 +1816,7 @@
                 right: 16px;
               }
               &.is-checked {
-                background-color: #e4e7eb;
+                background-color: #b1d7ff;
               }
             }
           }
