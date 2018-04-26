@@ -304,7 +304,7 @@
             <div class="scene-theme-list">
               <el-checkbox-group v-model="checkedScenes" @change="CheckedSceneChange">
                 <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
-                  <el-tag size="mini" :class="{'el-tag--success': item.id == 1, 'el-tag--info':item.id ==2, 'el-tag--warning': item.id ==3}">编辑中</el-tag>
+                  <el-tag size="mini" :class="{'el-tag': item.status == 1, 'el-tag--success':item.status == 2, 'el-tag--info': item.status == 3, 'el-tag--warning': item.status == 4}">{{item.status|sceneStatusFilter}}</el-tag>
                   <span @click.prevent="sceneClick(item)">{{item.title}}</span>
                   <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                 </el-checkbox>
@@ -519,16 +519,25 @@
           id: 1,
           title: '默认场景1',
           theme_content: '脚本内容',
+          status: 1, //1,编辑中；2，正式；3，下架；4，正式编辑中
         },
         {
           id: 2,
           title: '默认场景2',
           theme_content: '脚本内容',
+          status: 2,
         },
         {
           id: 3,
           title: '默认场景3',
           theme_content: '脚本内容',
+          status: 3,
+        },
+        {
+          id: 4,
+          title: '默认场景4',
+          theme_content: '脚本内容',
+          status: 4,
         }],
         checkedScene: {id: '', title: '',},//当前主题
         checkedScenes: [],
@@ -547,7 +556,7 @@
         }],
         checkAll: false,
         checkedEntrances: [],
-        isIndeterminate: true,
+        isIndeterminate: false,
         checkedOut: [],
         out_list: [ // 出口问题
           {
@@ -731,18 +740,19 @@
         }
       },
       checkAllSceneChange (val) {
-        console.log(val)
-        if (val) {
+        // console.log(val)
+        if (val && this.isIndeterminate == false) {
           this.scene_list.forEach((arr) => {
             this.checkedScenes.push(arr.id)
           })
         } else {
           this.checkedScenes = []
+          this.sceneCheckAll = false;
         }
         this.isIndeterminate = false;
       },
       CheckedSceneChange (value) {
-        console.log(this.checkedScenes)
+        // console.log(this.checkedScenes)
         let checkedCount = value.length;
         this.sceneCheckAll = checkedCount === this.scene_list.length;
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.scene_list.length;
@@ -1665,6 +1675,16 @@
         })
       },
     },
+    filters: {
+      sceneStatusFilter: function (status){
+        var result = '状态不明'
+        if (status === 1) {result = '编辑中';}
+        else if (status === 2) {result = '正式';}
+        else if (status === 3) {result = '下架';}
+        else if (status === 4) {result = '正式编辑中';}
+        return result;
+      }
+    },
     watch: {
       filterText(val) {
         this.$refs.tree2.filter(val);
@@ -1822,6 +1842,14 @@
                 width: 50px;
                 margin-right: 5px;
                 text-align: center;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+                vertical-align: middle;
+                background-color: #FFFFFF;
+              }
+              .el-tag--success {
+                color: #46C819;
               }
             }
           }
