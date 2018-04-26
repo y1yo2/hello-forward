@@ -305,7 +305,7 @@
               <el-checkbox-group v-model="checkedScenes" @change="CheckedSceneChange">
                 <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
                   <el-tag size="mini" :class="{'el-tag': item.status == 1, 'el-tag--success':item.status == 2, 'el-tag--info': item.status == 3, 'el-tag--warning': item.status == 4}">{{item.status|sceneStatusFilter}}</el-tag>
-                  <span :class="{'active':checkedScene.id===key}" @click.prevent="sceneClick(item)">{{item.title}}</span>
+                  <span :class="{'active':checkedScene.id==item.id}" @click.prevent="sceneClick(item)">{{item.title}}</span>
                   <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                 </el-checkbox>
               </el-checkbox-group>
@@ -1831,9 +1831,9 @@
                 white-space: nowrap;
                 vertical-align: middle;
                 color: #606266;
-              }
-              &.active {
+                .active {
                  color: #409EFF
+                }
               }
               .el-icon-edit-outline {
                 position: absolute;
