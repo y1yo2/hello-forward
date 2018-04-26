@@ -72,7 +72,8 @@
     width="30%">
     <el-form :model="renameForm">
     <el-form-item label="主题名称" :label-width="formLabelWidth">
-      <el-input v-model="renameForm.name" auto-complete="off"></el-input>
+      <el-input v-model="renameForm.name" auto-complete="off"
+      placeholder="请输入主题名称"></el-input>
     </el-form-item>
   </el-form>
     <span slot="footer" class="dialog-footer">
@@ -175,7 +176,7 @@
     <el-form :model="renameQuestionForm">
     <el-form-item label="主题名称" :label-width="formLabelWidth">
       <el-input v-model="renameQuestionForm.question" auto-complete="off"
-      placeholder="请输入入口问题"></el-input>
+      placeholder="请输入出口问题"></el-input>
     </el-form-item>
   </el-form>
     <span slot="footer" class="dialog-footer">
@@ -230,9 +231,9 @@
     title="是否创建一个槽点？"
     :visible.sync="createGrooveVisible"
     width="30%">
-    <el-form :model="renameQuestionForm">
+    <el-form :model="renameGrooveForm">
     <el-form-item label="槽点内容" :label-width="formLabelWidth">
-      <el-input v-model="renameQuestionForm.question" auto-complete="off"
+      <el-input v-model="renameGrooveForm.title" auto-complete="off"
       placeholder="请输入槽点内容"></el-input>
     </el-form-item>
   </el-form>
@@ -835,6 +836,7 @@
       },
       createGrooveClick(){
         this.createGrooveVisible = true;
+        this.renameGrooveForm.title = '';
       },
       createGrovve(){
         this.createGrooveVisible = false;
@@ -1557,10 +1559,11 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
-          var data = res.data;
-          console.log("addKeyWord");
-          console.log(data);
-
+          if (this.activeGroove === 'checkedEntrenace') {
+            this.httpGetKeyWordList(themeId, 'entry');
+          }else{
+            this.httpGetKeyWordList(themeId, 'end');
+          }
         })
       },
       httpDeleteKeyWord(keywordId){
@@ -1573,10 +1576,11 @@
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
-          var data = res.data;
-          console.log("deleteKeyWord");
-          console.log(data);
-
+          if (this.activeGroove === 'checkedEntrenace') {
+            this.httpGetKeyWordList(this.checkedScene.id, 'entry');
+          }else{
+            this.httpGetKeyWordList(this.checkedScene.id, 'end');
+          }
         })
       },
       httpUpdateKeyWord(themeId, keywordId, keyword){
@@ -2002,9 +2006,11 @@
               .list {
                 .item {
                   line-height: 45px;
+                  height: 45px;
                   border-bottom: 1px solid #E4E7EB;
                   &.active {
-                    color: #409EFF
+                    color: #409EFF;
+                    background-color: #E4F0FF;
                   }
                 }
                 .item:hover {
