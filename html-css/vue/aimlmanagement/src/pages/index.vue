@@ -305,7 +305,7 @@
               <el-checkbox-group v-model="checkedScenes" @change="CheckedSceneChange">
                 <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
                   <el-tag size="mini" :class="{'el-tag': item.status == 1, 'el-tag--success':item.status == 2, 'el-tag--info': item.status == 3, 'el-tag--warning': item.status == 4}">{{item.status|sceneStatusFilter}}</el-tag>
-                  <span @click.prevent="sceneClick(item)">{{item.title}}</span>
+                  <span :class="{'active':checkedScene.id===key}" @click.prevent="sceneClick(item)">{{item.title}}</span>
                   <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                 </el-checkbox>
               </el-checkbox-group>
@@ -1099,6 +1099,7 @@
                 id: list[i].THEME_ID,
                 title: list[i].THEME_NAME,
                 theme_content: list[i].THEME_CONTENT,
+                status: list[i].STATUS,
               }
             }
             themeId = list[0].THEME_ID;
@@ -1829,6 +1830,10 @@
                 text-overflow:ellipsis;
                 white-space: nowrap;
                 vertical-align: middle;
+                color: #606266;
+              }
+              &.active {
+                 color: #409EFF
               }
               .el-icon-edit-outline {
                 position: absolute;
@@ -1836,7 +1841,10 @@
                 right: 12px;
               }
               &.is-checked {
-                background-color: #b1d7ff;
+                background-color: #E4F0FF;
+                .el-tag {
+                  background-color: #E4F0FF;
+                }
               }
               .el-tag {
                 width: 50px;
