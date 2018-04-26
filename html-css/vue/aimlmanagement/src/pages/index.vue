@@ -1249,6 +1249,7 @@
               this.progressStatus='success';
               this.progressButtonText='完成';
               this.progressButtonLoading=false;
+              this.httpChangeSceneList(this.sceneCurrentPage);
               if (data.status === '3') {
                  this.progressContent='发布主题成功：成功 ' + data.successNum + ' 条，' + '失败 ' + data.failureNum + ' 条。';
                  this.progressStatus='success';
@@ -1268,6 +1269,7 @@
             this.progressStatus='exception';
             this.progressButtonText='完成';
             this.progressButtonLoading=false;
+            this.httpChangeSceneList(this.sceneCurrentPage);
           }
         })
       },
@@ -1312,6 +1314,7 @@
               this.progressStatus='success';
               this.progressButtonText='完成';
               this.progressButtonLoading=false;
+              this.httpChangeSceneList(this.sceneCurrentPage);
               if (data.status === '3') {
                  this.progressContent='下架主题成功：成功 ' + data.successNum + ' 条，' + '失败 ' + data.failureNum + ' 条。';
                  this.progressStatus='success';
@@ -1325,6 +1328,7 @@
             this.progressStatus='exception';
             this.progressButtonText='完成';
             this.progressButtonLoading=false;
+            this.httpChangeSceneList(this.sceneCurrentPage);
           }
         })
       },
