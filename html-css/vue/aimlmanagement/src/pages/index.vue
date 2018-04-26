@@ -304,7 +304,7 @@
             <div class="scene-theme-list">
               <el-checkbox-group v-model="checkedScenes" @change="CheckedSceneChange">
                 <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
-                  <el-tag size="mini">小型标签</el-tag>
+                  <el-tag size="mini">编辑中</el-tag>
                   <span @click.prevent="sceneClick(item)">{{item.title}}</span>
                   <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                 </el-checkbox>
@@ -1773,8 +1773,8 @@
           .scene-theme-title {
             margin-left: 0;
             margin-right: 0;
-            padding-left: 16px;
-            padding-right: 16px;
+            padding-left: 12px;
+            padding-right: 12px;
             height: 64px;
             border-bottom: 1px solid #cdd0d4;
             color: #666;
@@ -1792,7 +1792,7 @@
             .scene-theme-item {
               position: relative;
               width: calc(~"100% - 16px");
-              padding-left: 16px;
+              padding-left: 12px;
               line-height: 45px;
               text-align: left;
               border-bottom: 1px solid #cdd0d4;
@@ -1813,10 +1813,15 @@
               .el-icon-edit-outline {
                 position: absolute;
                 top: 16px;
-                right: 16px;
+                right: 12px;
               }
               &.is-checked {
                 background-color: #b1d7ff;
+              }
+              .el-tag {
+                width: 50px;
+                margin-right: 5px;
+                text-align: center; 
               }
             }
           }
