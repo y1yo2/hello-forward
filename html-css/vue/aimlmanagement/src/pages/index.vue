@@ -890,8 +890,16 @@
         }else{
           this.channelUpdateText = "编辑";
           this.channelUpdateDisabledFlag = true;
+          var result = '';
+          for (var i = 0; i < this.checkedChannel.length; i++) {
+            if (i === 0) {
+              result = result + this.checkedChannel[i];
+            }else{
+              result = result + "," + this.checkedChannel[i];
+            }
+          }
           console.log(this.checkedChannel);
-          this.httpUpdateApplyChannel(this.checkedScene.id, JSON.stringify(this.checkedChannel));
+          this.httpUpdateApplyChannel(this.checkedScene.id, result);
         }
         return this.channelUpdateDisabledFlag;
       },

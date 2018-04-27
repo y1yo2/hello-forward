@@ -13,6 +13,7 @@ module.exports = {
     proxyTable: {
         '/': {  
                 target: 'http://120.76.153.222:38984',  
+                // target: 'http://192.168.100.211:9080',
                 changeOrigin: true,  
                 pathRewrite: {  
                     '^/': '/'  
@@ -50,7 +51,7 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: 'aimlpoc/static',
     assetsPublicPath: '/',
 
     /**
