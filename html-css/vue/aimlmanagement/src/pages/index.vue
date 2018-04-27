@@ -14,18 +14,19 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="testScriptVisible = false">取 消</el-button>
-      <el-button type="primary" @click="testScriptSendClick" >发送</el-button>
+      <el-button type="primary" @click="testScriptSendClick">发送</el-button>
     </span>
   </el-dialog>
   <el-dialog
     :title="progressTitle"
     :visible.sync="progressPublishVisible"
     width="30%">
-    <!-- <span class="dialog-footer">是否删除该节点</span> -->
-    <el-progress class="dialog-footer" type="circle"
-    :percentage="percentage" :status="progressStatus">
-    </el-progress>
-    <div class="progressContent"><span class="dialog-footer">{{progressContent}}</span></div>
+    <div class="dialog-footer clearfix">
+      <el-progress class="dialog-footer" type="circle"
+      :percentage="percentage" :status="progressStatus">
+      </el-progress>
+      <div class="progressContent"><span class="dialog-footer">{{progressContent}}</span></div>
+    </div>
     <span slot="footer" class="dialog-footer">
       <!-- <el-button @click="progressPublishVisible = false">取 消</el-button> -->
       <el-button type="primary" @click="progressPublishVisible = false" :loading="progressButtonLoading">{{progressButtonText}}</el-button>
@@ -242,6 +243,16 @@
       <el-button type="primary" @click="createGrovve">确 定</el-button>
     </span>
   </el-dialog>
+    <el-dialog
+    title="修改脚本提示"
+    :visible.sync="updateScriptVisible"
+    width="30%">
+    <span class="dialog-footer">是否修改该脚本？</span>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="updateScriptVisible = false">取 消</el-button>
+      <el-button type="primary" @click="updateScriptClick">确 定</el-button>
+    </span>
+  </el-dialog>
     <el-aside width="240px" class="scene-manage clearfix">
       <div class="scene-title title clearfix">
          <div class="scene-title-span"><h5>场景管理</h5></div>
@@ -406,15 +417,17 @@
         <el-col :span="9">
           <div class="script clearfix">
             <h5 class="title floatLeft">脚本</h5>
-            <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
+            <i class="el-icon-edit-outline" @click="updateScriptVisible = true"></i>            
+            <i class="el-icon-service"  @click.prevent="handleTestScriptClick"></i>
+            <!-- <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
             @click.native="handleTestScriptClick">
-            测试</el-button>
+            测试</el-button> -->
             <!-- <div class="script-inner"></div> -->
             <el-input
               class="script-inner"
               type="textarea"
               placeholder="脚本内容显示区域"
-              disabled
+              
               v-model="script_text">
             </el-input>
           </div>
@@ -471,6 +484,7 @@
         progressStatus: '',
         testScriptVisible: false,
         testScriptText: '显示内容 \n 123123',
+        updateScriptVisible: false,
         testScriptForm: {
           title: '',
           id: '',
@@ -730,13 +744,15 @@
       handleSceneCurrentChange(val){
         this.httpChangeSceneList(val);
       },
-      updateSceneDetail (id) { // 切换场景
+      updateSceneDetail (id, title, scriptText) { // 切换场景
         this.entrance_list = new Array();
         this.out_list = new Array();
         this.entrance_grooves = new Array();
         this.out_grooves = new Array();
-        this.script_text = '';
+        this.script_text = scriptText;
         this.checkedChannel = new Array();
+        this.checkedScene.id = id;
+        this.checkedScene.title = title;
         if (id !== null) {
           this.httpGetSceneDetails(id);
         }
@@ -882,6 +898,10 @@
         this.httpTestScript(this.testScriptForm.title, this.testScriptForm.id);
         this.testScriptText = this.testScriptText + "我：" + this.testScriptForm.title + "\n";
         this.testScriptForm.title='';
+      },
+      updateScriptClick(){
+        this.updateScriptVisible = false;
+        this.httpUpdateAimlContent(this.checkedScene.id, this.script_text);
       },
       //渠道
       updateChannel(){
@@ -1104,6 +1124,8 @@
           this.sceneTotal = total;
           this.sceneCurrentPage = rows;
           var themeId = null;
+          var title = null;
+          var scriptText = '';
           if (list.length > 0) {
             for(var i=0;i<list.length;i++){
               this.scene_list[i] = {
@@ -1114,8 +1136,10 @@
               }
             }
             themeId = list[0].THEME_ID;
+            title = list[0].THEME_NAME;
+            scriptText = list[0].THEME_CONTENT;
           }
-          this.updateSceneDetail(themeId);
+          this.updateSceneDetail(themeId, title, scriptText);
         })
       },
       httpCreateScene(){
@@ -1767,7 +1791,7 @@
     position: relative;
   }
   .el-icon-plus:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
-  .el-icon-edit-outline:hover
+  .el-icon-edit-outline:hover, .el-icon-service:hover,
   {
     color: #409EFF;
     cursor: pointer;
@@ -2039,17 +2063,20 @@
         background-color: #fff;
         border: 1px solid #cdd0d4;
         position: relative;
-        .el-button-plus {
+        .el-icon-service {
             position: absolute;
             right: 16px;
-            width: 80px;
-            height: 35px;
-            line-height: 35px;
             padding: 0;
-            margin-top: 14px;
+            margin-top: 23px;
             text-align: center;
-            background-color: #4E86EC;
-            border-color: #4E86EC;
+            z-index: 999;
+          }
+        .el-icon-edit-outline {
+            position: absolute;
+            right: 48px;
+            padding: 0;
+            margin-top: 23px;
+            text-align: center;
             z-index: 999;
           }
         .script-inner {
