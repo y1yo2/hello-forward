@@ -258,6 +258,7 @@
       </el-select>
       <el-input v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
       <el-tree
+      class="el-tree-main"
       :props="props1"
       :load="loadNode1"
       :filter-node-method="filterNode" ref="tree2"
@@ -2128,7 +2129,7 @@
     width: 90%;
     text-align: left;
   }
-  .el-tree {
+  .el-tree-main {
     background-color: rgb(21,28,46);
     color: rgb(115,122,143);
   }
