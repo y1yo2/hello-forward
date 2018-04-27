@@ -427,7 +427,7 @@
               class="script-inner"
               type="textarea"
               placeholder="脚本内容显示区域"
-              
+              :disabled="scriptTextDisabledFlag"
               v-model="script_text">
             </el-input>
           </div>
@@ -619,6 +619,7 @@
         groovesUpdateFlag: true,
         //脚本
         script_text: '',
+        scriptTextDisabledFlag: false,
         //渠道
         channels: [
           {
@@ -980,6 +981,18 @@
             this.treeForEach(treeChild.children, resChild.children[0]);
           }
         }
+      },
+      httpGetScriptTextDisabledFlag(){
+        this.$http({
+          method: 'get',
+          url: '/aimlManage/getSysParam',
+          baseURL: '/',
+          params: {para_code: 'IS_EDIT_AIML'},
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          this.scriptTextDisabledFlag = data.VALUE;
+        })
       },
       httpGetRepositoryOptions(){
         this.$http({
@@ -1686,10 +1699,10 @@
         this.$http({
           method: 'post',
           url: '/aimlManage/updateAimlContent',
-          params: {
+          data: qs.stringify({ // 如果需要传参数的话
             themeId: themeId,
             aimlContent: aimlContent,
-          },
+          }),
           baseURL: '/',
           dataType: 'jsonp',
         }).then ((res) => {
@@ -1734,7 +1747,7 @@
     },
     mounted () {
       this.httpGetRepositoryOptions();
-
+      this.httpGetScriptTextDisabledFlag();
     }
   }
 </script>
