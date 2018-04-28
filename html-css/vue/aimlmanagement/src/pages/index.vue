@@ -1820,8 +1820,7 @@
       position: relative;
     }
     .el-icon-plus:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
-    .el-icon-edit-outline:hover, .el-icon-service:hover,
-    {
+    .el-icon-edit-outline:hover, .el-icon-service:hover {
       color: #409EFF;
       cursor: pointer;
     }
