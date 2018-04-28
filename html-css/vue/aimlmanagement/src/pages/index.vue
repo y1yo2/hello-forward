@@ -1,451 +1,453 @@
 <template>
-  <el-container>
-  <el-dialog
-    title="测试脚本"
-    :visible.sync="testScriptVisible"
-    width="80%"
-    height="80%">
-    <textarea readonly class="test-script-show-div">{{testScriptText}}</textarea>
-    <el-form :model="testScriptForm">
-    <el-form-item label="请输入：" :label-width="formLabelWidth">
-      <el-input v-model="testScriptForm.title" auto-complete="off" @keyup.enter.native="testScriptSendClick"></el-input>
-      <el-input v-model="testScriptForm.id" auto-complete="off" disabled></el-input>
-    </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
+  <div class="index">
+    <el-container>
+      <el-dialog
+        title="测试脚本"
+        :visible.sync="testScriptVisible"
+        width="80%"
+        height="80%">
+        <textarea readonly class="test-script-show-div">{{testScriptText}}</textarea>
+        <el-form :model="testScriptForm">
+          <el-form-item label="请输入：" :label-width="formLabelWidth">
+            <el-input v-model="testScriptForm.title" auto-complete="off" @keyup.enter.native="testScriptSendClick"></el-input>
+            <el-input v-model="testScriptForm.id" auto-complete="off" disabled></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="testScriptVisible = false">取 消</el-button>
       <el-button type="primary" @click="testScriptSendClick">发送</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    :title="progressTitle"
-    :visible.sync="progressPublishVisible"
-    width="30%">
-    <div class="dialog-footer clearfix">
-      <el-progress class="dialog-footer" type="circle"
-      :percentage="percentage" :status="progressStatus">
-      </el-progress>
-      <div class="progressContent"><span class="dialog-footer">{{progressContent}}</span></div>
-    </div>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        :title="progressTitle"
+        :visible.sync="progressPublishVisible"
+        width="30%">
+        <div class="dialog-footer clearfix">
+          <el-progress class="dialog-footer" type="circle"
+                       :percentage="percentage" :status="progressStatus">
+          </el-progress>
+          <div class="progressContent"><span class="dialog-footer">{{progressContent}}</span></div>
+        </div>
+        <span slot="footer" class="dialog-footer">
       <!-- <el-button @click="progressPublishVisible = false">取 消</el-button> -->
       <el-button type="primary" @click="progressPublishVisible = false" :loading="progressButtonLoading">{{progressButtonText}}</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="删除确认"
-    :visible.sync="deleteVisible"
-    width="30%">
-    <span class="dialog-footer">是否删除该目录</span>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="删除确认"
+        :visible.sync="deleteVisible"
+        width="30%">
+        <span class="dialog-footer">是否删除该目录</span>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="deleteVisible = false">取 消</el-button>
       <el-button type="primary" @click="removeForButton">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="新增确认"
-    :visible.sync="createVisible"
-    width="30%">
-    <span class="dialog-footer">是否新增一个目录</span>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="新增确认"
+        :visible.sync="createVisible"
+        width="30%">
+        <span class="dialog-footer">是否新增一个目录</span>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="createVisible = false">取 消</el-button>
       <el-button type="primary" @click="appendForButton">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否重命名该目录？"
-    :visible.sync="renameVisible"
-    width="30%">
-    <!-- <span class="dialog-footer">是否重命名该节点</span> -->
-    <el-form :model="renameForm">
-    <el-form-item label="目录名称" :label-width="formLabelWidth">
-      <el-input v-model="renameForm.name" auto-complete="off"></el-input>
-    </el-form-item>
-  </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否重命名该目录？"
+        :visible.sync="renameVisible"
+        width="30%">
+        <!-- <span class="dialog-footer">是否重命名该节点</span> -->
+        <el-form :model="renameForm">
+          <el-form-item label="目录名称" :label-width="formLabelWidth">
+            <el-input v-model="renameForm.name" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="renameVisible = false">取 消</el-button>
       <el-button type="primary" @click="renameForButton">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否在当前目录下创建一个主题？"
-    :visible.sync="createSceneVisible"
-    width="30%">
-    <el-form :model="renameForm">
-    <el-form-item label="主题名称" :label-width="formLabelWidth">
-      <el-input v-model="renameForm.name" auto-complete="off"
-      placeholder="请输入主题名称"></el-input>
-    </el-form-item>
-  </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否在当前目录下创建一个主题？"
+        :visible.sync="createSceneVisible"
+        width="30%">
+        <el-form :model="renameForm">
+          <el-form-item label="主题名称" :label-width="formLabelWidth">
+            <el-input v-model="renameForm.name" auto-complete="off"
+                      placeholder="请输入主题名称"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="createSceneVisible = false">取 消</el-button>
       <el-button type="primary" @click="httpCreateScene">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="删除确认"
-    :visible.sync="deleteSceneVisible"
-    width="30%"
-    >
-    <span class="dialog-footer">是否删除选中的主题</span>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="删除确认"
+        :visible.sync="deleteSceneVisible"
+        width="30%"
+      >
+        <span class="dialog-footer">是否删除选中的主题</span>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="deleteSceneVisible = false">取 消</el-button>
       <el-button type="primary" @click="deleteSceneClick">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否重命名该主题？"
-    :visible.sync="renameSceneVisible"
-    width="30%">
-    <el-form :model="renameSceneForm">
-      <el-form-item label="主题名称" :label-width="formLabelWidth">
-        <el-input v-model="renameSceneForm.name" auto-complete="off"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否重命名该主题？"
+        :visible.sync="renameSceneVisible"
+        width="30%">
+        <el-form :model="renameSceneForm">
+          <el-form-item label="主题名称" :label-width="formLabelWidth">
+            <el-input v-model="renameSceneForm.name" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="renameSceneVisible = false">取 消</el-button>
       <el-button type="primary" @click="httpRenameScene">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="发布确认"
-    :visible.sync="publishSceneVisible"
-    width="30%">
-    <span class="dialog-footer">是否发布选中的主题？</span>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="发布确认"
+        :visible.sync="publishSceneVisible"
+        width="30%">
+        <span class="dialog-footer">是否发布选中的主题？</span>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="publishSceneVisible=false">取 消</el-button>
       <el-button type="primary" @click="httpPublishScene">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="下架确认"
-    :visible.sync="underSceneVisible"
-    width="30%">
-    <span class="dialog-footer">是否下架选中的主题？</span>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="下架确认"
+        :visible.sync="underSceneVisible"
+        width="30%">
+        <span class="dialog-footer">是否下架选中的主题？</span>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="underSceneVisible=false">取 消</el-button>
       <el-button type="primary" @click="httpUnderScene">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否修改该入口问题？"
-    :visible.sync="renameEntranceVisible"
-    width="30%">
-    <el-form :model="renameQuestionForm">
-      <el-form-item label="入口问题" :label-width="formLabelWidth">
-        <el-input v-model="renameQuestionForm.question" auto-complete="off"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否修改该入口问题？"
+        :visible.sync="renameEntranceVisible"
+        width="30%">
+        <el-form :model="renameQuestionForm">
+          <el-form-item label="入口问题" :label-width="formLabelWidth">
+            <el-input v-model="renameQuestionForm.question" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="renameEntranceVisible = false">取 消</el-button>
       <el-button type="primary" @click="renameQuestion">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否修改该出口问题？"
-    :visible.sync="renameOutVisible"
-    width="30%">
-    <el-form :model="renameQuestionForm">
-      <el-form-item label="出口问题" :label-width="formLabelWidth">
-        <el-input v-model="renameQuestionForm.question" auto-complete="off"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否修改该出口问题？"
+        :visible.sync="renameOutVisible"
+        width="30%">
+        <el-form :model="renameQuestionForm">
+          <el-form-item label="出口问题" :label-width="formLabelWidth">
+            <el-input v-model="renameQuestionForm.question" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="renameOutVisible = false">取 消</el-button>
       <el-button type="primary" @click="renameQuestion">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否在当前主题下创建一个入口问题？"
-    :visible.sync="createEntranceVisible"
-    width="30%">
-    <el-form :model="renameQuestionForm">
-    <el-form-item label="主题名称" :label-width="formLabelWidth">
-      <el-input v-model="renameQuestionForm.question" auto-complete="off"
-      placeholder="请输入入口问题"></el-input>
-    </el-form-item>
-  </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否在当前主题下创建一个入口问题？"
+        :visible.sync="createEntranceVisible"
+        width="30%">
+        <el-form :model="renameQuestionForm">
+          <el-form-item label="主题名称" :label-width="formLabelWidth">
+            <el-input v-model="renameQuestionForm.question" auto-complete="off"
+                      placeholder="请输入入口问题"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="createEntranceVisible = false">取 消</el-button>
       <el-button type="primary" @click="createQuestion">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否在当前主题下创建一个出口问题？"
-    :visible.sync="createOutVisible"
-    width="30%">
-    <el-form :model="renameQuestionForm">
-    <el-form-item label="主题名称" :label-width="formLabelWidth">
-      <el-input v-model="renameQuestionForm.question" auto-complete="off"
-      placeholder="请输入出口问题"></el-input>
-    </el-form-item>
-  </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否在当前主题下创建一个出口问题？"
+        :visible.sync="createOutVisible"
+        width="30%">
+        <el-form :model="renameQuestionForm">
+          <el-form-item label="主题名称" :label-width="formLabelWidth">
+            <el-input v-model="renameQuestionForm.question" auto-complete="off"
+                      placeholder="请输入出口问题"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="createOutVisible = false">取 消</el-button>
       <el-button type="primary" @click="createQuestion">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否删除该问题？"
-    :visible.sync="deleteEntranceVisible"
-    width="30%">
-    <el-form :model="renameQuestionForm">
-      <el-form-item label="问题内容" :label-width="formLabelWidth">
-        <el-input v-model="renameQuestionForm.question" auto-complete="off" :disabled="true"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否删除该问题？"
+        :visible.sync="deleteEntranceVisible"
+        width="30%">
+        <el-form :model="renameQuestionForm">
+          <el-form-item label="问题内容" :label-width="formLabelWidth">
+            <el-input v-model="renameQuestionForm.question" auto-complete="off" :disabled="true"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="deleteEntranceVisible = false">取 消</el-button>
       <el-button type="primary" @click="deleteQuestion">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否修改该槽点？"
-    :visible.sync="updateGrooveVisible"
-    width="30%">
-    <el-form :model="renameGrooveForm">
-    <el-form-item label="槽点内容" :label-width="formLabelWidth">
-      <el-input v-model="renameGrooveForm.title" auto-complete="off"
-      placeholder="请输入入口问题"></el-input>
-    </el-form-item>
-  </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否修改该槽点？"
+        :visible.sync="updateGrooveVisible"
+        width="30%">
+        <el-form :model="renameGrooveForm">
+          <el-form-item label="槽点内容" :label-width="formLabelWidth">
+            <el-input v-model="renameGrooveForm.title" auto-complete="off"
+                      placeholder="请输入入口问题"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="updateGrooveVisible = false">取 消</el-button>
       <el-button type="primary" @click="updateGroove">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否删除该槽点？"
-    :visible.sync="deleteGrooveVisible"
-    width="30%">
-    <el-form :model="renameGrooveForm">
-      <el-form-item label="槽点内容" :label-width="formLabelWidth">
-        <el-input v-model="renameGrooveForm.title" auto-complete="off" :disabled="true"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否删除该槽点？"
+        :visible.sync="deleteGrooveVisible"
+        width="30%">
+        <el-form :model="renameGrooveForm">
+          <el-form-item label="槽点内容" :label-width="formLabelWidth">
+            <el-input v-model="renameGrooveForm.title" auto-complete="off" :disabled="true"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="deleteGrooveVisible = false">取 消</el-button>
       <el-button type="primary" @click="deleteGroove">确 定</el-button>
     </span>
-  </el-dialog>
-  <el-dialog
-    title="是否创建一个槽点？"
-    :visible.sync="createGrooveVisible"
-    width="30%">
-    <el-form :model="renameGrooveForm">
-    <el-form-item label="槽点内容" :label-width="formLabelWidth">
-      <el-input v-model="renameGrooveForm.title" auto-complete="off"
-      placeholder="请输入槽点内容"></el-input>
-    </el-form-item>
-  </el-form>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="是否创建一个槽点？"
+        :visible.sync="createGrooveVisible"
+        width="30%">
+        <el-form :model="renameGrooveForm">
+          <el-form-item label="槽点内容" :label-width="formLabelWidth">
+            <el-input v-model="renameGrooveForm.title" auto-complete="off"
+                      placeholder="请输入槽点内容"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="createGrooveVisible = false">取 消</el-button>
       <el-button type="primary" @click="createGrovve">确 定</el-button>
     </span>
-  </el-dialog>
-    <el-dialog
-    title="修改脚本提示"
-    :visible.sync="updateScriptVisible"
-    width="30%">
-    <span class="dialog-footer">是否修改该脚本？</span>
-    <span slot="footer" class="dialog-footer">
+      </el-dialog>
+      <el-dialog
+        title="修改脚本提示"
+        :visible.sync="updateScriptVisible"
+        width="30%">
+        <span class="dialog-footer">是否修改该脚本？</span>
+        <span slot="footer" class="dialog-footer">
       <el-button @click="updateScriptVisible = false">取 消</el-button>
       <el-button type="primary" @click="updateScriptClick">确 定</el-button>
     </span>
-  </el-dialog>
-    <el-aside width="240px" class="scene-manage clearfix">
-      <div class="scene-title title clearfix">
-         <div class="scene-title-span"><h5>场景管理</h5></div>
-         <i class="scene-title-icon el-icon-plus"></i>
-      </div>
-      <el-select v-model="repositoryValue" placeholder="请选择知识库" @change="handleRepositoryChange" class="select-base">
-        <el-option
-          v-for="item in repositoryOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+      </el-dialog>
+      <el-aside width="240px" class="scene-manage clearfix">
+        <div class="scene-title title clearfix">
+          <div class="scene-title-span"><h5>场景管理</h5></div>
+          <i class="scene-title-icon el-icon-plus"></i>
+        </div>
+        <el-select v-model="repositoryValue" placeholder="请选择知识库" @change="handleRepositoryChange" class="select-base">
+          <el-option
+            v-for="item in repositoryOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            size="mini">
+          </el-option>
+        </el-select>
+        <el-input style="width: 90%" v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
+        <el-tree
+          id="el-tree-main"
+          :props="props1"
+          :load="loadNode1"
+          :filter-node-method="filterNode" ref="tree2"
+          node-key="id"
+          :render-content="renderContent"
+          lazy
+          @node-click="handleNodeClick"
           size="mini">
-        </el-option>
-      </el-select>
-      <el-input style="width: 90%" v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
-      <el-tree
-      id="el-tree-main"
-      :props="props1"
-      :load="loadNode1"
-      :filter-node-method="filterNode" ref="tree2"
-      node-key="id"
-      :render-content="renderContent"
-      lazy
-      @node-click="handleNodeClick"
-      size="mini">
-      </el-tree>
-    </el-aside>
-    <el-main class="main" style="padding: 0">
-      <el-row>
-        <el-col :span="24" class="global-search">
-          <el-input
-            size="medium"
-            placeholder="请输入内容"
-            suffix-icon="el-icon-search"
-            v-model="global_search">
-          </el-input>
-          <el-dropdown>
+        </el-tree>
+      </el-aside>
+      <el-main class="main" style="padding: 0">
+        <el-row>
+          <el-col :span="24" class="global-search">
+            <el-input
+              size="medium"
+              placeholder="请输入内容"
+              suffix-icon="el-icon-search"
+              v-model="global_search">
+            </el-input>
+            <el-dropdown>
           <span class="el-dropdown-link">
             下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>黄金糕</el-dropdown-item>
-              <el-dropdown-item>狮子头</el-dropdown-item>
-              <el-dropdown-item>螺蛳粉</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-col>
-      </el-row>
-      <el-row class="main-inner">
-        <el-col :span="5" class="scene-theme-wrapper">
-          <div class="scene-theme">
-            <div class="scene-theme-title title clearfix">
-              <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
-              <div class="scene-theme-title-icon">
-                <el-checkbox :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
-                <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
-                <i class="el-icon-download" @click="underSceneVisible = true"></i>
-                <i class="el-icon-plus" @click="createSceneVisible = true"></i>
-                <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>黄金糕</el-dropdown-item>
+                <el-dropdown-item>狮子头</el-dropdown-item>
+                <el-dropdown-item>螺蛳粉</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-col>
+        </el-row>
+        <el-row class="main-inner">
+          <el-col :span="5" class="scene-theme-wrapper">
+            <div class="scene-theme">
+              <div class="scene-theme-title title clearfix">
+                <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
+                <div class="scene-theme-title-icon">
+                  <el-checkbox :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
+                  <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
+                  <i class="el-icon-download" @click="underSceneVisible = true"></i>
+                  <i class="el-icon-plus" @click="createSceneVisible = true"></i>
+                  <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
+                </div>
               </div>
+              <div class="scene-theme-list">
+                <el-checkbox-group v-model="checkedScenes" @change="CheckedSceneChange">
+                  <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
+                    <el-tag size="mini" :class="{'el-tag': item.status == 1, 'el-tag--success':item.status == 2, 'el-tag--info': item.status == 3, 'el-tag--warning': item.status == 4}">{{item.status|sceneStatusFilter}}</el-tag>
+                    <span :class="{'active':checkedScene.id==item.id}" @click.prevent="sceneClick(item)">{{item.title}}</span>
+                    <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
+                  </el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <el-pagination
+                class="scene-theme-page"
+                small
+                layout="prev, pager, next"
+                @current-change="handleSceneCurrentChange"
+                :current-page.sync="sceneCurrentPage"
+                :total="sceneTotal">
+              </el-pagination>
             </div>
-            <div class="scene-theme-list">
-              <el-checkbox-group v-model="checkedScenes" @change="CheckedSceneChange">
-                <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
-                  <el-tag size="mini" :class="{'el-tag': item.status == 1, 'el-tag--success':item.status == 2, 'el-tag--info': item.status == 3, 'el-tag--warning': item.status == 4}">{{item.status|sceneStatusFilter}}</el-tag>
-                  <span :class="{'active':checkedScene.id==item.id}" @click.prevent="sceneClick(item)">{{item.title}}</span>
-                  <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
-                </el-checkbox>
-              </el-checkbox-group>
-            </div>
-            <el-pagination
-              class="scene-theme-page"
-              small
-              layout="prev, pager, next"
-              @current-change="handleSceneCurrentChange"
-              :current-page.sync="sceneCurrentPage"
-              :total="sceneTotal">
-            </el-pagination>
-          </div>
-        </el-col>
-        <el-col :span="10" class="questions">
-          <div class="questions-inner">
-            <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
-            @click.native="createQuestionClick">
-            新增</el-button>
+          </el-col>
+          <el-col :span="10" class="questions">
+            <div class="questions-inner">
+              <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
+                         @click.native="createQuestionClick">
+                新增</el-button>
 
-            <el-tabs v-model="activeQuestions" @tab-click="questionTag">
-              <el-tab-pane label="入口问题" name="first">
-                <div class="entrance-list">
-                  <el-checkbox-group v-model="checkedEntrances" @change="entranceChange">
-                    <el-checkbox v-for="item in entrance_list" :label="item.id" :key="item.id">
-                      {{item.title}}
-                      <i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
-                      <i class="el-icon-delete" size="mini" @click.prevent="deleteQuestionClick(item)"></i>
-                    </el-checkbox>
-                  </el-checkbox-group>
-                  <el-pagination
-                    small
-                    @size-change="handleSizeChange"
-                    @current-change="handleEntranceCurrentChange"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="10"
-                    layout="prev, pager, next"
-                    :total="entranceTotal"
-                    :current-page.sync="entranceCurrentPage"
-                    class="entrance-page">
-                  </el-pagination>
-                </div>
-              </el-tab-pane>
-              <el-tab-pane label="出口问题" name="second">
-                <div class="out-list">
-                  <el-checkbox-group v-model="checkedOut" @change="outChange">
-                    <el-checkbox v-for="item in out_list" :label="item.id" :key="item.id">
-                      {{item.title}}
-                      <i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
-                      <i class="el-icon-delete" size="mini" @click.prevent="deleteQuestionClick(item)"></i>
-                    </el-checkbox>
-                  </el-checkbox-group>
-                  <el-pagination
-                    small
-                    @size-change="handleSizeChange"
-                    @current-change="handleOutCurrentChange"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="10"
-                    layout="prev, pager, next"
-                    :total="outTotal"
-                    :current-page.sync="outCurrentPage"
-                    class="out-page">
-                  </el-pagination>
-                </div>
-              </el-tab-pane>
-            </el-tabs>
-          </div>
-          <div class="groove">
-            <div class="edit">
-            <!-- <div class="edit" @click="updateGrooveClick"> -->
-                <i class="el-icon-edit-outline" @click="updateGrooveClick"></i>
-                <i class="el-icon-plus" @click="createGrooveClick"></i>
-                <i class="el-icon-delete" @click="deleteGrooveClick"></i>
-              </div>
-            <h5 class="groove-title">槽点</h5>
-            <div class="groove-inner">
-              <el-tabs v-model="activeGroove" @tab-click="grooveTag">
-                <el-tab-pane label="入口问题" name="checkedEntrenace">
-                  <div class="list">
-                    <div class="item" v-for="(item, index) in entrance_grooves"
-                    :class="{'active':entranceGroovesIndex==index}" @click="entranceGroovesIndex=index">
-                    {{item.title}}</div>
+              <el-tabs v-model="activeQuestions" @tab-click="questionTag">
+                <el-tab-pane label="入口问题" name="first">
+                  <div class="entrance-list">
+                    <el-checkbox-group v-model="checkedEntrances" @change="entranceChange">
+                      <el-checkbox v-for="item in entrance_list" :label="item.id" :key="item.id">
+                        {{item.title}}
+                        <i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
+                        <i class="el-icon-delete" size="mini" @click.prevent="deleteQuestionClick(item)"></i>
+                      </el-checkbox>
+                    </el-checkbox-group>
+                    <el-pagination
+                      small
+                      @size-change="handleSizeChange"
+                      @current-change="handleEntranceCurrentChange"
+                      :page-sizes="[10, 20, 30, 40]"
+                      :page-size="10"
+                      layout="prev, pager, next"
+                      :total="entranceTotal"
+                      :current-page.sync="entranceCurrentPage"
+                      class="entrance-page">
+                    </el-pagination>
                   </div>
                 </el-tab-pane>
-                <el-tab-pane label="出口问题" name="checkedOut">
-                  <div class="list">
-                    <div class="item" v-for="(item, index) in out_grooves"
-                    :class="{'active':outGroovesIndex==index}" @click="outGroovesIndex=index">
-                    {{item.title}}</div>
+                <el-tab-pane label="出口问题" name="second">
+                  <div class="out-list">
+                    <el-checkbox-group v-model="checkedOut" @change="outChange">
+                      <el-checkbox v-for="item in out_list" :label="item.id" :key="item.id">
+                        {{item.title}}
+                        <i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
+                        <i class="el-icon-delete" size="mini" @click.prevent="deleteQuestionClick(item)"></i>
+                      </el-checkbox>
+                    </el-checkbox-group>
+                    <el-pagination
+                      small
+                      @size-change="handleSizeChange"
+                      @current-change="handleOutCurrentChange"
+                      :page-sizes="[10, 20, 30, 40]"
+                      :page-size="10"
+                      layout="prev, pager, next"
+                      :total="outTotal"
+                      :current-page.sync="outCurrentPage"
+                      class="out-page">
+                    </el-pagination>
                   </div>
                 </el-tab-pane>
               </el-tabs>
             </div>
-          </div>
-        </el-col>
-        <el-col :span="9">
-          <div class="script clearfix">
-            <h5 class="title floatLeft">脚本</h5>
-            <el-button class="edit-outline-button" icon="el-icon-edit-outline" @click="updateScriptVisible = true" :disabled="scriptTextDisabledFlag"></el-button>         
-            <i class="el-icon-service"  @click.prevent="handleTestScriptClick"></i>
-            <!-- <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
-            @click.native="handleTestScriptClick">
-            测试</el-button> -->
-            <!-- <div class="script-inner"></div> -->
-            <el-input
-              class="script-inner"
-              type="textarea"
-              placeholder="脚本内容显示区域"
-              :disabled="scriptTextDisabledFlag"
-              v-model="script_text">
-            </el-input>
-          </div>
-          <div class="channel">
-            <div class="edit" @click="updateChannel">{{channelUpdateText}}</div>
-            <h5 class="channel-title">渠道</h5>
-            <div class="channel-list">
-              <el-checkbox-group v-model="checkedChannel">
-                <el-checkbox v-for="channel in channels" :label="channel.name" :key="channel.name"
-                :disabled="channelUpdateDisabledFlag">
-                {{channel.name}}</el-checkbox>
-              </el-checkbox-group>
+            <div class="groove">
+              <div class="edit">
+                <!-- <div class="edit" @click="updateGrooveClick"> -->
+                <i class="el-icon-edit-outline" @click="updateGrooveClick"></i>
+                <i class="el-icon-plus" @click="createGrooveClick"></i>
+                <i class="el-icon-delete" @click="deleteGrooveClick"></i>
+              </div>
+              <h5 class="groove-title">槽点</h5>
+              <div class="groove-inner">
+                <el-tabs v-model="activeGroove" @tab-click="grooveTag">
+                  <el-tab-pane label="入口问题" name="checkedEntrenace">
+                    <div class="list">
+                      <div class="item" v-for="(item, index) in entrance_grooves"
+                           :class="{'active':entranceGroovesIndex==index}" @click="entranceGroovesIndex=index">
+                        {{item.title}}</div>
+                    </div>
+                  </el-tab-pane>
+                  <el-tab-pane label="出口问题" name="checkedOut">
+                    <div class="list">
+                      <div class="item" v-for="(item, index) in out_grooves"
+                           :class="{'active':outGroovesIndex==index}" @click="outGroovesIndex=index">
+                        {{item.title}}</div>
+                    </div>
+                  </el-tab-pane>
+                </el-tabs>
+              </div>
             </div>
-          </div>
-        </el-col>
-      </el-row>
-    </el-main>
-  </el-container>
+          </el-col>
+          <el-col :span="9">
+            <div class="script clearfix">
+              <h5 class="title floatLeft">脚本</h5>
+              <el-button class="edit-outline-button" icon="el-icon-edit-outline" @click="updateScriptVisible = true" :disabled="scriptTextDisabledFlag"></el-button>
+              <i class="el-icon-service"  @click.prevent="handleTestScriptClick"></i>
+              <!-- <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
+              @click.native="handleTestScriptClick">
+              测试</el-button> -->
+              <!-- <div class="script-inner"></div> -->
+              <el-input
+                class="script-inner"
+                type="textarea"
+                placeholder="脚本内容显示区域"
+                :disabled="scriptTextDisabledFlag"
+                v-model="script_text">
+              </el-input>
+            </div>
+            <div class="channel">
+              <div class="edit" @click="updateChannel">{{channelUpdateText}}</div>
+              <h5 class="channel-title">渠道</h5>
+              <div class="channel-list">
+                <el-checkbox-group v-model="checkedChannel">
+                  <el-checkbox v-for="channel in channels" :label="channel.name" :key="channel.name"
+                               :disabled="channelUpdateDisabledFlag">
+                    {{channel.name}}</el-checkbox>
+                </el-checkbox-group>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -996,7 +998,7 @@
           }else{
             this.scriptTextDisabledFlag = false;
           }
-          
+
         })
       },
       httpGetRepositoryOptions(){
@@ -1758,330 +1760,331 @@
 </script>
 
 <style lang="less">
-  .clearfix:after {
-     content: '';
-     display: block;
-     clear: both;
-  }
-  .test-script-show-div {
-    margin-left: 120px;
-    background-color: #f5f7fa;
-    height: 300px;
-    width: 500px;
-  }
-  .progressContent {
-    float: right;
-    height: 126px;
-    width: 250px;
-    border: 0px;
-    .dialog-footer{
-      display: inline-block;
-      margin-top: 50px;
+  .index {
+    .clearfix:after {
+      content: '';
+      display: block;
+      clear: both;
     }
-  }
-  .el-tree-node {
-     content: '';
-     display: block;
-     clear: both;
-  }
-  .custom-tree-node-label {
-    float: left;
-  }
-  .custom-tree-node {
-    flex: 1;
-    position: relative;
-  }
-  .custom-tree-node-button {
-    position: absolute;
-    right: 20px;
-  }
-  .custom-tree-node-button .el-icon-edit-outline, .custom-tree-node-button .el-icon-delete {
-    margin-left: 5px;
-  }
-  .el-container {
-    position: relative;
-  }
-  .el-dialog__header, .el-dialog__body {
-    text-align: left;
-    content: '';
-    display: block;
-    clear: both;
-    position: relative;
-  }
-  .el-icon-plus:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
-  .el-icon-edit-outline:hover, .el-icon-service:hover,
-  {
-    color: #409EFF;
-    cursor: pointer;
-  }
-  .main {
-    height: 100%;
-    padding: 0;
-    background-color: #E4E7EB;
-    color: #333;
-    text-align: center;
-    .el-checkbox+.el-checkbox{
-      margin-left: 0;
+    .test-script-show-div {
+      margin-left: 120px;
+      background-color: #f5f7fa;
+      height: 300px;
+      width: 500px;
     }
-    .global-search {
-      display: flex;
-      justify-content: flex-end;
-      height: 64px;
-      margin-bottom: 16px;
-      padding-top: 15px;
-      padding-right: 24px;
-      background-color: #fff;
-      .el-input {
-        width: 364px;
-        margin-right: 16px;
-      }
-      .el-dropdown {
-        padding-top: 8px;
+    .progressContent {
+      float: right;
+      height: 126px;
+      width: 250px;
+      border: 0px;
+      .dialog-footer{
+        display: inline-block;
+        margin-top: 50px;
       }
     }
-    .main-inner {
-      padding-left: 16px;
-      padding-right: 16px;
-      .scene-theme-wrapper {
+    .el-tree-node {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    .custom-tree-node-label {
+      float: left;
+    }
+    .custom-tree-node {
+      flex: 1;
+      position: relative;
+    }
+    .custom-tree-node-button {
+      position: absolute;
+      right: 20px;
+    }
+    .custom-tree-node-button .el-icon-edit-outline, .custom-tree-node-button .el-icon-delete {
+      margin-left: 5px;
+    }
+    .el-container {
+      position: relative;
+    }
+    .el-dialog__header, .el-dialog__body {
+      text-align: left;
+      content: '';
+      display: block;
+      clear: both;
+      position: relative;
+    }
+    .el-icon-plus:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
+    .el-icon-edit-outline:hover, .el-icon-service:hover,
+    {
+      color: #409EFF;
+      cursor: pointer;
+    }
+    .main {
+      height: 100%;
+      padding: 0;
+      background-color: #E4E7EB;
+      color: #333;
+      text-align: center;
+      .el-checkbox+.el-checkbox{
+        margin-left: 0;
+      }
+      .global-search {
+        display: flex;
+        justify-content: flex-end;
+        height: 64px;
+        margin-bottom: 16px;
+        padding-top: 15px;
+        padding-right: 24px;
+        background-color: #fff;
+        .el-input {
+          width: 364px;
+          margin-right: 16px;
+        }
+        .el-dropdown {
+          padding-top: 8px;
+        }
+      }
+      .main-inner {
+        padding-left: 16px;
         padding-right: 16px;
-        .scene-theme {
-          height: 983px;
-          background-color: #fff;
-          text-align: left;
-          position: relative;
-          border: 1px solid #cdd0d4;
-          .scene-theme-title {
-            margin-left: 0;
-            margin-right: 0;
-            padding-left: 12px;
-            padding-right: 12px;
-            height: 64px;
-            border-bottom: 1px solid #cdd0d4;
-            color: #666;
-          }
-          .scene-theme-title-span {
-            float: left;
-          }
-          .scene-theme-title-icon {
-            text-align: center;
-            border-bottom: 21px;
-            color: #666;
-            float: right;
-          }
-          .scene-theme-list {
-            .scene-theme-item {
-              position: relative;
-              width: calc(~"100% - 16px");
-              padding-left: 12px;
-              line-height: 45px;
-              text-align: left;
-              border-bottom: 1px solid #cdd0d4;
-              .el-checkbox__input {
-                display: none;
-              }
-              .el-checkbox__label {
-                display: inline-block;
-                width: 70%;
-                height: 20px;
-                padding-left: 0;
-                line-height: 16px;
-                overflow: hidden;
-                text-overflow:ellipsis;
-                white-space: nowrap;
-                vertical-align: middle;
-                color: #606266;
-                .active {
-                 color: #409EFF
-                }
-              }
-              .el-icon-edit-outline {
-                position: absolute;
-                top: 16px;
-                right: 12px;
-              }
-              &.is-checked {
-                background-color: #E4F0FF;
-                .el-tag {
-                  background-color: #E4F0FF;
-                }
-              }
-              .el-tag {
-                width: 50px;
-                margin-right: 5px;
-                text-align: center;
-                overflow: hidden;
-                text-overflow:ellipsis;
-                white-space: nowrap;
-                vertical-align: middle;
-                background-color: #FFFFFF;
-              }
-              .el-tag--success {
-                color: #46C819;
-              }
-            }
-          }
-          .scene-theme-page {
-            position: absolute;
-            bottom: 16px;
-          }
-        }
-      }
-      .questions {
-        padding-right: 16px;
-        .el-tabs__header {
-          height: 527px;
-          height: 64px;
-          margin: 0;
-          padding-left: 16px;
-          .el-tabs__nav-wrap {
-            height: 66px;
-          }
-        }
-        .el-tabs__item {
-          height: 64px;
-          line-height: 64px;
-        }
-        .questions-inner {
-          position: relative;
-          border: 1px solid #cdd0d4;
-          background-color: #fff;
-          .el-button-plus {
-            position: absolute;
-            right: 16px;
-            width: 80px;
-            height: 35px;
-            line-height: 35px;
-            padding: 0;
-            margin-top: 14px;
-            text-align: center;
-            background-color: #4E86EC;
-            border-color: #4E86EC;
-            z-index: 999;
-          }
-          .entrance-list {
-            position: relative;
-            height: 457px;
+        .scene-theme-wrapper {
+          padding-right: 16px;
+          .scene-theme {
+            height: 983px;
+            background-color: #fff;
             text-align: left;
-            margin-top: 5px;
-            padding-left: 16px;
-            padding-right: 16px;
-            .el-checkbox {
-              width: 100%;
-              line-height: 40px;
-              border-bottom: 1px solid #E4E7EB;
-              .el-checkbox__label {
-                display: inline-block;
-                width: 85%;
-                height: 18px;
-                line-height: 16px;
-                overflow: hidden;
-                text-overflow:ellipsis;
-                white-space: nowrap;
-                vertical-align: middle;
-
-              }
-            }
-            .entrance-page {
-              position: absolute;
-              bottom: 15px;
-              left: 5px;
-            }
-            .el-icon-edit-outline {
-                position: absolute;
-                top: 14px;
-                right: 32px;
-              }
-            .el-icon-delete {
-                position: absolute;
-                top: 14px;
-                right: 10px;
-              }
-          }
-          .out-list {
             position: relative;
-            height: 457px;
-            margin-top: 5px;
-            text-align: left;
-            padding-left: 16px;
-            padding-right: 16px;
-            .el-checkbox {
-              width: 100%;
-              line-height: 40px;
-              border-bottom: 1px solid #E4E7EB;
-              .el-checkbox__label {
-                display: inline-block;
-                width: 85%;
-                height: 18px;
-                line-height: 16px;
-                overflow: hidden;
-                text-overflow:ellipsis;
-                white-space: nowrap;
-                vertical-align: middle;
-
-              }
-            }
-            .out-page {
-              position: absolute;
-              bottom: 15px;
-              left: 5px;
-            }
-            .el-icon-edit-outline {
-                position: absolute;
-                top: 14px;
-                right: 32px;
-              }
-            .el-icon-delete {
-                position: absolute;
-                top: 14px;
-                right: 10px;
-              }
-          }
-        }
-        .groove {
-          position: relative;
-          margin-top: 16px;
-          padding: 0 16px 16px;
-          text-align: left;
-          background-color: #fff;
-          border: 1px solid #cdd0d4;
-          .edit {
-            position: absolute;
-            right: 18px;
-            line-height: 55px;
-          }
-          .groove-title {
-            line-height: 55px;
-          }
-          .groove-inner {
-            height: 366px;
             border: 1px solid #cdd0d4;
-            .el-tab-pane {
-              padding: 0 16px;
-              font-size: 14px;
-              .list {
-                .item {
-                  line-height: 45px;
-                  height: 45px;
-                  border-bottom: 1px solid #E4E7EB;
-                  &.active {
-                    color: #409EFF;
+            .scene-theme-title {
+              margin-left: 0;
+              margin-right: 0;
+              padding-left: 12px;
+              padding-right: 12px;
+              height: 64px;
+              border-bottom: 1px solid #cdd0d4;
+              color: #666;
+            }
+            .scene-theme-title-span {
+              float: left;
+            }
+            .scene-theme-title-icon {
+              text-align: center;
+              border-bottom: 21px;
+              color: #666;
+              float: right;
+            }
+            .scene-theme-list {
+              .scene-theme-item {
+                position: relative;
+                width: calc(~"100% - 16px");
+                padding-left: 12px;
+                line-height: 45px;
+                text-align: left;
+                border-bottom: 1px solid #cdd0d4;
+                .el-checkbox__input {
+                  display: none;
+                }
+                .el-checkbox__label {
+                  display: inline-block;
+                  width: 70%;
+                  height: 20px;
+                  padding-left: 0;
+                  line-height: 16px;
+                  overflow: hidden;
+                  text-overflow:ellipsis;
+                  white-space: nowrap;
+                  vertical-align: middle;
+                  color: #606266;
+                  .active {
+                    color: #409EFF
+                  }
+                }
+                .el-icon-edit-outline {
+                  position: absolute;
+                  top: 16px;
+                  right: 12px;
+                }
+                &.is-checked {
+                  background-color: #E4F0FF;
+                  .el-tag {
                     background-color: #E4F0FF;
                   }
                 }
-                .item:hover {
-                  cursor: pointer;
+                .el-tag {
+                  width: 50px;
+                  margin-right: 5px;
+                  text-align: center;
+                  overflow: hidden;
+                  text-overflow:ellipsis;
+                  white-space: nowrap;
+                  vertical-align: middle;
+                  background-color: #FFFFFF;
+                }
+                .el-tag--success {
+                  color: #46C819;
+                }
+              }
+            }
+            .scene-theme-page {
+              position: absolute;
+              bottom: 16px;
+            }
+          }
+        }
+        .questions {
+          padding-right: 16px;
+          .el-tabs__header {
+            height: 527px;
+            height: 64px;
+            margin: 0;
+            padding-left: 16px;
+            .el-tabs__nav-wrap {
+              height: 66px;
+            }
+          }
+          .el-tabs__item {
+            height: 64px;
+            line-height: 64px;
+          }
+          .questions-inner {
+            position: relative;
+            border: 1px solid #cdd0d4;
+            background-color: #fff;
+            .el-button-plus {
+              position: absolute;
+              right: 16px;
+              width: 80px;
+              height: 35px;
+              line-height: 35px;
+              padding: 0;
+              margin-top: 14px;
+              text-align: center;
+              background-color: #4E86EC;
+              border-color: #4E86EC;
+              z-index: 999;
+            }
+            .entrance-list {
+              position: relative;
+              height: 457px;
+              text-align: left;
+              margin-top: 5px;
+              padding-left: 16px;
+              padding-right: 16px;
+              .el-checkbox {
+                width: 100%;
+                line-height: 40px;
+                border-bottom: 1px solid #E4E7EB;
+                .el-checkbox__label {
+                  display: inline-block;
+                  width: 85%;
+                  height: 18px;
+                  line-height: 16px;
+                  overflow: hidden;
+                  text-overflow:ellipsis;
+                  white-space: nowrap;
+                  vertical-align: middle;
+
+                }
+              }
+              .entrance-page {
+                position: absolute;
+                bottom: 15px;
+                left: 5px;
+              }
+              .el-icon-edit-outline {
+                position: absolute;
+                top: 14px;
+                right: 32px;
+              }
+              .el-icon-delete {
+                position: absolute;
+                top: 14px;
+                right: 10px;
+              }
+            }
+            .out-list {
+              position: relative;
+              height: 457px;
+              margin-top: 5px;
+              text-align: left;
+              padding-left: 16px;
+              padding-right: 16px;
+              .el-checkbox {
+                width: 100%;
+                line-height: 40px;
+                border-bottom: 1px solid #E4E7EB;
+                .el-checkbox__label {
+                  display: inline-block;
+                  width: 85%;
+                  height: 18px;
+                  line-height: 16px;
+                  overflow: hidden;
+                  text-overflow:ellipsis;
+                  white-space: nowrap;
+                  vertical-align: middle;
+
+                }
+              }
+              .out-page {
+                position: absolute;
+                bottom: 15px;
+                left: 5px;
+              }
+              .el-icon-edit-outline {
+                position: absolute;
+                top: 14px;
+                right: 32px;
+              }
+              .el-icon-delete {
+                position: absolute;
+                top: 14px;
+                right: 10px;
+              }
+            }
+          }
+          .groove {
+            position: relative;
+            margin-top: 16px;
+            padding: 0 16px 16px;
+            text-align: left;
+            background-color: #fff;
+            border: 1px solid #cdd0d4;
+            .edit {
+              position: absolute;
+              right: 18px;
+              line-height: 55px;
+            }
+            .groove-title {
+              line-height: 55px;
+            }
+            .groove-inner {
+              height: 366px;
+              border: 1px solid #cdd0d4;
+              .el-tab-pane {
+                padding: 0 16px;
+                font-size: 14px;
+                .list {
+                  .item {
+                    line-height: 45px;
+                    height: 45px;
+                    border-bottom: 1px solid #E4E7EB;
+                    &.active {
+                      color: #409EFF;
+                      background-color: #E4F0FF;
+                    }
+                  }
+                  .item:hover {
+                    cursor: pointer;
+                  }
                 }
               }
             }
           }
         }
-      }
-      .script {
-        margin-top: 0;
-        background-color: #fff;
-        border: 1px solid #cdd0d4;
-        position: relative;
-        .el-icon-service {
+        .script {
+          margin-top: 0;
+          background-color: #fff;
+          border: 1px solid #cdd0d4;
+          position: relative;
+          .el-icon-service {
             position: absolute;
             right: 16px;
             padding: 0;
@@ -2099,115 +2102,116 @@
             border: 0;
             padding: 1px;
           }
-        .script-inner {
-          height: 446px;
-          margin: 0 16px 16px;
+          .script-inner {
+            height: 446px;
+            margin: 0 16px 16px;
+            border: 1px solid #cdd0d4;
+            &.el-textarea {
+              width: calc(~"100% - 32px");
+              .el-textarea__inner {
+                border: none;
+                height: 446px;
+                resize:none;
+              }
+            }
+          }
+        }
+        .channel {
+          position: relative;
+          height: 440px;
+          margin-top: 16px;
+          padding-left: 16px;
+          padding-right: 16px;
+          background-color: #fff;
           border: 1px solid #cdd0d4;
-          &.el-textarea {
-            width: calc(~"100% - 32px");
-            .el-textarea__inner {
-              border: none;
-              height: 446px;
-              resize:none;
+          text-align: left;
+          .edit {
+            position: absolute;
+            right: 18px;
+            font-size: 14px;
+            line-height: 55px;
+            color: #6294EF;
+          }
+          .channel-title  {
+            line-height: 55px;
+            border-bottom: 1px solid #cdd0d4;
+          }
+          .channel-list {
+            margin-top: 16px;
+            .el-checkbox{
+              margin-right: 30px;
+              line-height: 30px;
             }
           }
         }
       }
-      .channel {
-        position: relative;
-        height: 440px;
-        margin-top: 16px;
-        padding-left: 16px;
-        padding-right: 16px;
-        background-color: #fff;
-        border: 1px solid #cdd0d4;
-        text-align: left;
-        .edit {
-          position: absolute;
-          right: 18px;
-          font-size: 14px;
-          line-height: 55px;
-          color: #6294EF;
-        }
-        .channel-title  {
-          line-height: 55px;
-          border-bottom: 1px solid #cdd0d4;
-        }
-        .channel-list {
-          margin-top: 16px;
-          .el-checkbox{
-            margin-right: 30px;
-            line-height: 30px;
-          }
-        }
+    }
+    .scene-manage {
+      background-color: #1A273C;
+      color: #333;
+      text-align: center;
+      #el-tree-main {
+        background-color: rgb(21,28,46);
+        color: rgb(115,122,143);
       }
     }
-  }
-  .scene-manage {
-    background-color: #1A273C;
-    color: #333;
-    text-align: center;
-    #el-tree-main {
-      background-color: rgb(21,28,46);
-      color: rgb(115,122,143);
-    } 
-  }
-  .title {
-    margin-left: 16px;
-    margin-right: 16px;
-    text-align: left;
-    line-height: 62px;
+    .title {
+      margin-left: 16px;
+      margin-right: 16px;
+      text-align: left;
+      line-height: 62px;
 
-  }
-  .floatLeft {
-    float: left;
-  }
-  .scene-title {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
-  }
-  .scene-title-span {
-    float: left;
-  }
-  .scene-title-icon {
-    color: #ddd;
-    float: right;
-    margin-top: 24px;
-  }
-  .el-input {
-    /*margin-top: 10px;*/
-    margin-bottom: 10px;
-    width: 90%;
-    text-align: left;
-  }
-  .el-tree-node:focus>.el-tree-node__content {
-    padding-left: 15px;
-    background-color: rgb(21,28,46);
-    color: #fff;
-  }
-  .select-base {
-    width: 90%;
-    height: 41px;
-    margin-top: 17px;
-    margin-bottom: 17px;
-    background-color: #1A273C;
-  }
-  .select-base .el-input {
-    width: 100%;
-    margin: 0;
-  }
-  .el-select .el-input.is-focus .el-input__inner:focus, .el-select .el-input.is-focus .el-input__inner {
-    border-color: #1a273c;
-  }
-  .select-base .el-input--suffix .el-input__inner {
-    color: #fff;
-    background-color: #374254;
-    border: none;
-  }
-  .el-pagination--small {
-    margin-top: 10px;
-  }
-  .el-pagination__sizes{
-    margin-top: -13px;
+    }
+    .floatLeft {
+      float: left;
+    }
+    .scene-title {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+    .scene-title-span {
+      float: left;
+    }
+    .scene-title-icon {
+      color: #ddd;
+      float: right;
+      margin-top: 24px;
+    }
+    .el-input {
+      /*margin-top: 10px;*/
+      margin-bottom: 10px;
+      width: 90%;
+      text-align: left;
+    }
+    .el-tree-node:focus>.el-tree-node__content {
+      padding-left: 15px;
+      background-color: rgb(21,28,46);
+      color: #fff;
+    }
+    .select-base {
+      width: 90%;
+      height: 41px;
+      margin-top: 17px;
+      margin-bottom: 17px;
+      background-color: #1A273C;
+    }
+    .select-base .el-input {
+      width: 100%;
+      margin: 0;
+    }
+    .el-select .el-input.is-focus .el-input__inner:focus, .el-select .el-input.is-focus .el-input__inner {
+      border-color: #1a273c;
+    }
+    .select-base .el-input--suffix .el-input__inner {
+      color: #fff;
+      background-color: #374254;
+      border: none;
+    }
+    .el-pagination--small {
+      margin-top: 10px;
+    }
+    .el-pagination__sizes{
+      margin-top: -13px;
+    }
   }
 </style>
