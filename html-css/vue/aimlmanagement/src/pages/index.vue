@@ -1822,6 +1822,9 @@
     color: #409EFF;
     cursor: pointer;
   }
+  .scene-theme-item:hover {
+    background-color: #f5f7fa;
+  }
   .item:hover {
     background-color: #f5f7fa;
   }
@@ -1895,9 +1898,7 @@
               .el-checkbox__input {
                 margin-right: 5px;
               }
-              .scene-theme-item:hover {
-                background-color: #f5f7fa;
-              }
+              
               .el-checkbox__label {
                 display: inline-block;
                 width: 100%;
