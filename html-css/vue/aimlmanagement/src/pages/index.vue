@@ -296,20 +296,20 @@
           </span>
 <<<<<<< HEAD
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>选项一</el-dropdown-item>
-              <el-dropdown-item>选项二</el-dropdown-item>
-              <el-dropdown-item>选项三</el-dropdown-item>
+              <el-dropdown-item>黄金糕</el-dropdown-item>
+              <el-dropdown-item>狮子头</el-dropdown-item>
+              <el-dropdown-item>螺蛳粉</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
       </el-row>
       <el-row class="main-inner">
-        <el-col :span="6" class="scene-theme-wrapper">
+        <el-col :span="5" class="scene-theme-wrapper">
           <div class="scene-theme">
             <div class="scene-theme-title title clearfix">
-              <el-checkbox class="scene-theme-title-el-checkbox" :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
               <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
               <div class="scene-theme-title-icon">
+                <el-checkbox :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
                 <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
                 <i class="el-icon-download" @click="underSceneVisible = true"></i>
                 <i class="el-icon-plus" @click="createSceneVisible = true"></i>
@@ -359,11 +359,9 @@
             <div class="scene-theme-list">
               <el-checkbox-group v-model="checkedScenes" @change="CheckedSceneChange">
                 <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
-                  <div class="scene-theme-item-only" @click.prevent="sceneClick(item)">
-                    <el-tag size="mini" :class="{'el-tag': item.status == 1, 'el-tag--success':item.status == 2, 'el-tag--info': item.status == 3, 'el-tag--warning': item.status == 4}">{{item.status|sceneStatusFilter}}</el-tag>
-                    <span class="scene-theme-item-content" :class="{'active':checkedScene.id==item.id}" @click.prevent="sceneClick(item)">{{item.title}}</span>
-                    <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
-                  </div>
+                  <el-tag size="mini" :class="{'el-tag': item.status == 1, 'el-tag--success':item.status == 2, 'el-tag--info': item.status == 3, 'el-tag--warning': item.status == 4}">{{item.status|sceneStatusFilter}}</el-tag>
+                  <span :class="{'active':checkedScene.id==item.id}" @click.prevent="sceneClick(item)">{{item.title}}</span>
+                  <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                 </el-checkbox>
               </el-checkbox-group>
             </div>
@@ -377,7 +375,7 @@
             </el-pagination>
           </div>
         </el-col>
-        <el-col :span="9" class="questions">
+        <el-col :span="10" class="questions">
           <div class="questions-inner">
             <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
             @click.native="createQuestionClick">
@@ -1824,12 +1822,6 @@
      display: block;
      clear: both;
   }
-  .el-tree-node__content{
-    height: 45px;
-  }
-  .el-tree-node__content:hover{
-    background-color: #4E86EC;
-  }
   .custom-tree-node-label {
     float: left;
   }
@@ -1859,9 +1851,6 @@
   {
     color: #409EFF;
     cursor: pointer;
-  }
-  .item:hover {
-    background-color: #f5f7fa;
   }
   .main {
     height: 100%;
@@ -1968,12 +1957,8 @@
             border-bottom: 1px solid #cdd0d4;
             color: #666;
           }
-          .scene-theme-title-el-checkbox {
-            float: left;
-          }
           .scene-theme-title-span {
             float: left;
-            margin-left: 5px;
           }
           .scene-theme-title-icon {
             text-align: center;
@@ -1987,19 +1972,15 @@
               width: calc(~"100% - 16px");
               padding-left: 12px;
               line-height: 45px;
-              height: 45px;
               text-align: left;
               border-bottom: 1px solid #cdd0d4;
               .el-checkbox__input {
-                margin-right: 5px;
-              }
-              .scene-theme-item:hover {
-                background-color: #f5f7fa;
+                display: none;
               }
               .el-checkbox__label {
                 display: inline-block;
-                width: 100%;
-                height: 100%;
+                width: 70%;
+                height: 20px;
                 padding-left: 0;
                 line-height: 16px;
                 overflow: hidden;
@@ -2007,14 +1988,6 @@
                 white-space: nowrap;
                 vertical-align: middle;
                 color: #606266;
-                .scene-theme-item-only {
-                  height: 100%;
-                  width: 100%;
-                  .scene-theme-item-content {
-                    display: inline-block;
-                    margin-top:11px;
-                  }
-                }
                 .active {
                  color: #409EFF
                 }
@@ -2024,7 +1997,12 @@
                 top: 16px;
                 right: 12px;
               }
-              
+              &.is-checked {
+                background-color: #E4F0FF;
+                .el-tag {
+                  background-color: #E4F0FF;
+                }
+              }
               .el-tag {
                 width: 50px;
                 margin-right: 5px;
@@ -2162,9 +2140,6 @@
 
               }
             }
-            .el-checkbox:hover {
-              background-color: #f5f7fa;
-            }
             .entrance-page {
 =======
             border: 1px solid #cdd0d4;
@@ -2246,9 +2221,6 @@
                 }
               }
 <<<<<<< HEAD
-            }
-            .el-checkbox:hover {
-              background-color: #f5f7fa;
             }
             .out-page {
               position: absolute;
@@ -2388,14 +2360,8 @@
     color: #333;
     text-align: center;
     #el-tree-main {
-      background-color: #1A273C;
-      color: rgba(256,256,256,0.8);
-        .el-icon-plus:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
-        .el-icon-edit-outline:hover, .el-icon-service:hover,
-        {
-          color: rgb(256,256,256);
-          cursor: pointer;
-        }
+      background-color: rgb(21,28,46);
+      color: rgb(115,122,143);
     } 
   }
   .title {
@@ -2428,8 +2394,8 @@
   }
   .el-tree-node:focus>.el-tree-node__content {
     padding-left: 15px;
-    background-color: #1A273C;
-    color: rgba(256,256,256,0.9);
+    background-color: rgb(21,28,46);
+    color: #fff;
   }
   .select-base {
     width: 90%;
