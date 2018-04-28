@@ -1958,9 +1958,6 @@
             height: 64px;
             margin: 0;
             padding-left: 16px;
-            .el-tabs__nav-wrap {
-              height: 66px;
-            }
           }
           .el-tabs__item {
             height: 64px;
