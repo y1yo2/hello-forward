@@ -267,9 +267,9 @@
           size="mini">
         </el-option>
       </el-select>
-      <el-input v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
+      <el-input style="width: 90%" v-model="filterText" placeholder="输入关键字进行过滤" size="mini"></el-input>
       <el-tree
-      class="el-tree-main"
+      id="el-tree-main"
       :props="props1"
       :load="loadNode1"
       :filter-node-method="filterNode" ref="tree2"
@@ -280,7 +280,7 @@
       size="mini">
       </el-tree>
     </el-aside>
-    <el-main class="main">
+    <el-main class="main" style="padding: 0">
       <el-row>
         <el-col :span="24" class="global-search">
           <el-input
@@ -417,7 +417,7 @@
         <el-col :span="9">
           <div class="script clearfix">
             <h5 class="title floatLeft">脚本</h5>
-            <i class="el-icon-edit-outline" @click="updateScriptVisible = true"></i>            
+            <el-button class="edit-outline-button" icon="el-icon-edit-outline" @click="updateScriptVisible = true" :disabled="scriptTextDisabledFlag"></el-button>         
             <i class="el-icon-service"  @click.prevent="handleTestScriptClick"></i>
             <!-- <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
             @click.native="handleTestScriptClick">
@@ -991,7 +991,12 @@
           dataType: 'jsonp',
         }).then ((res) => {
           var data = res.data;
-          this.scriptTextDisabledFlag = data.VALUE;
+          if (data.VALUE == 'true') {
+            this.scriptTextDisabledFlag = true;
+          }else{
+            this.scriptTextDisabledFlag = false;
+          }
+          
         })
       },
       httpGetRepositoryOptions(){
@@ -2084,13 +2089,15 @@
             text-align: center;
             z-index: 999;
           }
-        .el-icon-edit-outline {
+          .edit-outline-button {
             position: absolute;
             right: 48px;
             padding: 0;
             margin-top: 23px;
             text-align: center;
             z-index: 999;
+            border: 0;
+            padding: 1px;
           }
         .script-inner {
           height: 446px;
@@ -2140,6 +2147,10 @@
     background-color: #1A273C;
     color: #333;
     text-align: center;
+    #el-tree-main {
+      background-color: rgb(21,28,46);
+      color: rgb(115,122,143);
+    } 
   }
   .title {
     margin-left: 16px;
@@ -2168,10 +2179,6 @@
     margin-bottom: 10px;
     width: 90%;
     text-align: left;
-  }
-  .el-tree-main {
-    background-color: rgb(21,28,46);
-    color: rgb(115,122,143);
   }
   .el-tree-node:focus>.el-tree-node__content {
     padding-left: 15px;
