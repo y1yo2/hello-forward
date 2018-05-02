@@ -69,6 +69,29 @@
     </span>
       </el-dialog>
       <el-dialog
+        title="是否通过导入Excel在当前目录下创建一个主题？"
+        :visible.sync="createSceneExcelVisible"
+        width="30%">
+        <el-form :model="renameForm">
+          <el-form-item label="主题名称" :label-width="formLabelWidth">
+            <el-input v-model="renameForm.name" auto-complete="off"
+                      placeholder="请输入主题名称"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+      <el-button @click="createSceneExcelVisible = false">取 消</el-button>
+      <!-- <el-button type="primary" @click="createSceneExcelVisible = false">确 定</el-button> -->
+<!--       action="https://jsonplaceholder.typicode.com/posts/" -->
+      <el-upload
+        class="upload-demo"
+        
+        action="http://192.168.100.244:28984/aimlManage/importExcelAiml"
+        >
+        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+      </el-upload>
+    </span>
+      </el-dialog>
+      <el-dialog
         title="是否在当前目录下创建一个主题？"
         :visible.sync="createSceneVisible"
         width="30%">
@@ -309,6 +332,7 @@
                 <el-checkbox class="scene-theme-title-el-checkbox" :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
                 <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
                 <div class="scene-theme-title-icon">
+                  <i class="el-icon-upload" @click=""></i>
                   <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
                   <i class="el-icon-download" @click="underSceneVisible = true"></i>
                   <i class="el-icon-plus" @click="createSceneVisible = true"></i>
@@ -465,6 +489,7 @@
         createVisible: false,
         renameVisible: false,
         createSceneVisible: false,
+        createSceneExcelVisible: true,
         deleteSceneVisible: false,
         renameSceneVisible: false,
         publishSceneVisible: false,
@@ -489,6 +514,7 @@
         testScriptVisible: false,
         testScriptText: '显示内容 \n 123123',
         updateScriptVisible: false,
+        
         testScriptForm: {
           title: '',
           id: '',
@@ -1738,6 +1764,24 @@
           this.testScriptText = this.testScriptText + "小明：" + data.msg + "\n";
         })
       },
+      httpImportExcelAiml(){
+        this.$http({
+          method: 'post',
+          url: '/aimlManage/importExcelAiml',
+          params: {
+            themeName: this.renameForm.name,
+            repositoryId: this.repositoryValue,
+            catalogId: this.treeData.id,
+            source: '',
+          },
+          baseURL: '/',
+          dataType: 'jsonp',
+        }).then ((res) => {
+          var data = res.data;
+          console.log(data);
+          this.testScriptText = this.testScriptText + "小明：" + data.msg + "\n";
+        })
+      },
     },
     filters: {
       sceneStatusFilter: function (status){
@@ -1763,10 +1807,17 @@
 
 <style lang="less">
   .index {
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+
     .clearfix:after {
        content: '';
        display: block;
        clear: both;
+    }
+    .upload-demo {
+      display: inline-block;
+      height: 40px;
+      width: 74px;
     }
     .test-script-show-div {
       margin-left: 120px;
@@ -1835,7 +1886,7 @@
       padding: 0;
       background-color: #E4E7EB;
       color: #333;
-      text-align: center;
+      text-align: center; 
       .el-checkbox+.el-checkbox{
         margin-left: 0;
       }
@@ -2093,7 +2144,7 @@
                     border-bottom: 1px solid #E4E7EB;
                     &.active {
                       color: #409EFF;
-                      background-color: #E4F0FF;
+                      
                     }
                   }
                   .item:hover {
@@ -2217,7 +2268,8 @@
     .el-tree-node:focus>.el-tree-node__content {
       padding-left: 15px;
       background-color: #1A273C;
-      color: rgba(256,256,256,0.9);
+      
+      color: #4E86EC;
     }
     .select-base {
       width: 90%;
