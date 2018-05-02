@@ -84,7 +84,7 @@
 <!--       action="https://jsonplaceholder.typicode.com/posts/" -->
       <el-upload
         class="upload-demo"
-        
+
         action="http://192.168.100.244:28984/aimlManage/importExcelAiml"
         >
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -514,7 +514,7 @@
         testScriptVisible: false,
         testScriptText: '显示内容 \n 123123',
         updateScriptVisible: false,
-        
+
         testScriptForm: {
           title: '',
           id: '',
@@ -1886,7 +1886,7 @@
       padding: 0;
       background-color: #E4E7EB;
       color: #333;
-      text-align: center; 
+      text-align: center;
       .el-checkbox+.el-checkbox{
         margin-left: 0;
       }
@@ -2144,7 +2144,7 @@
                     border-bottom: 1px solid #E4E7EB;
                     &.active {
                       color: #409EFF;
-                      
+
                     }
                   }
                   .item:hover {
@@ -2236,6 +2236,15 @@
             cursor: pointer;
           }
       }
+      .el-input__inner {
+        background-color: rgba(55, 66, 84, 1);
+        &::-webkit-input-placeholder {
+          color: #fff;
+        }
+        &:focus {
+          background-color: #fff;
+        }
+      }
     }
     .title {
       margin-left: 16px;
@@ -2268,7 +2277,7 @@
     .el-tree-node:focus>.el-tree-node__content {
       padding-left: 15px;
       background-color: #1A273C;
-      
+
       color: #4E86EC;
     }
     .select-base {
