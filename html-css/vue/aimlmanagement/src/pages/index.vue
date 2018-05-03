@@ -2084,7 +2084,8 @@
             border: 1px solid #cdd0d4;
             background-color: #fff;
             .el-tabs__nav-wrap::after {
-              height: 1px
+              height: 1px;
+              background-color: #cdd0d4;
             }
             .el-icon-plus {
               position: absolute;
@@ -2213,7 +2214,8 @@
               height: 366px;
               border-top: 1px solid #cdd0d4;
               .el-tabs__nav-wrap::after {
-                height: 1px
+                height: 1px;
+                background-color: #cdd0d4;
               }
               .el-tab-pane {
                 padding: 0 16px;
