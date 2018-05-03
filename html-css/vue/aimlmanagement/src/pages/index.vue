@@ -707,10 +707,15 @@
         }
         return isEXCEL && isLt2M && !themeNameFlag;
       },
-      uploadSceneSuccess(response, file, fileList){
-        alert("上传成功！");
-        this.createSceneExcelVisible = false;
-        this.httpChangeSceneList(this.sceneCurrentPage);
+      uploadSceneSuccess(response, file, fileList){  
+        var data = response.data;
+        if (data.status == 'fail') {
+          alert(data.msg);
+        }else{
+          alert("上传成功！");
+          this.createSceneExcelVisible = false;
+          this.httpChangeSceneList(this.sceneCurrentPage);
+        }
       },
       uploadSceneError(err, file, fileList){
         console.log(err)
