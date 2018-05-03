@@ -441,7 +441,7 @@
                     <div class="list">
                       <div class="item" v-for="(item, index) in entrance_grooves"
                            :class="{'active':entranceGroovesIndex==index}" @click="entranceGroovesIndex=index">
-                        {{item.title}}
+                        <span class="groove-span">{{item.title}}</span>
                         <i class="el-icon-edit-outline" @click="updateGrooveClick"></i>
                         <i class="el-icon-delete" @click="deleteGrooveClick"></i>
                       </div>
@@ -451,7 +451,7 @@
                     <div class="list">
                       <div class="item" v-for="(item, index) in out_grooves"
                            :class="{'active':outGroovesIndex==index}" @click="outGroovesIndex=index">
-                        {{item.title}}
+                        <span class="groove-span">{{item.title}}</span>
                         <i class="el-icon-edit-outline" @click="updateGrooveClick"></i>
                         <i class="el-icon-delete" @click="deleteGrooveClick"></i>
                       </div>
@@ -2225,7 +2225,10 @@
                     border-bottom: 1px solid #E4E7EB;
                     position: relative;
                     &.active {
-                      color: #409EFF;
+                      .groove-span{
+                        color: #409EFF;
+                      }
+                      
 
                     }
                   }
