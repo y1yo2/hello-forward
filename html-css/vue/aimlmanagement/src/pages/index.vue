@@ -407,7 +407,7 @@
                   <div class="out-list">
                     <el-checkbox-group v-model="checkedOut" @change="outChange">
                       <el-checkbox v-for="item in out_list" :label="item.id" :key="item.id">
-                        {{item.title}}
+                        <span class="checkbox-span">{{item.title}}</span>
                         <i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
                         <i class="el-icon-delete" size="mini" @click.prevent="deleteQuestionClick(item)"></i>
                       </el-checkbox>
@@ -2120,6 +2120,12 @@
                   vertical-align: middle;
 
                 }
+                .el-checkbox__input.is-checked+.el-checkbox__label {
+                  color: #606266;
+                  .checkbox-span {
+                    color: #409EFF
+                  }
+                }
               }
               .el-checkbox:hover {
                 background-color: #f5f7fa;
@@ -2161,6 +2167,12 @@
                   white-space: nowrap;
                   vertical-align: middle;
 
+                }
+                .el-checkbox__input.is-checked+.el-checkbox__label {
+                  color: #606266;
+                  .checkbox-span {
+                    color: #409EFF
+                  }
                 }
               }
               .el-checkbox:hover {
