@@ -87,7 +87,6 @@
         action="http://192.168.100.244:28984/aimlManage/importExcelAiml"
         name="themeFile"
         :data="uploadSceneParams"
-        :headers="uploadSceneHeaders"
         :on-success="uploadSceneSuccess"
         :on-error="uploadSceneError"
         :before-upload="beforeAvatarUpload">
@@ -524,9 +523,6 @@
           catalogId: '',
           source: '',
         },
-        uploadSceneHeaders: {
-          'Content-Type': "multipart/form-data; boundary=----WebKitFormBoundaryMENsJmYUDSvrROWR"
-        },
         testScriptForm: {
           title: '',
           id: '',
@@ -678,18 +674,17 @@
     methods: {
       beforeAvatarUpload(file) {
         this.uploadSceneParams.themeName = this.renameForm.name;
-        this.uploadSceneParams.repositoryId = this.repositoryValue;
-        this.uploadSceneParams.catalogId = this.treeData.id;
-        // const isEXCEL = file.type === 'xls' || file.type === 'xlsx';
-        // const isLt2M = file.size / 1024 / 1024 < 10;
         console.log(file.type)
-        // if (!isEXCEL) {
-        //   this.$message.error('上传文件只能是 excel 文件!');
-        // }
-        // if (!isLt2M) {
-        //   this.$message.error('上传文件大小不能超过 10MB!');
-        // }
-        // return isEXCEL && isLt2M;
+        const isEXCEL = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel';
+        const isLt2M = file.size / 1024 / 1024 < 10;
+        
+        if (!isEXCEL) {
+          this.$message.error('上传文件只能是 excel 文件!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传文件大小不能超过 10MB!');
+        }
+        return isEXCEL && isLt2M;
       },
       uploadSceneSuccess(response, file, fileList){
         alert("上传成功！");
@@ -698,7 +693,7 @@
       },
       uploadSceneError(err, file, fileList){
         alert("上传失败！");
-        this.createSceneExcelVisible = false;
+        // this.createSceneExcelVisible = false;
       },
       uploadSceneClick() {
         this.uploadSceneParams.themeName = this.renameForm.name;
