@@ -677,6 +677,9 @@
     },
     methods: {
       beforeAvatarUpload(file) {
+        this.uploadSceneParams.themeName = this.renameForm.name;
+        this.uploadSceneParams.repositoryId = this.repositoryValue;
+        this.uploadSceneParams.catalogId = this.treeData.id;
         // const isEXCEL = file.type === 'xls' || file.type === 'xlsx';
         // const isLt2M = file.size / 1024 / 1024 < 10;
         console.log(file.type)
