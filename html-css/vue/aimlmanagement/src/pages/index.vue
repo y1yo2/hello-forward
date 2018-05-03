@@ -335,11 +335,21 @@
                 <el-checkbox class="scene-theme-title-el-checkbox" :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
                 <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
                 <div class="scene-theme-title-icon">
-                  <i class="el-icon-upload" @click="uploadSceneClick"></i>
-                  <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
-                  <i class="el-icon-download" @click="underSceneVisible = true"></i>
-                  <i class="el-icon-plus" @click="createSceneVisible = true"></i>
-                  <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
+                  <el-tooltip content="上传Excel创建主题" placement="top" effect="light">
+                    <i class="el-icon-upload" @click="uploadSceneClick"></i>
+                  </el-tooltip>
+                  <el-tooltip content="发布选中主题" placement="top" effect="light">
+                    <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
+                  </el-tooltip>
+                  <el-tooltip content="下架选中主题" placement="top" effect="light">
+                    <i class="el-icon-download" @click="underSceneVisible = true"></i>
+                  </el-tooltip>
+                  <el-tooltip content="新建主题" placement="top" effect="light">
+                    <i class="el-icon-plus" @click="createSceneVisible = true"></i>
+                  </el-tooltip>
+                  <el-tooltip content="删除选中主题" placement="top" effect="light">
+                    <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
+                  </el-tooltip>
                 </div>
               </div>
               <div class="scene-theme-list">
@@ -678,13 +688,17 @@
         const isEXCEL = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel';
         const isLt2M = file.size / 1024 / 1024 < 10;
         
+        const themeNameFlag = this.renameForm.name === null || this.renameForm.name === undefined || this.renameForm.name === '';
         if (!isEXCEL) {
           this.$message.error('上传文件只能是 excel 文件!');
         }
         if (!isLt2M) {
           this.$message.error('上传文件大小不能超过 10MB!');
         }
-        return isEXCEL && isLt2M;
+        if (themeNameFlag) {
+          this.$message.error('请填写主题名称');
+        }
+        return isEXCEL && isLt2M && !themeNameFlag;
       },
       uploadSceneSuccess(response, file, fileList){
         alert("上传成功！");
@@ -692,7 +706,8 @@
         this.httpChangeSceneList(this.sceneCurrentPage);
       },
       uploadSceneError(err, file, fileList){
-        alert("上传失败！");
+        console.log(err)
+        alert("上传失败！" + err);
         // this.createSceneExcelVisible = false;
       },
       uploadSceneClick() {
