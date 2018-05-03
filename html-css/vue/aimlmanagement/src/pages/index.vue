@@ -4,8 +4,8 @@
       <el-dialog
         title="测试脚本"
         :visible.sync="testScriptVisible"
-        width="80%"
-        height="80%">
+        :fullscreen="true"
+        class="test-dialog">
         <textarea readonly class="test-script-show-div">{{testScriptText}}</textarea>
         <el-form :model="testScriptForm">
           <el-form-item label="请输入：" :label-width="formLabelWidth">
@@ -375,16 +375,17 @@
           </el-col>
           <el-col :span="9" class="questions">
             <div class="questions-inner">
-              <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
+<!--               <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
                          @click.native="createQuestionClick">
-                新增</el-button>
+                新增</el-button> -->
+              <i class="el-icon-plus" @click.prevent="createQuestionClick"></i>
 
               <el-tabs v-model="activeQuestions" @tab-click="questionTag">
                 <el-tab-pane label="入口问题" name="first">
                   <div class="entrance-list">
                     <el-checkbox-group v-model="checkedEntrances" @change="entranceChange">
                       <el-checkbox v-for="item in entrance_list" :label="item.id" :key="item.id">
-                        {{item.title}}
+                        <span class="checkbox-span">{{item.title}}</span>
                         <i class="el-icon-edit-outline" size="mini" @click.prevent="renameQuestionClick(item)"></i>
                         <i class="el-icon-delete" size="mini" @click.prevent="deleteQuestionClick(item)"></i>
                       </el-checkbox>
@@ -429,9 +430,9 @@
             <div class="groove">
               <div class="edit">
                 <!-- <div class="edit" @click="updateGrooveClick"> -->
-                <i class="el-icon-edit-outline" @click="updateGrooveClick"></i>
+                
                 <i class="el-icon-plus" @click="createGrooveClick"></i>
-                <i class="el-icon-delete" @click="deleteGrooveClick"></i>
+                
               </div>
               <h5 class="groove-title">槽点</h5>
               <div class="groove-inner">
@@ -440,14 +441,20 @@
                     <div class="list">
                       <div class="item" v-for="(item, index) in entrance_grooves"
                            :class="{'active':entranceGroovesIndex==index}" @click="entranceGroovesIndex=index">
-                        {{item.title}}</div>
+                        {{item.title}}
+                        <i class="el-icon-edit-outline" @click="updateGrooveClick"></i>
+                        <i class="el-icon-delete" @click="deleteGrooveClick"></i>
+                      </div>
                     </div>
                   </el-tab-pane>
                   <el-tab-pane label="出口问题" name="checkedOut">
                     <div class="list">
                       <div class="item" v-for="(item, index) in out_grooves"
                            :class="{'active':outGroovesIndex==index}" @click="outGroovesIndex=index">
-                        {{item.title}}</div>
+                        {{item.title}}
+                        <i class="el-icon-edit-outline" @click="updateGrooveClick"></i>
+                        <i class="el-icon-delete" @click="deleteGrooveClick"></i>
+                      </div>
                     </div>
                   </el-tab-pane>
                 </el-tabs>
@@ -1871,12 +1878,15 @@
       height: 40px;
       width: 74px;
     }
-    .test-script-show-div {
-      margin-left: 120px;
-      background-color: #f5f7fa;
-      height: 300px;
-      width: 500px;
+    .test-dialog {
+      .test-script-show-div {
+        margin-left: 120px;
+        background-color: #f5f7fa;
+        height: 400px;
+        width: 800px;
+      }
     }
+    
     .progressContent {
       float: right;
       height: 126px;
@@ -1891,7 +1901,7 @@
        content: '';
        display: block;
        clear: both;
-       
+       font-size: 14px
     }
     .el-tree-node__content{
       height: 45px;
@@ -1930,6 +1940,12 @@
     }
     .scene-theme-item:hover {
       background-color: #f5f7fa;
+      .el-checkbox__label {
+        .el-tag {
+          background-color: #f5f7fa;
+        }
+      }
+      
     }
     .item:hover {
       background-color: #f5f7fa;
@@ -2000,7 +2016,7 @@
                 line-height: 45px;
                 height: 45px;
                 text-align: left;
-                border-bottom: 1px solid #cdd0d4;
+                border-bottom: 1px solid #E4E7EB;
                 .el-checkbox__input {
                   margin-right: 5px;
                 }
@@ -2035,18 +2051,19 @@
                 }
 
                 .el-tag {
-                  width: 50px;
+                  width: 60px;
                   margin-right: 5px;
-                  text-align: center;
+                  text-align: left;
                   overflow: hidden;
                   text-overflow:ellipsis;
                   white-space: nowrap;
                   vertical-align: middle;
                   background-color: #FFFFFF;
+                  padding: 0px;
+                  color: #909399;
+                  border: 0px;
                 }
-                .el-tag--success {
-                  color: #46C819;
-                }
+                
               }
             }
             .scene-theme-page {
@@ -2071,17 +2088,14 @@
             position: relative;
             border: 1px solid #cdd0d4;
             background-color: #fff;
-            .el-button-plus {
+            .el-icon-plus {
               position: absolute;
-              right: 16px;
-              width: 80px;
-              height: 35px;
-              line-height: 35px;
+              right: 26px;
+             
               padding: 0;
-              margin-top: 14px;
+              margin-top: 22px;
               text-align: center;
-              background-color: #4E86EC;
-              border-color: #4E86EC;
+              
               z-index: 999;
             }
             .entrance-list {
@@ -2172,29 +2186,32 @@
           .groove {
             position: relative;
             margin-top: 16px;
-            padding: 0 16px 16px;
+            padding: 0 0px 0px;
             text-align: left;
             background-color: #fff;
             border: 1px solid #cdd0d4;
             .edit {
               position: absolute;
-              right: 18px;
+              right: 23px;
               line-height: 55px;
             }
             .groove-title {
+              margin-left: 16px;
               line-height: 55px;
             }
             .groove-inner {
               height: 366px;
-              border: 1px solid #cdd0d4;
+              border-top: 1px solid #cdd0d4;
               .el-tab-pane {
                 padding: 0 16px;
                 font-size: 14px;
                 .list {
+
                   .item {
                     line-height: 45px;
                     height: 45px;
                     border-bottom: 1px solid #E4E7EB;
+                    position: relative;
                     &.active {
                       color: #409EFF;
 
@@ -2202,6 +2219,16 @@
                   }
                   .item:hover {
                     cursor: pointer;
+                  }
+                  .el-icon-edit-outline {
+                    position: absolute;
+                    top: 14px;
+                    right: 32px;
+                  }
+                  .el-icon-delete {
+                    position: absolute;
+                    top: 14px;
+                    right: 10px;
                   }
                 }
               }
