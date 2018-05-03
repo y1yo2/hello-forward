@@ -79,14 +79,18 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-      <el-button @click="createSceneExcelVisible = false">取 消</el-button>
-      <!-- <el-button type="primary" @click="createSceneExcelVisible = false">确 定</el-button> -->
+      <!-- <el-button @click="createSceneExcelVisible = false">取 消</el-button> -->
 <!--       action="https://jsonplaceholder.typicode.com/posts/" -->
       <el-upload
         class="upload-demo"
-
+        :show-file-list="false"
         action="http://192.168.100.244:28984/aimlManage/importExcelAiml"
-        >
+        name="themeFile"
+        :data="uploadSceneParams"
+        :headers="uploadSceneHeaders"
+        :on-success="uploadSceneSuccess"
+        :on-error="uploadSceneError"
+        :before-upload="beforeAvatarUpload">
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
       </el-upload>
     </span>
@@ -332,7 +336,7 @@
                 <el-checkbox class="scene-theme-title-el-checkbox" :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
                 <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
                 <div class="scene-theme-title-icon">
-                  <i class="el-icon-upload" @click=""></i>
+                  <i class="el-icon-upload" @click="uploadSceneClick"></i>
                   <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
                   <i class="el-icon-download" @click="underSceneVisible = true"></i>
                   <i class="el-icon-plus" @click="createSceneVisible = true"></i>
@@ -489,7 +493,7 @@
         createVisible: false,
         renameVisible: false,
         createSceneVisible: false,
-        createSceneExcelVisible: true,
+        createSceneExcelVisible: false,
         deleteSceneVisible: false,
         renameSceneVisible: false,
         publishSceneVisible: false,
@@ -514,7 +518,15 @@
         testScriptVisible: false,
         testScriptText: '显示内容 \n 123123',
         updateScriptVisible: false,
-
+        uploadSceneParams: {
+          themeName: '',
+          repositoryId: '',
+          catalogId: '',
+          source: '',
+        },
+        uploadSceneHeaders: {
+          'Content-Type': "multipart/form-data; boundary=----WebKitFormBoundaryMENsJmYUDSvrROWR"
+        },
         testScriptForm: {
           title: '',
           id: '',
@@ -664,6 +676,35 @@
       }
     },
     methods: {
+      beforeAvatarUpload(file) {
+        // const isEXCEL = file.type === 'xls' || file.type === 'xlsx';
+        // const isLt2M = file.size / 1024 / 1024 < 10;
+        console.log(file.type)
+        // if (!isEXCEL) {
+        //   this.$message.error('上传文件只能是 excel 文件!');
+        // }
+        // if (!isLt2M) {
+        //   this.$message.error('上传文件大小不能超过 10MB!');
+        // }
+        // return isEXCEL && isLt2M;
+      },
+      uploadSceneSuccess(response, file, fileList){
+        alert("上传成功！");
+        this.createSceneExcelVisible = false;
+        this.httpChangeSceneList(this.sceneCurrentPage);
+      },
+      uploadSceneError(err, file, fileList){
+        alert("上传失败！");
+        this.createSceneExcelVisible = false;
+      },
+      uploadSceneClick() {
+        this.uploadSceneParams.themeName = this.renameForm.name;
+        this.uploadSceneParams.repositoryId = this.repositoryValue;
+        this.uploadSceneParams.catalogId = this.treeData.id;
+        this.createSceneExcelVisible = true;
+        console.log('uploadSceneParams')
+        console.log(this.uploadSceneParams)
+      },
       handleRepositoryChange () {
         this.$refs.tree2.root.childNodes[0].childNodes = new Array();
         this.$refs.tree2.root.childNodes[0].loaded = false;
@@ -1807,8 +1848,6 @@
 
 <style lang="less">
   .index {
-    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-
     .clearfix:after {
        content: '';
        display: block;
@@ -1839,6 +1878,7 @@
        content: '';
        display: block;
        clear: both;
+       
     }
     .el-tree-node__content{
       height: 45px;
@@ -1870,7 +1910,7 @@
       clear: both;
       position: relative;
     }
-    .el-icon-plus:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
+    .el-icon-plus:hover, .el-icon-upload:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
     .el-icon-edit-outline:hover, .el-icon-service:hover {
       color: #409EFF;
       cursor: pointer;
@@ -2237,9 +2277,9 @@
           }
       }
       .el-input__inner {
-        background-color: rgba(55, 66, 84, 1);
+        background-color: rgba(256, 256, 256, 0.9);
         &::-webkit-input-placeholder {
-          color: #fff;
+          color: rgba(0, 0, 0, 0.6);
         }
         &:focus {
           background-color: #fff;
