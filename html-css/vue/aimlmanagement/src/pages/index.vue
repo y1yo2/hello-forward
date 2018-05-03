@@ -430,9 +430,9 @@
             <div class="groove">
               <div class="edit">
                 <!-- <div class="edit" @click="updateGrooveClick"> -->
-                
+
                 <i class="el-icon-plus" @click="createGrooveClick"></i>
-                
+
               </div>
               <h5 class="groove-title">槽点</h5>
               <div class="groove-inner">
@@ -694,7 +694,7 @@
         console.log(file.type)
         const isEXCEL = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel';
         const isLt2M = file.size / 1024 / 1024 < 10;
-        
+
         const themeNameFlag = this.renameForm.name === null || this.renameForm.name === undefined || this.renameForm.name === '';
         if (!isEXCEL) {
           this.$message.error('上传文件只能是 excel 文件!');
@@ -1886,7 +1886,7 @@
         width: 800px;
       }
     }
-    
+
     .progressContent {
       float: right;
       height: 126px;
@@ -1937,15 +1937,6 @@
     .el-icon-edit-outline:hover, .el-icon-service:hover {
       color: #409EFF;
       cursor: pointer;
-    }
-    .scene-theme-item:hover {
-      background-color: #f5f7fa;
-      .el-checkbox__label {
-        .el-tag {
-          background-color: #f5f7fa;
-        }
-      }
-      
     }
     .item:hover {
       background-color: #f5f7fa;
@@ -2020,7 +2011,6 @@
                 .el-checkbox__input {
                   margin-right: 5px;
                 }
-
                 .el-checkbox__label {
                   display: inline-block;
                   width: 100%;
@@ -2049,7 +2039,6 @@
                   top: 16px;
                   right: 12px;
                 }
-
                 .el-tag {
                   width: 60px;
                   margin-right: 5px;
@@ -2063,7 +2052,13 @@
                   color: #909399;
                   border: 0px;
                 }
-                
+                &:hover {
+                  background-color: #f5f7fa;
+                  .el-tag {
+                    background: #f5f7fa;
+                  }
+
+                }
               }
             }
             .scene-theme-page {
@@ -2088,14 +2083,17 @@
             position: relative;
             border: 1px solid #cdd0d4;
             background-color: #fff;
+            .el-tabs__nav-wrap::after {
+              height: 1px
+            }
             .el-icon-plus {
               position: absolute;
               right: 26px;
-             
+
               padding: 0;
               margin-top: 22px;
               text-align: center;
-              
+
               z-index: 999;
             }
             .entrance-list {
@@ -2214,6 +2212,9 @@
             .groove-inner {
               height: 366px;
               border-top: 1px solid #cdd0d4;
+              .el-tabs__nav-wrap::after {
+                height: 1px
+              }
               .el-tab-pane {
                 padding: 0 16px;
                 font-size: 14px;
@@ -2228,7 +2229,7 @@
                       .groove-span{
                         color: #409EFF;
                       }
-                      
+
 
                     }
                   }
