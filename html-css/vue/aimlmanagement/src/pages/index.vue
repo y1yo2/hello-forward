@@ -375,10 +375,10 @@
           </el-col>
           <el-col :span="9" class="questions">
             <div class="questions-inner">
-<!--               <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
+              <el-button class="el-button-plus" icon="el-icon-plus"
                          @click.native="createQuestionClick">
-                新增</el-button> -->
-              <i class="el-icon-plus" @click.prevent="createQuestionClick"></i>
+                新增</el-button>
+              <!-- <i class="el-icon-plus" @click.prevent="createQuestionClick"></i> -->
 
               <el-tabs v-model="activeQuestions" @tab-click="questionTag">
                 <el-tab-pane label="入口问题" name="first">
@@ -431,8 +431,10 @@
               <div class="edit">
                 <!-- <div class="edit" @click="updateGrooveClick"> -->
 
-                <i class="el-icon-plus" @click="createGrooveClick"></i>
-
+                <!-- <i class="el-icon-plus" @click="createGrooveClick"></i> -->
+                <el-button class="el-button-plus" icon="el-icon-plus"
+                         @click.native="createQuestionClick">
+                新增</el-button>
               </div>
               <h5 class="groove-title">槽点</h5>
               <div class="groove-inner">
@@ -708,9 +710,9 @@
         return isEXCEL && isLt2M && !themeNameFlag;
       },
       uploadSceneSuccess(response, file, fileList){  
-        var data = response.data;
-        if (data.status == 'fail') {
-          alert(data.msg);
+        console.log(response)
+        if (response.status == 'fail') {
+          alert(response.msg);
         }else{
           alert("上传成功！");
           this.createSceneExcelVisible = false;
@@ -1989,7 +1991,7 @@
               padding-right: 12px;
               height: 64px;
               border-bottom: 1px solid #cdd0d4;
-              color: #666;
+              
             }
             .scene-theme-title-el-checkbox {
               float: left;
@@ -2092,15 +2094,23 @@
               height: 1px;
               background-color: #cdd0d4;
             }
-            .el-icon-plus {
+            .el-button-plus {
               position: absolute;
               right: 26px;
-
+              color:#606266;
               padding: 0;
-              margin-top: 22px;
+              margin-top: 23px;
               text-align: center;
-
+              border: 1px solid #fff;
               z-index: 999;
+            }
+            .el-button:focus{
+              color:#409EFF;
+              background-color: #fff;
+            } 
+            .el-button:hover{
+              color:#409EFF;
+              background-color: #fff;
             }
             .entrance-list {
               position: relative;
@@ -2207,9 +2217,24 @@
             background-color: #fff;
             border: 1px solid #cdd0d4;
             .edit {
+              .el-button-plus {
               position: absolute;
-              right: 23px;
-              line-height: 55px;
+              right: 26px;
+              color:#606266;
+              padding: 0;
+              margin-top: 19px;
+              text-align: center;
+              border: 1px solid #fff;
+              z-index: 999;
+            }
+            .el-button:focus{
+              color:#409EFF;
+              background-color: #fff;
+            } 
+            .el-button:hover{
+              color:#409EFF;
+              background-color: #fff;
+            }
             }
             .groove-title {
               margin-left: 16px;
@@ -2220,7 +2245,7 @@
               border-top: 1px solid #cdd0d4;
               .el-tabs__nav-wrap::after {
                 height: 1px;
-                background-color: #cdd0d4;
+                
               }
               .el-tab-pane {
                 padding: 0 16px;
