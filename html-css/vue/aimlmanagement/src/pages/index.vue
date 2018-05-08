@@ -18,6 +18,7 @@
       <el-button type="primary" @click="testScriptSendClick">发送</el-button>
     </span>
       </el-dialog>
+      <!-- 显示操作主题的进度条 -->
       <el-dialog
         :title="progressTitle"
         :visible.sync="progressPublishVisible"
@@ -30,8 +31,8 @@
         </div>
         <span slot="footer" class="dialog-footer">
       <!-- <el-button @click="progressPublishVisible = false">取 消</el-button> -->
-      <el-button type="primary" @click="progressPublishVisible = false" :loading="progressButtonLoading">{{progressButtonText}}</el-button>
-    </span>
+          <el-button type="primary" @click="progressPublishVisible = false" :loading="progressButtonLoading">{{progressButtonText}}</el-button>
+        </span>
       </el-dialog>
       <el-dialog
         title="删除确认"
@@ -39,9 +40,9 @@
         width="30%">
         <span class="dialog-footer">是否删除该目录</span>
         <span slot="footer" class="dialog-footer">
-      <el-button @click="deleteVisible = false">取 消</el-button>
-      <el-button type="primary" @click="removeForButton">确 定</el-button>
-    </span>
+          <el-button @click="deleteVisible = false">取 消</el-button>
+          <el-button type="primary" @click="removeForButton">确 定</el-button>
+        </span>
       </el-dialog>
       <el-dialog
         title="新增确认"
@@ -466,8 +467,12 @@
           <el-col :span="9">
             <div class="script clearfix">
               <h5 class="title floatLeft">脚本</h5>
-              <el-button class="edit-outline-button" icon="el-icon-edit-outline" @click="updateScriptVisible = true" :disabled="scriptTextDisabledFlag"></el-button>
-              <i class="el-icon-service"  @click.prevent="handleTestScriptClick"></i>
+              <el-tooltip content="更新脚本" placement="top" effect="light">
+                <el-button class="edit-outline-button" icon="el-icon-edit-outline" @click="updateScriptVisible = true" :disabled="scriptTextDisabledFlag"></el-button>
+              </el-tooltip>
+              <el-tooltip content="测试脚本" placement="top" effect="light">
+                <i class="el-icon-service"  @click.prevent="handleTestScriptClick"></i>
+              </el-tooltip>
               <!-- <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
               @click.native="handleTestScriptClick">
               测试</el-button> -->
@@ -2334,7 +2339,12 @@
             right: 18px;
             font-size: 14px;
             line-height: 55px;
+            color: #606266;
+            
+          }
+          .edit:hover {
             color: #6294EF;
+            cursor: pointer;
           }
           .channel-title  {
             line-height: 55px;
