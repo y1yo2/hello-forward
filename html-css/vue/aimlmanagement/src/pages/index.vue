@@ -336,14 +336,20 @@
                 <el-checkbox class="scene-theme-title-el-checkbox" :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
                 <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
                 <div class="scene-theme-title-icon">
-                  <el-tooltip content="上传Excel创建主题" placement="top" effect="light">
-                    <i class="el-icon-upload" @click="uploadSceneClick"></i>
+                  <el-tooltip content="导入Excel创建主题" placement="top" effect="light">
+                    <i class="el-icon-upload2" @click="uploadSceneClick"></i>
                   </el-tooltip>
-                  <el-tooltip content="发布选中主题" placement="top" effect="light">
+<!--                   <el-tooltip content="发布选中主题" placement="top" effect="light">
                     <i class="el-icon-upload2" @click="publishSceneVisible = true"></i>
                   </el-tooltip>
                   <el-tooltip content="下架选中主题" placement="top" effect="light">
                     <i class="el-icon-download" @click="underSceneVisible = true"></i>
+                  </el-tooltip> -->
+                  <el-tooltip content="发布选中主题" placement="top" effect="light">
+                    <i class="el-icon-check" @click="publishSceneVisible = true"></i>
+                  </el-tooltip>
+                  <el-tooltip content="下架选中主题" placement="top" effect="light">
+                    <i class="el-icon-close" @click="underSceneVisible = true"></i>
                   </el-tooltip>
                   <el-tooltip content="新建主题" placement="top" effect="light">
                     <i class="el-icon-plus" @click="createSceneVisible = true"></i>
@@ -472,6 +478,9 @@
               </el-tooltip>
               <el-tooltip content="测试脚本" placement="top" effect="light">
                 <i class="el-icon-service"  @click.prevent="handleTestScriptClick"></i>
+              </el-tooltip>
+              <el-tooltip content="导出脚本" placement="top" effect="light">
+                <i class="el-icon-download"  @click="handleDownloadScriptClick"></i>
               </el-tooltip>
               <!-- <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
               @click.native="handleTestScriptClick">
@@ -997,6 +1006,9 @@
           pwd = pwd + chars.charAt(Math.floor(Math.random() * maxPos));
         }
         this.testScriptForm.id=pwd;
+      },
+      handleDownloadScriptClick(){
+        alert("导出脚本");
       },
       testScriptSendClick(){
         this.httpTestScript(this.testScriptForm.title, this.testScriptForm.id);
@@ -1945,8 +1957,9 @@
       clear: both;
       position: relative;
     }
-    .el-icon-plus:hover, .el-icon-upload:hover, .el-icon-upload2:hover, .el-icon-delete:hover, .el-icon-download:hover,
-    .el-icon-edit-outline:hover, .el-icon-service:hover {
+    .el-icon-plus:hover, .el-icon-upload:hover, .el-icon-upload2:hover, .el-icon-delete:hover, 
+    .el-icon-download:hover, .el-icon-edit-outline:hover, .el-icon-service:hover, 
+    .el-icon-check:hover, .el-icon-close:hover, {
       color: #409EFF;
       cursor: pointer;
     }
@@ -2293,7 +2306,7 @@
           background-color: #fff;
           border: 1px solid #cdd0d4;
           position: relative;
-          .el-icon-service {
+          .el-icon-download {
               position: absolute;
               right: 16px;
               padding: 0;
@@ -2301,9 +2314,20 @@
               text-align: center;
               z-index: 999;
             }
+          .el-icon-download:focus {
+              outline: none;
+            }
+          .el-icon-service {
+              position: absolute;
+              right: 38px;
+              padding: 0;
+              margin-top: 23px;
+              text-align: center;
+              z-index: 999;
+            }
             .edit-outline-button {
               position: absolute;
-              right: 48px;
+              right: 60px;
               padding: 0;
               margin-top: 23px;
               text-align: center;
