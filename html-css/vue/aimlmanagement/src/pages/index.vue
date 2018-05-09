@@ -234,7 +234,7 @@
         <el-form :model="renameGrooveForm">
           <el-form-item label="槽点内容" :label-width="formLabelWidth">
             <el-input v-model="renameGrooveForm.title" auto-complete="off"
-                      placeholder="请输入入口问题"></el-input>
+                      placeholder="请输入槽点内容"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -440,7 +440,7 @@
 
                 <!-- <i class="el-icon-plus" @click="createGrooveClick"></i> -->
                 <el-button class="el-button-plus" icon="el-icon-plus"
-                         @click.native="createQuestionClick">
+                         @click.native="createGrooveClick">
                 新增</el-button>
               </div>
               <h5 class="groove-title">槽点</h5>
