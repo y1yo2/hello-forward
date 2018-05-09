@@ -336,7 +336,7 @@
                 <el-checkbox class="scene-theme-title-el-checkbox" :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
                 <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
                 <div class="scene-theme-title-icon">
-                  <el-tooltip content="导入Excel创建主题" placement="top" effect="light">
+                  <el-tooltip content="导入Excel创建主题" placement="top" effect="light" hide-after=3000>
                     <i class="el-icon-upload2" @click="uploadSceneClick"></i>
                   </el-tooltip>
 <!--                   <el-tooltip content="发布选中主题" placement="top" effect="light">
@@ -345,16 +345,16 @@
                   <el-tooltip content="下架选中主题" placement="top" effect="light">
                     <i class="el-icon-download" @click="underSceneVisible = true"></i>
                   </el-tooltip> -->
-                  <el-tooltip content="发布选中主题" placement="top" effect="light">
+                  <el-tooltip content="发布选中主题" placement="top" effect="light" hide-after=3000>
                     <i class="el-icon-check" @click="publishSceneVisible = true"></i>
                   </el-tooltip>
-                  <el-tooltip content="下架选中主题" placement="top" effect="light">
+                  <el-tooltip content="下架选中主题" placement="top" effect="light" hide-after=3000>
                     <i class="el-icon-close" @click="underSceneVisible = true"></i>
                   </el-tooltip>
-                  <el-tooltip content="新建主题" placement="top" effect="light">
+                  <el-tooltip content="新建主题" placement="top" effect="light" hide-after=3000>
                     <i class="el-icon-plus" @click="createSceneVisible = true"></i>
                   </el-tooltip>
-                  <el-tooltip content="删除选中主题" placement="top" effect="light">
+                  <el-tooltip content="删除选中主题" placement="top" effect="light" hide-after=3000>
                     <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
                   </el-tooltip>
                 </div>
@@ -473,13 +473,14 @@
           <el-col :span="9">
             <div class="script clearfix">
               <h5 class="title floatLeft">脚本</h5>
-              <el-tooltip content="更新脚本" placement="top" effect="light">
+              <el-tooltip content="更新脚本" placement="top" effect="light" hide-after=3000>
                 <el-button class="edit-outline-button" icon="el-icon-edit-outline" @click="updateScriptVisible = true" :disabled="scriptTextDisabledFlag"></el-button>
               </el-tooltip>
-              <el-tooltip content="测试脚本" placement="top" effect="light">
+              <el-tooltip content="测试脚本" placement="top" effect="light" hide-after=3000>
                 <i class="el-icon-service"  @click.prevent="handleTestScriptClick"></i>
               </el-tooltip>
-              <el-tooltip content="导出脚本" placement="top" effect="light">
+              <el-tooltip content="导出脚本" placement="top" effect="light" 
+              hide-after=3000 >
                 <i class="el-icon-download"  @click="handleDownloadScriptClick"></i>
               </el-tooltip>
               <!-- <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
