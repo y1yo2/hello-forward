@@ -70,9 +70,15 @@
     </span>
       </el-dialog>
       <el-dialog
-        title="是否通过导入Excel在当前目录下创建一个主题？"
+        title="是否导入文件在当前目录下创建一个主题？"
         :visible.sync="createSceneExcelVisible"
         width="30%">
+        <div class="createSceneRadio">
+          <el-radio-group v-model="createSceneRadio">
+          <el-radio-button label="Excel文件"></el-radio-button>
+          <el-radio-button label="Aiml文件"></el-radio-button>
+          </el-radio-group>
+        </div>
         <el-form :model="renameForm">
           <el-form-item label="主题名称" :label-width="formLabelWidth">
             <el-input v-model="renameForm.name" auto-complete="off"
@@ -84,14 +90,18 @@
 <!--       action="https://jsonplaceholder.typicode.com/posts/" -->
       <el-upload
         class="upload-demo"
-        :show-file-list="false"
-        action="http://192.168.100.244:28984/aimlManage/importExcelAiml"
+        ref="upload"
+        :auto-upload="false"
+        :action="createSceneAction"
+        :file-list="createSceneFileList"
         name="themeFile"
         :data="uploadSceneParams"
+        :on-change="uploadSceneChange"
         :on-success="uploadSceneSuccess"
         :on-error="uploadSceneError"
         :before-upload="beforeAvatarUpload">
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传文件</el-button>
       </el-upload>
     </span>
       </el-dialog>
@@ -336,7 +346,7 @@
                 <el-checkbox class="scene-theme-title-el-checkbox" :indeterminate="isIndeterminate" v-model="sceneCheckAll" @change="checkAllSceneChange"></el-checkbox>
                 <div class="scene-theme-title-span"><h5>场景主题列表</h5></div>
                 <div class="scene-theme-title-icon">
-                  <el-tooltip content="导入Excel创建主题" placement="top" effect="light" hide-after=3000>
+                  <el-tooltip content="导入文件创建主题" placement="top" effect="light" :hide-after="toolTipHideAfter">
                     <i class="el-icon-upload2" @click="uploadSceneClick"></i>
                   </el-tooltip>
 <!--                   <el-tooltip content="发布选中主题" placement="top" effect="light">
@@ -345,16 +355,16 @@
                   <el-tooltip content="下架选中主题" placement="top" effect="light">
                     <i class="el-icon-download" @click="underSceneVisible = true"></i>
                   </el-tooltip> -->
-                  <el-tooltip content="发布选中主题" placement="top" effect="light" hide-after=3000>
+                  <el-tooltip content="发布选中主题" placement="top" effect="light" :hide-after="toolTipHideAfter">
                     <i class="el-icon-check" @click="publishSceneVisible = true"></i>
                   </el-tooltip>
-                  <el-tooltip content="下架选中主题" placement="top" effect="light" hide-after=3000>
+                  <el-tooltip content="下架选中主题" placement="top" effect="light" :hide-after="toolTipHideAfter">
                     <i class="el-icon-close" @click="underSceneVisible = true"></i>
                   </el-tooltip>
-                  <el-tooltip content="新建主题" placement="top" effect="light" hide-after=3000>
+                  <el-tooltip content="新建主题" placement="top" effect="light" :hide-after="toolTipHideAfter">
                     <i class="el-icon-plus" @click="createSceneVisible = true"></i>
                   </el-tooltip>
-                  <el-tooltip content="删除选中主题" placement="top" effect="light" hide-after=3000>
+                  <el-tooltip content="删除选中主题" placement="top" effect="light" :hide-after="toolTipHideAfter">
                     <i class="el-icon-delete" @click="deleteSceneVisible = true"></i>
                   </el-tooltip>
                 </div>
@@ -473,14 +483,14 @@
           <el-col :span="9">
             <div class="script clearfix">
               <h5 class="title floatLeft">脚本</h5>
-              <el-tooltip content="更新脚本" placement="top" effect="light" hide-after=3000>
+              <el-tooltip content="更新脚本" placement="top" effect="light" :hide-after="toolTipHideAfter">
                 <el-button class="edit-outline-button" icon="el-icon-edit-outline" @click="updateScriptVisible = true" :disabled="scriptTextDisabledFlag"></el-button>
               </el-tooltip>
-              <el-tooltip content="测试脚本" placement="top" effect="light" hide-after=3000>
+              <el-tooltip content="测试脚本" placement="top" effect="light" :hide-after="toolTipHideAfter">
                 <i class="el-icon-service"  @click.prevent="handleTestScriptClick"></i>
               </el-tooltip>
               <el-tooltip content="导出脚本" placement="top" effect="light" 
-              hide-after=3000 >
+              :hide-after="toolTipHideAfter" >
                 <i class="el-icon-download"  @click="handleDownloadScriptClick"></i>
               </el-tooltip>
               <!-- <el-button class="el-button-plus" type="primary" icon="el-icon-plus"
@@ -500,7 +510,8 @@
               <h5 class="channel-title">渠道</h5>
               <div class="channel-list">
                 <el-checkbox-group v-model="checkedChannel">
-                  <el-checkbox v-for="channel in channels" :label="channel.name" :key="channel.name"
+                  <el-checkbox v-for="channel in channels" 
+                  :label="channel.name" :key="channel.name"
                                :disabled="channelUpdateDisabledFlag">
                     {{channel.name}}</el-checkbox>
                 </el-checkbox-group>
@@ -527,6 +538,9 @@
         renameVisible: false,
         createSceneVisible: false,
         createSceneExcelVisible: false,
+        createSceneRadio: 'Excel文件',
+        createSceneAction: '',
+        createSceneFileList: [],
         deleteSceneVisible: false,
         renameSceneVisible: false,
         publishSceneVisible: false,
@@ -577,6 +591,7 @@
           title: '',
           id: '',
         },
+        toolTipHideAfter: 3000,
         formLabelWidth: '120px',
         sceneTotal: 50,  //默认总条目数
         sceneCurrentPage: 1, //默认当前页面
@@ -707,22 +722,39 @@
     },
     methods: {
       beforeAvatarUpload(file) {
+        var result = false;
         this.uploadSceneParams.themeName = this.renameForm.name;
         console.log(file.type)
         const isEXCEL = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel';
+        const isXML = file.type === 'text/xml';
         const isLt2M = file.size / 1024 / 1024 < 10;
-
         const themeNameFlag = this.renameForm.name === null || this.renameForm.name === undefined || this.renameForm.name === '';
-        if (!isEXCEL) {
-          this.$message.error('上传文件只能是 excel 文件!');
+
+        if (this.createSceneRadio == 'Excel文件') {
+          if (!isEXCEL) {
+            this.$message.error('上传文件只能是 excel 文件!');
+          }
+          this.createSceneAction = process.env.BASE_URL + '/aimlManage/importExcelAiml';
+          result = isEXCEL && isLt2M && !themeNameFlag;
+        }else if (this.createSceneRadio == 'Aiml文件') {
+          if (!isXML) {
+            this.$message.error('上传文件只能是 xml 文件!');
+          }
+          this.createSceneAction = process.env.BASE_URL + '/aimlManage/importExcelAiml';
+          result = isXML && isLt2M && !themeNameFlag;
         }
+        
         if (!isLt2M) {
           this.$message.error('上传文件大小不能超过 10MB!');
         }
         if (themeNameFlag) {
           this.$message.error('请填写主题名称');
-        }
-        return isEXCEL && isLt2M && !themeNameFlag;
+        } 
+        
+        return result;
+      },
+      uploadSceneChange(file, fileList){  
+         this.createSceneFileList = fileList.slice(-1);
       },
       uploadSceneSuccess(response, file, fileList){  
         console.log(response)
@@ -738,6 +770,9 @@
         console.log(err)
         alert("上传失败！" + err);
         // this.createSceneExcelVisible = false;
+      },
+      submitUpload() {
+        this.$refs.upload.submit();
       },
       uploadSceneClick() {
         this.uploadSceneParams.themeName = this.renameForm.name;
@@ -1900,8 +1935,12 @@
     }
     .upload-demo {
       display: inline-block;
-      height: 40px;
-      width: 74px;
+      height: 80px;
+      width: 200px;
+    }
+    .createSceneRadio {
+      margin-left: 50px;
+      margin-bottom:20px;
     }
     .test-dialog {
       .test-script-show-div {
@@ -2352,7 +2391,7 @@
         }
         .channel {
           position: relative;
-          height: 440px;
+          height: 422px;
           margin-top: 16px;
           padding-left: 16px;
           padding-right: 16px;
