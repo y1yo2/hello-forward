@@ -373,8 +373,15 @@
                 <el-checkbox-group v-model="checkedScenes" @change="CheckedSceneChange">
                   <el-checkbox class="scene-theme-item" v-for="item in scene_list" :label="item.id" :key="item.id">
                     <div class="scene-theme-item-only" @click.prevent="sceneClick(item)">
-                      <el-tag size="mini" :class="{'el-tag': item.status == 1, 'el-tag--success':item.status == 2, 'el-tag--info': item.status == 3, 'el-tag--warning': item.status == 4}">{{item.status|sceneStatusFilter}}</el-tag>
-                      <span class="scene-theme-item-content" :class="{'active':checkedScene.id==item.id}" @click.prevent="sceneClick(item)">{{item.title}}</span>
+                      <el-tag size="mini" :class="{'el-tag': item.status == 1, 
+                      'el-tag--success':item.status == 2, 
+                      'el-tag--info': item.status == 3, 'el-tag--warning': item.status == 4}"
+                        >{{item.status|sceneStatusFilter}}
+                      </el-tag>
+                      <span class="scene-theme-item-content" 
+                        :class="{'active':checkedScene.id==item.id}" 
+                        @click.prevent="sceneClick(item)">{{item.title}}
+                      </span>
                       <i class="el-icon-edit-outline" size="mini" @click.prevent="renameSceneClick(item)"></i>
                     </div>
                   </el-checkbox>
@@ -2159,7 +2166,6 @@
         .questions {
           padding-right: 16px;
           .el-tabs__header {
-            height: 527px;
             height: 64px;
             margin: 0;
             padding-left: 16px;
@@ -2332,6 +2338,8 @@
               .el-tab-pane {
                 padding: 0 16px;
                 font-size: 14px;
+                height: 300px;
+                overflow-y:auto;
                 .list {
 
                   .item {
