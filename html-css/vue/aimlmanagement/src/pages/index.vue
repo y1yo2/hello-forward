@@ -74,15 +74,15 @@
         :visible.sync="createSceneExcelVisible"
         width="30%">
         <div class="createSceneRadio">
-          <el-radio-group v-model="createSceneRadio">
+          <el-radio-group v-model="createSceneRadio" @change="handleCreateSceneRadioChange">
           <el-radio-button label="Excel文件"></el-radio-button>
           <el-radio-button label="Aiml文件"></el-radio-button>
           </el-radio-group>
         </div>
-        <el-form :model="renameForm">
-          <el-form-item label="主题名称" :label-width="formLabelWidth">
+        <el-form :model="renameForm" :disabled="createSceneFormDisabled">
+          <el-form-item label="主题名称" :label-width="formLabelWidth" >
             <el-input v-model="renameForm.name" auto-complete="off"
-                      placeholder="请输入主题名称"></el-input>
+                      placeholder="导入Excel文件请输入主题名称"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -545,6 +545,7 @@
         renameVisible: false,
         createSceneVisible: false,
         createSceneExcelVisible: false,
+        createSceneFormDisabled: false,
         createSceneRadio: 'Excel文件',
         createSceneAction: '',
         createSceneFileList: [],
@@ -752,6 +753,17 @@
       }
     },
     methods: {
+      handleCreateSceneRadioChange(label) {
+        console.log(label)
+        this.renameForm.name = '';
+        if (label == 'Excel文件') {
+          this.createSceneFormDisabled = false;
+          this.createSceneAction = process.env.BASE_URL + '/aimlManage/importExcelAiml';
+        }else if (label == 'Aiml文件') {
+          this.createSceneFormDisabled = true;
+          this.createSceneAction = process.env.BASE_URL + '/aimlManage/importAimlByXml';
+        }
+      },
       beforeAvatarUpload(file) {
         var result = false;
         this.uploadSceneParams.themeName = this.renameForm.name;
@@ -765,22 +777,22 @@
           if (!isEXCEL) {
             this.$message.error('上传文件只能是 excel 文件!');
           }
+          if (themeNameFlag) {
+            this.$message.error('请填写主题名称');
+          } 
           this.createSceneAction = process.env.BASE_URL + '/aimlManage/importExcelAiml';
           result = isEXCEL && isLt2M && !themeNameFlag;
         }else if (this.createSceneRadio == 'Aiml文件') {
           if (!isXML) {
             this.$message.error('上传文件只能是 xml 文件!');
           }
-          this.createSceneAction = process.env.BASE_URL + '/aimlManage/importExcelAiml';
-          result = isXML && isLt2M && !themeNameFlag;
+          this.createSceneAction = process.env.BASE_URL + '/aimlManage/importAimlByXml';
+          result = isXML && isLt2M;
         }
         
         if (!isLt2M) {
           this.$message.error('上传文件大小不能超过 10MB!');
         }
-        if (themeNameFlag) {
-          this.$message.error('请填写主题名称');
-        } 
         
         return result;
       },
@@ -1232,7 +1244,7 @@
           if(data.length > 0){
             this.treeDataAdd = this.getTreeDataAddFromRes(this.treeDataAdd, data);
             resolve(this.treeDataAdd);
-          }else{
+          }else if (node.level > 1) {
             parentNode.isLeaf = true;
             parentNode.isLeafByUser = true;
           }
